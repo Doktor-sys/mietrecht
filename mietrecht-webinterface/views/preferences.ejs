@@ -1,0 +1,149 @@
+<% include('layout') %>
+<% block('body', function(){ %>
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h1>Einstellungen</h1>
+        <p class="lead">Passen Sie Ihren Mietrecht Agent an Ihre Bedürfnisse an.</p>
+        
+        <form action="/preferences" method="POST">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Gerichtsinstanzen</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="courtLevels" value="Bundesgerichtshof" id="bgh" 
+                            <%= lawyer.preferences.courtLevels.includes('Bundesgerichtshof') ? 'checked' : '' %>>
+                        <label class="form-check-label" for="bgh">
+                            Bundesgerichtshof (BGH)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="courtLevels" value="Landgericht" id="landgericht" 
+                            <%= lawyer.preferences.courtLevels.includes('Landgericht') ? 'checked' : '' %>>
+                        <label class="form-check-label" for="landgericht">
+                            Landgerichte
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="courtLevels" value="Bundesverfassungsgericht" id="bverfg" 
+                            <%= lawyer.preferences.courtLevels.includes('Bundesverfassungsgericht') ? 'checked' : '' %>>
+                        <label class="form-check-label" for="bverfg">
+                            Bundesverfassungsgericht
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="courtLevels" value="Oberlandesgericht" id="olg" 
+                            <%= lawyer.preferences.courtLevels.includes('Oberlandesgericht') ? 'checked' : '' %>>
+                        <label class="form-check-label" for="olg">
+                            Oberlandesgerichte
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Themen</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Mietminderung" id="mietminderung" 
+                                    <%= lawyer.preferences.topics.includes('Mietminderung') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="mietminderung">
+                                    Mietminderung
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Kündigung" id="kuendigung" 
+                                    <%= lawyer.preferences.topics.includes('Kündigung') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="kuendigung">
+                                    Kündigung
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Nebenkosten" id="nebenkosten" 
+                                    <%= lawyer.preferences.topics.includes('Nebenkosten') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="nebenkosten">
+                                    Nebenkosten
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Modernisierung" id="modernisierung" 
+                                    <%= lawyer.preferences.topics.includes('Modernisierung') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="modernisierung">
+                                    Modernisierung
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Mietpreisbremse" id="mietpreisbremse" 
+                                    <%= lawyer.preferences.topics.includes('Mietpreisbremse') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="mietpreisbremse">
+                                    Mietpreisbremse
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Verfassungsrecht" id="verfassungsrecht" 
+                                    <%= lawyer.preferences.topics.includes('Verfassungsrecht') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="verfassungsrecht">
+                                    Verfassungsrecht
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Schimmelbefall" id="schimmelbefall" 
+                                    <%= lawyer.preferences.topics.includes('Schimmelbefall') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="schimmelbefall">
+                                    Schimmelbefall
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="Wohnungseigentum" id="wohnungseigentum" 
+                                    <%= lawyer.preferences.topics.includes('Wohnungseigentum') ? 'checked' : '' %>>
+                                <label class="form-check-label" for="wohnungseigentum">
+                                    Wohnungseigentum
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Häufigkeit</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="frequency" value="daily" id="daily" 
+                            <%= lawyer.preferences.frequency === 'daily' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="daily">
+                            Täglich
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="frequency" value="weekly" id="weekly" 
+                            <%= lawyer.preferences.frequency === 'weekly' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="weekly">
+                            Wöchentlich
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="frequency" value="monthly" id="monthly" 
+                            <%= lawyer.preferences.frequency === 'monthly' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="monthly">
+                            Monatlich
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg">Einstellungen speichern</button>
+            <a href="/dashboard" class="btn btn-secondary btn-lg">Abbrechen</a>
+        </form>
+    </div>
+</div>
+<% }) %>

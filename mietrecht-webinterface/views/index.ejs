@@ -1,0 +1,44 @@
+<% include('layout') %>
+<% block('body', function(){ %>
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="jumbotron bg-primary text-white p-5 rounded">
+            <h1 class="display-4">Mietrecht Agent</h1>
+            <p class="lead">Automatisierte Rechtsprechung für Mietrecht-Anwälte</p>
+            <hr class="my-4">
+            <p>Unser Mietrecht Agent liefert Ihnen wöchentlich personalisierte Newsletter mit den neuesten Gerichtsentscheidungen im Mietrecht.</p>
+            <a class="btn btn-light btn-lg" href="/login" role="button">Anmelden</a>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-lightning-charge-fill text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Schnell</h5>
+                        <p class="card-text">Erhalten Sie die neuesten Entscheidungen sofort nach Veröffentlichung.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-fill text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Personalisiert</h5>
+                        <p class="card-text">Nur relevante Entscheidungen für Ihre Praxis und Region.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-shield-lock-fill text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Sicher</h5>
+                        <p class="card-text">DSGVO-konform und sicherer Datenaustausch.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% }) %>

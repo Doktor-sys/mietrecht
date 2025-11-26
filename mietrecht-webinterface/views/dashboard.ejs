@@ -1,0 +1,92 @@
+<% include('layout') %>
+<% block('body', function(){ %>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Dashboard</h1>
+        <p class="lead">Willkommen zurück, <%= lawyer.name %>!</p>
+        
+        <% if (typeof saved !== 'undefined' && saved) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            Ihre Einstellungen wurden erfolgreich gespeichert.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ihre Präferenzen</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Gerichtsinstanzen</h6>
+                        <ul>
+                            <% lawyer.preferences.courtLevels.forEach(level => { %>
+                            <li><%= level %></li>
+                            <% }) %>
+                        </ul>
+                        
+                        <h6>Themen</h6>
+                        <ul>
+                            <% lawyer.preferences.topics.forEach(topic => { %>
+                            <li><%= topic %></li>
+                            <% }) %>
+                        </ul>
+                        
+                        <h6>Häufigkeit</h6>
+                        <p><%= lawyer.preferences.frequency === 'weekly' ? 'Wöchentlich' : lawyer.preferences.frequency %></p>
+                        
+                        <a href="/preferences" class="btn btn-primary">Präferenzen ändern</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Letzte Aktivitäten</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="bi bi-envelope-fill text-primary"></i> Newsletter vom 20.11.2025 gesendet
+                                <span class="float-end text-muted">5 Tage ago</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-file-earmark-text-fill text-primary"></i> 3 neue Entscheidungen gefunden
+                                <span class="float-end text-muted">1 Woche ago</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-gear-fill text-primary"></i> Präferenzen aktualisiert
+                                <span class="float-end text-muted">2 Wochen ago</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Statistiken</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h3>24</h3>
+                                <p class="text-muted">Entscheidungen</p>
+                            </div>
+                            <div class="col-4">
+                                <h3>8</h3>
+                                <p class="text-muted">Relevante</p>
+                            </div>
+                            <div class="col-4">
+                                <h3>92%</h3>
+                                <p class="text-muted">Zufriedenheit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% }) %>

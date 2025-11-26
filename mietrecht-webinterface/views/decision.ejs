@@ -1,0 +1,63 @@
+<% include('layout') %>
+<% block('body', function(){ %>
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Start</a></li>
+                <li class="breadcrumb-item"><a href="/archive">Archiv</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= decision.caseNumber %></li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1><%= decision.court %>, <%= decision.location %></h1>
+                <h2><%= decision.caseNumber %></h2>
+                <p class="text-muted">Vom <%= new Date(decision.decisionDate).toLocaleDateString('de-DE') %></p>
+            </div>
+            <% if (decision.importance === 'high') { %>
+            <span class="badge bg-danger fs-5">Wichtige Entscheidung</span>
+            <% } else if (decision.importance === 'medium') { %>
+            <span class="badge bg-warning text-dark fs-5">Mittelwichtige Entscheidung</span>
+            <% } else { %>
+            <span class="badge bg-info fs-5">Entscheidung</span>
+            <% } %>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Themen</h5>
+                <div class="mb-3">
+                    <% decision.topics.forEach(topic => { %>
+                    <span class="badge bg-secondary me-1 fs-6"><%= topic %></span>
+                    <% }) %>
+                </div>
+                
+                <h5>Richter</h5>
+                <ul>
+                    <% decision.judges.forEach(judge => { %>
+                    <li><%= judge %></li>
+                    <% }) %>
+                </ul>
+                
+                <h5>Zusammenfassung</h5>
+                <p><%= decision.summary %></p>
+                
+                <h5>Vollständiger Entscheidungstext</h5>
+                <p><%= decision.fullText %></p>
+                
+                <h5>Praktische Auswirkungen</h5>
+                <div class="alert alert-warning">
+                    <p><%= decision.practiceImplications %></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="/archive" class="btn btn-secondary">Zurück zum Archiv</a>
+            <a href="<%= decision.url %>" target="_blank" class="btn btn-primary">Original-Entscheidung anzeigen</a>
+        </div>
+    </div>
+</div>
+<% }) %>

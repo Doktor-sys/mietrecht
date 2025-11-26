@@ -1,0 +1,41 @@
+<% include('layout') %>
+<% block('body', function(){ %>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Newsletter-Archiv</h1>
+        <p class="lead">Durchsuchen Sie vergangene Newsletter und Entscheidungen.</p>
+        
+        <div class="row">
+            <% decisions.forEach(decision => { %>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= decision.court %>, <%= decision.location %>
+                            <% if (decision.importance === 'high') { %>
+                            <span class="badge bg-danger">Wichtig</span>
+                            <% } else if (decision.importance === 'medium') { %>
+                            <span class="badge bg-warning text-dark">Mittel</span>
+                            <% } else { %>
+                            <span class="badge bg-info">Niedrig</span>
+                            <% } %>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= decision.caseNumber %> vom <%= new Date(decision.decisionDate).toLocaleDateString('de-DE') %></h6>
+                        
+                        <div class="mb-2">
+                            <% decision.topics.forEach(topic => { %>
+                            <span class="badge bg-secondary me-1"><%= topic %></span>
+                            <% }) %>
+                        </div>
+                        
+                        <p class="card-text"><%= decision.summary %></p>
+                        
+                        <a href="/decision/<%= decision.id %>" class="btn btn-primary">Details anzeigen</a>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+<% }) %>

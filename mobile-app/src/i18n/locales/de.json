@@ -1,0 +1,88 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?"
+  },
+  "home": {
+    "welcome": "Willkommen bei SmartLaw Mietrecht",
+    "aiConsultation": "KI-Rechtsberatung",
+    "documentAnalysis": "Dokumente analysieren",
+    "findLawyer": "Anwalt finden"
+  },
+  "chat": {
+    "title": "Chat",
+    "placeholder": "Ihre Frage...",
+    "send": "Senden",
+    "user": "Benutzer",
+    "assistant": "Assistent",
+    "legalReferences": "Rechtliche Referenzen",
+    "typing": "Tippt",
+    "attachFile": "Datei anhängen"
+  },
+  "documents": {
+    "title": "Dokumente",
+    "upload": "Dokument hochladen",
+    "uploadDocument": "Dokument hochladen",
+    "scanDocument": "Dokument scannen",
+    "scan": "Scannen",
+    "noDocuments": "Keine Dokumente vorhanden",
+    "type": "Typ",
+    "uploading": "Wird hochgeladen",
+    "viewDetails": "Details anzeigen",
+    "issuesFound": "Probleme gefunden",
+    "scanWithCamera": "Mit Kamera scannen",
+    "scanDescription": "Dokument direkt mit der Kamera scannen",
+    "takePhoto": "Foto aufnehmen",
+    "photoDescription": "Schnelles Foto des Dokuments",
+    "chooseFromGallery": "Aus Galerie wählen",
+    "galleryDescription": "Vorhandenes Foto auswählen",
+    "types": {
+      "rentalContract": "Mietvertrag",
+      "utilityBill": "Nebenkostenabrechnung",
+      "warningLetter": "Abmahnung",
+      "termination": "Kündigung",
+      "other": "Sonstiges"
+    },
+    "status": {
+      "label": "Status",
+      "analyzed": "Analysiert",
+      "pending": "Ausstehend"
+    },
+    "error": {
+      "title": "Fehler",
+      "cameraFailed": "Kamera konnte nicht geöffnet werden",
+      "pickFailed": "Dokument konnte nicht ausgewählt werden",
+      "uploadFailed": "Upload fehlgeschlagen"
+    }
+  },
+  "lawyers": {
+    "title": "Anwälte",
+    "search": "Suchen",
+    "book": "Termin buchen",
+    "noResults": "Keine Anwälte gefunden"
+  },
+  "profile": {
+    "title": "Profil",
+    "settings": "Einstellungen",
+    "privacy": "Datenschutz",
+    "help": "Hilfe & Support"
+  },
+  "notifications": {
+    "newMessage": "Neue Nachricht",
+    "documentAnalyzed": "Dokument analysiert",
+    "lawyerResponse": "Antwort vom Anwalt"
+  }
+}

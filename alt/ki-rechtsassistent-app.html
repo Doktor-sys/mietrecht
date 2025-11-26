@@ -1,0 +1,1052 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLaw Mietrecht | KI-gestützte Mietrechtsberatung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: white;
+            padding: 4rem 0;
+            text-align: center;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+            animation: slideInLeft 1s ease 0.8s both;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #666;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: slideInRight 1s ease 1s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: bounceIn 1s ease 1.2s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #28a745;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Value Propositions */
+        .benefits {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .benefits h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .benefit-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #28a745;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .benefit-item .icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: #28a745;
+        }
+
+        /* Target Groups */
+        .target-groups {
+            background: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .target-groups h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .group-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .group-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .group-card .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .group-card h3 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        /* Live Demo Section */
+        .demo-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .demo-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chat-demo {
+            background: white;
+            color: #333;
+            max-width: 700px;
+            margin: 2rem auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .chat-header {
+            background: #1e3c72;
+            color: white;
+            padding: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            padding: 2rem;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: slideInUp 0.5s ease;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            margin-left: 3rem;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            background: linear-gradient(135deg, #f1f8e9, #dcedc8);
+            margin-right: 3rem;
+            border-bottom-left-radius: 4px;
+        }
+
+        .complexity-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .complexity-low { background: #d4edda; color: #155724; }
+        .complexity-medium { background: #fff3cd; color: #856404; }
+        .complexity-high { background: #f8d7da; color: #721c24; }
+
+        /* Technology Stack */
+        .tech-stack {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .tech-stack h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .tech-item {
+            padding: 2rem 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #1e3c72;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .tech-item:hover {
+            border-color: #28a745;
+            transform: translateY(-5px);
+        }
+
+        /* Privacy Section */
+        .privacy {
+            background: #1e3c72;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .privacy h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .privacy-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .privacy-item {
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .privacy-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        /* Interactive Chat Interface */
+        .interactive-chat {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .interactive-chat h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .chat-interface {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .mietrecht-topics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .topic-button {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .topic-button:hover {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            transform: translateY(-2px);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1.1rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .group-grid { grid-template-columns: 1fr; }
+            .tech-grid { grid-template-columns: repeat(2, 1fr); }
+            .chat-input-area { flex-direction: column; }
+            .container { padding: 0 15px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .features h2, .benefits h2, .target-groups h2 { font-size: 2rem; }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for keyboard navigation */
+        .cta-button:focus,
+        .topic-button:focus,
+        .send-btn:focus {
+            outline: 3px solid #ffc107;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">⚖️ SmartLaw Mietrecht</div>
+            <div class="tagline">KI-gestützte Mietrechtsberatung für alle</div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Mietrecht einfach verstehen</h1>
+            <p>Unser KI-Assistent analysiert Ihre Mietrechtsfragen, bewertet die Komplexität und vermittelt Sie bei Bedarf an spezialisierte Anwälte in Ihrer Nähe. Schnell, verständlich und DSGVO-konform.</p>
+            <a href="#demo" class="cta-button">Jetzt kostenlos testen</a>
+        </div>
+    </section>
+
+    <!-- Features - 6 Kernfunktionen -->
+    <section class="features">
+        <div class="container">
+            <h2>Ihre Vorteile im Überblick</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🤖</span>
+                    <h3>KI-Komplexitätsanalyse</h3>
+                    <p>Unsere KI bewertet automatisch die Komplexität Ihrer Mietrechtsfrage und empfiehlt die passende Beratungsform - von Sofortantwort bis Anwaltsvermittlung.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">👨‍💼</span>
+                    <h3>Intelligente Anwaltsvermittlung</h3>
+                    <p>Bei komplexen Fällen vermitteln wir Sie automatisch an spezialisierte Mietrechtsanwälte in Ihrer Nähe mit passender Expertise.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📋</span>
+                    <h3>KI-Gesprächsvorbereitung</h3>
+                    <p>Unser System bereitet Sie optimal auf das Anwaltsgespräch vor: mit Checklisten, relevanten Dokumenten und Gesprächstipps.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📞</span>
+                    <h3>Flexible Beratungsoptionen</h3>
+                    <p>Wählen Sie zwischen telefonischer, digitaler oder persönlicher Erstberatung - je nach Ihren Bedürfnissen und Budget.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎤</span>
+                    <h3>Vielfältige Eingabemethoden</h3>
+                    <p>Stellen Sie Ihre Fragen per Text, Spracheingabe oder laden Sie Dokumente hoch - unser System versteht alle Formate.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📄</span>
+                    <h3>PDF-Export & Dokumentation</h3>
+                    <p>Speichern Sie alle Fragen und Antworten als PDF für Ihre Unterlagen oder teilen Sie sie direkt mit Ihrem Anwalt.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wertversprechen -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Zentrale Wertversprechen</h2>
+            <div class="benefit-list">
+                <div class="benefit-item">
+                    <span class="icon">⚡</span>
+                    <div>
+                        <strong>Sofortige Hilfe:</strong> Keine Wartezeit auf Anwaltstermine - erste Einschätzung in Minuten
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">💰</span>
+                    <div>
+                        <strong>Kosteneffizient:</strong> KI-Beratung kostenfrei, Anwaltsvermittlung nur bei wirklichem Bedarf
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">💡</span>
+                    <div>
+                        <strong>Verständlich:</strong> Komplexe Rechtsbegriffe werden in einfache Sprache übersetzt
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">🎯</span>
+                    <div>
+                        <strong>Präzise Vermittlung:</strong> Passende Anwälte basierend auf Ihrem spezifischen Fall
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">🔒</span>
+                    <div>
+                        <strong>Vertrauen & Sicherheit:</strong> Transparente KI-Grenzen, nur zugelassene Fachanwälte
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">♿</span>
+                    <div>
+                        <strong>Barrierefrei:</strong> Screenreader-kompatibel, mehrsprachig, für alle zugänglich
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zielgruppen -->
+    <section class="target-groups">
+        <div class="container">
+            <h2>Für wen ist SmartLaw Mietrecht?</h2>
+            <div class="group-grid">
+                <div class="group-card">
+                    <div class="icon">🏠</div>
+                    <h3>Mieter</h3>
+                    <p>Junge Erwachsene, Familien, Senioren - besonders Menschen mit geringem Einkommen oder wenig Rechtserfahrung, die schnelle und verständliche Hilfe bei Mietproblemen benötigen.</p>
+                </div>
+                <div class="group-card">
+                    <div class="icon">🏢</div>
+                    <h3>Vermieter</h3>
+                    <p>Privatvermieter und kleine Immobilienverwaltungen ohne eigene Rechtsabteilung, die rechtssichere Entscheidungen treffen möchten.</p>
+                </div>
+                <div class="group-card">
+                    <div class="icon">🏛️</div>
+                    <h3>Unternehmen</h3>
+                    <p>Wohnungsgenossenschaften und Hausverwaltungen als B2B-Kunden für Massenabfragen und First-Level-Support ihrer Mieter.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2>Live-Demo: Fragen Sie unseren KI-Assistenten</h2>
+            <p>Erleben Sie, wie unser KI-System Mietrechtsfragen analysiert und bewertet:</p>
+
+            <div class="chat-demo">
+                <div class="chat-header">
+                    <span>🤖</span> SmartLaw Mietrecht - KI-Assistent
+                </div>
+                <div class="chat-messages">
+                    <div class="message ai-message">
+                        <strong>KI-Assistent:</strong> Hallo! Ich bin Ihr spezialisierter Mietrechts-Assistent. Beschreiben Sie mir Ihr Problem, und ich analysiere die Komplexität und gebe Ihnen passende Empfehlungen.
+                    </div>
+                    <div class="message user-message">
+                        <strong>Sie:</strong> Meine Heizung ist seit 3 Wochen kaputt und der Vermieter reagiert nicht. Kann ich die Miete mindern?
+                    </div>
+                    <div class="message ai-message">
+                        <strong>KI-Assistent:</strong> Das ist ein klassischer Mietminderungsfall nach § 536 BGB. 
+                        <br><br><strong>📊 Komplexitätsanalyse:</strong>
+                        <div class="complexity-badge complexity-medium">Mittlere Komplexität</div>
+                        <br><br><strong>⚖️ Rechtliche Einschätzung:</strong><br>
+                        • Mietminderung: 10-30% je nach Jahreszeit<br>
+                        • Sofortige Wirkung ab Schadensmeldung<br>
+                        • Fristsetzung empfohlen<br>
+                        <br><strong>💡 Empfehlung:</strong> Anwaltsberatung sinnvoll für optimale Durchsetzung
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Chat Interface -->
+    <section class="interactive-chat">
+        <div class="container">
+            <h2>Probieren Sie es selbst aus</h2>
+            <div class="chat-interface">
+                <h3 style="text-align: center; margin-bottom: 1.5rem; color: #1e3c72;">Häufige Mietrechtsfragen:</h3>
+                <div class="mietrecht-topics">
+                    <button class="topic-button" onclick="askQuestion('Mietvertrag')">📄 Mietvertrag-Details</button>
+                    <button class="topic-button" onclick="askQuestion('Mieterhöhung')">🏠 Mieterhöhung prüfen</button>
+                    <button class="topic-button" onclick="askQuestion('Heizungsausfall')">🔥 Heizungsausfall</button>
+                    <button class="topic-button" onclick="askQuestion('Kündigung')">📋 Kündigung erhalten</button>
+                    <button class="topic-button" onclick="askQuestion('Nebenkosten')">💰 Nebenkostenabrechnung</button>
+                    <button class="topic-button" onclick="askQuestion('Schimmel')">🦠 Schimmel in der Wohnung</button>
+                    <button class="topic-button" onclick="askQuestion('Kaution')">💎 Kaution-Rückzahlung</button>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" placeholder="Oder stellen Sie Ihre eigene Mietrechtsfrage..." id="userQuestion">
+                    <button class="send-btn" onclick="sendQuestion()">Frage senden</button>
+                </div>
+                <div id="chatResponse" style="margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 10px; display: none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="tech-stack">
+        <div class="container">
+            <h2>Moderne Technologie für präzise Beratung</h2>
+            <div class="tech-grid">
+                <div class="tech-item">🧠 KI & NLP<br><small>GPT-4 & BERT für deutsche Rechtstexte</small></div>
+                <div class="tech-item">📱 Frontend<br><small>React & React Native</small></div>
+                <div class="tech-item">⚙️ Backend<br><small>Node.js & Express</small></div>
+                <div class="tech-item">🗄️ Datenbank<br><small>PostgreSQL & Redis</small></div>
+                <div class="tech-item">🔍 Suche<br><small>Elasticsearch für Rechtsdokumente</small></div>
+                <div class="tech-item">☁️ Cloud<br><small>Deutsche Rechenzentren</small></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="privacy">
+        <div class="container">
+            <h2>🔒 Datenschutz auf höchstem Niveau</h2>
+            <p>Ihre sensiblen Rechtsdaten sind bei uns sicher - garantiert DSGVO-konform</p>
+
+            <div class="privacy-features">
+                <div class="privacy-item">
+                    <h3>🇩🇪 Hosting in Deutschland</h3>
+                    <p>Alle Server und Daten bleiben in deutschen Rechenzentren</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>🔐 Ende-zu-Ende-Verschlüsselung</h3>
+                    <p>AES-256 Verschlüsselung für alle sensiblen Daten</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>👤 Anonyme Nutzung möglich</h3>
+                    <p>Nutzen Sie den Service auch ohne Registrierung</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>🗑️ Recht auf Löschung</h3>
+                    <p>Vollständige Datenlöschung auf Anfrage jederzeit möglich</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SmartLaw Mietrecht. Alle Rechte vorbehalten.</p>
+            <p>Entwickelt mit ❤️ für faire Mietverhältnisse in Deutschland</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                <a href="#" style="color: white; text-decoration: none;">Datenschutz</a> | 
+                <a href="#" style="color: white; text-decoration: none;">Impressum</a> | 
+                <a href="#" style="color: white; text-decoration: none;">AGB</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mietrecht-spezifische Antworten
+        const mietrechtAnswers = {
+            'Mietvertrag': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+
+                <strong>§ 550 BGB - Mietvertrag über Grundstücke:</strong><br>
+                <em>"Ein Mietvertrag über Grundstücke, der für längere Zeit als ein Jahr eingegangen wird, bedarf der schriftlichen Form."</em><br><br>
+
+                <strong>§ 535 BGB - Inhalt und Hauptpflichten des Mietvertrags:</strong><br>
+                Definiert die grundlegenden Rechte und Pflichten von Vermieter und Mieter.<br><br>
+
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📋 Pflichtangaben im Mietvertrag</h3>
+
+                <strong>1. Vertragsparteien (§ 535 BGB):</strong><br>
+                <strong>Vermieter-Angaben:</strong><br>
+                • ✅ Vollständiger Name (bei natürlichen Personen: Vor- und Nachname)<br>
+                • ✅ Vollständige Anschrift (Straße, Hausnummer, PLZ, Ort)<br>
+                • ✅ Bei juristischen Personen: Firmenbezeichnung, Rechtsform, Sitz<br>
+                • ✅ Vertretungsberechtigung (bei Bevollmächtigten)<br><br>
+
+                <strong>Mieter-Angaben:</strong><br>
+                • ✅ Vollständiger Name aller Mieter<br>
+                • ✅ Aktuelle Anschrift<br>
+                • ✅ Bei mehreren Mietern: Gesamtschuldnerische Haftung<br><br>
+
+                <strong>2. Mietobjekt-Bezeichnung (§ 535 BGB):</strong><br>
+                <strong>Genaue Objektbeschreibung:</strong><br>
+                • ✅ Vollständige Anschrift der Mietwohnung<br>
+                • ✅ Stockwerk und Lage (z.B. "2. OG links")<br>
+                • ✅ Wohnungsnummer (falls vorhanden)<br>
+                • ✅ Wohnfläche in m² (nach Wohnflächenverordnung)<br>
+                • ✅ Anzahl der Zimmer (präzise Raumaufteilung)<br><br>
+
+                <strong>Nebenräume und Zubehör:</strong><br>
+                • ✅ Keller (mit genauer Bezeichnung/Nummer)<br>
+                • ✅ Dachboden/Speicher<br>
+                • ✅ Garage/Stellplatz (mit Nummer/Lage)<br>
+                • ✅ Balkon/Terrasse/Garten (mit Größenangabe)<br>
+                • ✅ Weitere Nebenräume (Waschküche, Fahrradkeller, etc.)<br><br>
+
+                <strong>3. Mietzeit und Vertragsdauer:</strong><br>
+                • ✅ Mietbeginn (konkretes Datum)<br>
+                • ✅ Befristung (bei befristeten Verträgen nach § 575 BGB)<br>
+                • ✅ Kündigungsfristen (§ 573c BGB)<br><br>
+
+                <strong>4. Miete und Nebenkosten (§ 556 BGB):</strong><br>
+                <strong>Mietpreisangaben:</strong><br>
+                • ✅ Grundmiete/Nettokaltmiete (monatlicher Betrag)<br>
+                • ✅ Betriebskosten/Nebenkosten (Vorauszahlung)<br>
+                • ✅ Gesamtmiete (Warmmiete)<br>
+                • ✅ Fälligkeit (§ 556b BGB - spätestens am 3. Werktag)<br><br>
+
+                <strong>Nebenkostenaufschlüsselung nach § 556 BGB:</strong><br>
+                • ✅ Heizkosten (nach Heizkostenverordnung)<br>
+                • ✅ Warmwasser, Hausverwaltung, Hausmeister<br>
+                • ✅ Müllabfuhr, Straßenreinigung<br>
+                • ✅ Grundsteuer, Versicherungen<br><br>
+
+                <strong>5. Kaution (§ 551 BGB):</strong><br>
+                • ✅ Höhe der Kaution (max. 3 Nettokaltmieten)<br>
+                • ✅ Zahlungsmodalitäten (Ratenzahlung möglich)<br>
+                • ✅ Anlageform (Sparbuch, Bürgschaft, etc.)<br>
+                • ✅ Verzinsung (Pflicht des Vermieters)<br><br>
+
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚠️ Rechtliche Konsequenzen bei fehlenden Angaben</h3>
+
+                <strong>Unwirksame Klauseln:</strong><br>
+                • ❌ Unvollständige Nebenkostenaufschlüsselung → Klausel unwirksam<br>
+                • ❌ Fehlende Wohnflächenangabe → Mietminderung möglich<br>
+                • ❌ Unwirksame Schönheitsreparaturklauseln → Vermieter trägt Kosten<br><br>
+
+                <strong>Anfechtungsrechte (§ 119 BGB):</strong><br>
+                • 🔄 Irrtum über Wohnfläche (>10% Abweichung)<br>
+                • 🔄 Falsche Objektbeschreibung<br>
+                • 🔄 Verschweigen von Mängeln<br><br>
+
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🏛️ Relevante Rechtsprechung</h3>
+
+                <strong>BGH-Urteile zu Mietverträgen:</strong><br>
+                • <strong>BGH VIII ZR 222/17:</strong> Wohnflächenabweichung >10% berechtigt zur Mietminderung<br>
+                • <strong>BGH VIII ZR 185/14:</strong> Unwirksame Schönheitsreparaturklauseln<br>
+                • <strong>BGH VIII ZR 394/06:</strong> Nebenkostenabrechnung muss nachvollziehbar sein<br><br>
+
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">💡 Praktische Empfehlungen</h3>
+
+                <strong>Für Mieter:</strong><br>
+                1. Vollständigkeit prüfen - Alle Pflichtangaben kontrollieren<br>
+                2. Wohnfläche nachmessen - Bei Abweichungen Mietminderung möglich<br>
+                3. Nebenkosten hinterfragen - Nur umlagefähige Kosten akzeptieren<br>
+                4. Übergabeprotokoll - Zustand bei Einzug dokumentieren<br><br>
+
+                <strong>Für Vermieter:</strong><br>
+                1. Rechtssichere Vertragsgestaltung - Alle Pflichtangaben einhalten<br>
+                2. Aktuelle Rechtsprechung beachten - Unwirksame Klauseln vermeiden<br>
+                3. Transparente Nebenkostenaufschlüsselung - § 556 BGB beachten<br>
+                4. Professionelle Beratung - Bei komplexen Sachverhalten<br><br>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit und Handlungsempfehlung:</strong><br><br>
+                <strong>Komplexitätsbewertung:</strong> Mittel bis Hoch<br>
+                • Die korrekte Vertragsgestaltung erfordert fundierte Rechtskenntnisse<br>
+                • Fehlerhafte Angaben können zu erheblichen rechtlichen und finanziellen Konsequenzen führen<br><br>
+
+                <strong>Empfehlung:</strong><br>
+                • Für Standardfälle: Verwendung geprüfter Musterverträge<br>
+                • Bei besonderen Umständen: Anwaltliche Beratung durch Mietrechtsspezialisten<br>
+                • Regelmäßige Aktualisierung: Rechtsprechung ändert sich kontinuierlich
+                </div>
+
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                <strong>📞 Weiterführende Beratung:</strong><br>
+                Bei komplexen Mietverträgen oder Unklarheiten empfehlen wir eine spezialisierte Rechtsberatung. Unsere KI kann Sie mit qualifizierten Mietrechtsanwälten in Ihrer Nähe verbinden.<br><br>
+                <strong>Rechtlicher Hinweis:</strong> Diese Ausführungen ersetzen keine individuelle Rechtsberatung und dienen ausschließlich der allgemeinen Information.
+                </div>
+
+                <strong>💡 Empfehlung:</strong> Anwaltsberatung bei komplexen Vertragsgestaltungen empfohlen`
+            },
+            'Mieterhöhung': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>⚖️ Rechtliche Grundlagen:</strong><br>
+                • § 558 BGB: Mieterhöhung bis zur ortsüblichen Vergleichsmiete<br>
+                • Kappungsgrenze: Max. 20% in 3 Jahren<br>
+                • Mietpreisbremse beachten<br><br>
+                <strong>💡 Empfehlung:</strong> Anwaltsberatung zur Prüfung der Rechtmäßigkeit empfohlen`
+            },
+            'Heizungsausfall': {
+                complexity: 'low',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexität</span><br><br>
+                <strong>⚖️ Sofortmaßnahmen:</strong><br>
+                • Mietminderung: 10-30% je nach Jahreszeit<br>
+                • § 536 BGB: Sofortige Wirkung<br>
+                • Schriftliche Mängelmeldung<br><br>
+                <strong>💡 Empfehlung:</strong> KI-Beratung ausreichend, Musterbrief verfügbar`
+            },
+            'Kündigung': {
+                complexity: 'high',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-high">Hohe Komplexität</span><br><br>
+                <strong>⚖️ Wichtige Fristen:</strong><br>
+                • Widerspruch innerhalb 2 Monaten<br>
+                • Kündigungsschutzgesetz prüfen<br>
+                • Formfehler identifizieren<br><br>
+                <strong>💡 Empfehlung:</strong> Sofortige Anwaltsberatung dringend empfohlen!`
+            },
+            'Nebenkosten': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>⚖️ Prüfpunkte:</strong><br>
+                • Umlagefähige Kosten nach § 556 BGB<br>
+                • Abrechnungsfrist: 12 Monate<br>
+                • Belegprüfung möglich<br><br>
+                <strong>💡 Empfehlung:</strong> Detailprüfung durch Anwalt bei Auffälligkeiten`
+            },
+            'Schimmel': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>⚖️ Wichtige Schritte:</strong><br>
+                • Ursache klären (Baumangel vs. Nutzerverhalten)<br>
+                • Mietminderung bis zu 50% möglich<br>
+                • Dokumentation mit Fotos<br><br>
+                <strong>💡 Empfehlung:</strong> Sachverständigen-Gutachten + Anwaltsberatung`
+            },
+            'Kaution': {
+                complexity: 'low',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexität</span><br><br>
+                <strong>⚖️ Ihre Rechte:</strong><br>
+                • Rückgabe binnen 6 Monaten nach Auszug<br>
+                • Verzinsung bei Anlage erforderlich<br>
+                • Begründete Einbehalte möglich<br><br>
+                <strong>💡 Empfehlung:</strong> Mahnung ausreichend, bei Verweigerung Anwalt`
+            }
+        };
+
+        function askQuestion(topic) {
+            const response = mietrechtAnswers[topic];
+            if (response) {
+                showResponse(response.answer);
+                document.getElementById('userQuestion').value = `Frage zu: ${topic}`;
+            }
+        }
+
+        function sendQuestion() {
+            const question = document.getElementById('userQuestion').value.trim();
+            if (!question) {
+                alert('Bitte geben Sie eine Frage ein.');
+                return;
+            }
+
+            // Check if question contains keywords for detailed answers
+            let response = '';
+
+            if (question.toLowerCase().includes('mietvertrag') || 
+                question.toLowerCase().includes('vertrag') || 
+                question.toLowerCase().includes('pflichtangaben') ||
+                question.toLowerCase().includes('details') ||
+                question.toLowerCase().includes('inhalt')) {
+                response = mietrechtAnswers['Mietvertrag'].answer;
+            } else {
+                // Default AI analysis
+                response = `<strong>🤖 KI-Analyse Ihrer Frage:</strong><br><br>
+                Ihre Frage wurde analysiert. Basierend auf den Schlüsselwörtern ordne ich sie dem Mietrecht zu.<br><br>
+                <strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>💡 Empfehlung:</strong> Für eine detaillierte Beratung empfehle ich Ihnen einen spezialisierten Mietrechtsanwalt.<br><br>
+                <strong>👨‍💼 Nächste Schritte:</strong><br>
+                • Kostenlose Erstberatung verfügbar<br>
+                • Passende Anwälte in Ihrer Nähe<br>
+                • Gesprächsvorbereitung durch KI`;
+            }
+
+            showResponse(response);
+        }
+
+        function showResponse(responseText) {
+            const responseDiv = document.getElementById('chatResponse');
+            responseDiv.innerHTML = responseText;
+            responseDiv.style.display = 'block';
+            responseDiv.style.maxHeight = '600px';
+            responseDiv.style.overflowY = 'auto';
+            responseDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.feature-card, .benefit-item, .group-card, .tech-item, .privacy-item');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Keyboard support for chat input
+            document.getElementById('userQuestion').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendQuestion();
+                }
+            });
+        });
+
+        // Add loading animation for demo
+        function simulateLoading() {
+            const responseDiv = document.getElementById('chatResponse');
+            responseDiv.innerHTML = '<div style="text-align: center;"><span style="font-size: 1.5rem;">🤖</span><br>KI analysiert Ihre Frage...</div>';
+            responseDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

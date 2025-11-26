@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLaw Admin User Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .note {
+            background-color: #f39c12;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .tip {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            border-top: 1px solid #bdc3c7;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SmartLaw Admin User Guide</h1>
+    
+    <h2>Overview</h2>
+    <p>This guide provides comprehensive instructions for using the SmartLaw Admin Dashboard. The dashboard offers administrators tools to monitor system performance, manage users, review audit logs, and maintain security compliance.</p>
+    
+    <h2>Accessing the Admin Dashboard</h2>
+    
+    <h3>Prerequisites</h3>
+    <ul>
+        <li>Business user account with admin privileges</li>
+        <li>Valid login credentials</li>
+        <li>Modern web browser (Chrome, Firefox, Safari, or Edge)</li>
+    </ul>
+    
+    <h3>Login Process</h3>
+    <ol>
+        <li>Navigate to the SmartLaw application</li>
+        <li>Click on the "Login" button</li>
+        <li>Enter your admin credentials</li>
+        <li>Upon successful authentication, you will be redirected to the Admin Dashboard</li>
+    </ol>
+    
+    <h2>Dashboard Navigation</h2>
+    
+    <h3>Main Navigation Menu</h3>
+    <p>The left sidebar provides quick access to all admin features:</p>
+    <ul>
+        <li><strong>Overview</strong>: System metrics and key performance indicators</li>
+        <li><strong>Audit Logs</strong>: Detailed system activity records</li>
+        <li><strong>Users</strong>: User management and account administration</li>
+        <li><strong>Settings</strong>: System configuration and preferences</li>
+    </ul>
+    
+    <h3>Tab Navigation</h3>
+    <p>The top tab bar allows switching between main dashboard sections:</p>
+    <ul>
+        <li><strong>Overview</strong>: Analytics and system metrics</li>
+        <li><strong>Audit Logs</strong>: Detailed audit trail information</li>
+    </ul>
+    
+    <h2>Admin Dashboard Features</h2>
+    
+    <h3>1. System Overview</h3>
+    
+    <h4>Key Metrics Display</h4>
+    <p>The overview section displays critical system metrics:</p>
+    <ul>
+        <li><strong>Total Users</strong>: Current user count with monthly growth indicator</li>
+        <li><strong>Active Cases</strong>: Number of ongoing legal cases</li>
+        <li><strong>Revenue (MTD)</strong>: Monthly revenue with performance comparison</li>
+    </ul>
+    
+    <h4>Analytics Charts</h4>
+    <p>Interactive charts provide visual insights into system performance:</p>
+    <ul>
+        <li><strong>User Growth</strong>: Line chart showing user registration trends over time</li>
+        <li><strong>API Usage</strong>: Bar chart displaying API call volume by day</li>
+    </ul>
+    
+    <h3>2. Audit Logs Management</h3>
+    
+    <h4>Log Filtering</h4>
+    <p>Filter audit logs by:</p>
+    <ul>
+        <li>Action type (LOGIN, DOCUMENT_ACCESS, SETTINGS_CHANGE)</li>
+        <li>User ID</li>
+        <li>Date range</li>
+        <li>Resource accessed</li>
+    </ul>
+    
+    <h4>Log Details</h4>
+    <p>Each audit log entry includes:</p>
+    <ul>
+        <li>Timestamp of the action</li>
+        <li>Type of action performed</li>
+        <li>User who performed the action</li>
+        <li>Resource affected</li>
+        <li>Status (success/failure)</li>
+    </ul>
+    
+    <h4>Export Functionality</h4>
+    <p>Export audit logs for compliance reporting:</p>
+    <ul>
+        <li>JSON format for technical analysis</li>
+        <li>CSV format for spreadsheet applications</li>
+    </ul>
+    
+    <h3>3. User Management</h3>
+    
+    <h4>User List</h4>
+    <p>View all registered users with details:</p>
+    <ul>
+        <li>User ID and email</li>
+        <li>Account type (tenant, landlord, business)</li>
+        <li>Registration date</li>
+        <li>Last login time</li>
+        <li>Account status (active/inactive)</li>
+    </ul>
+    
+    <h4>User Actions</h4>
+    <p>Perform administrative actions on user accounts:</p>
+    <ul>
+        <li>Activate/deactivate accounts</li>
+        <li>Reset passwords</li>
+        <li>View detailed user profiles</li>
+        <li>Modify user permissions</li>
+    </ul>
+    
+    <h3>4. System Settings</h3>
+    
+    <h4>Configuration Options</h4>
+    <p>Manage system-wide settings:</p>
+    <ul>
+        <li>Security policies</li>
+        <li>Notification preferences</li>
+        <li>Integration configurations</li>
+        <li>Compliance settings</li>
+    </ul>
+    
+    <h4>Monitoring Configuration</h4>
+    <p>Configure system monitoring:</p>
+    <ul>
+        <li>Alert thresholds</li>
+        <li>Notification channels (email, Slack, PagerDuty)</li>
+        <li>Log retention policies</li>
+        <li>Performance monitoring intervals</li>
+    </ul>
+    
+    <h2>Security Features</h2>
+    
+    <h3>Key Management System (KMS)</h3>
+    <p>Manage cryptographic keys for data protection:</p>
+    <ul>
+        <li>Create new encryption keys</li>
+        <li>Rotate existing keys</li>
+        <li>Monitor key usage</li>
+        <li>Revoke compromised keys</li>
+    </ul>
+    
+    <h3>Threat Detection</h3>
+    <p>Monitor for security threats:</p>
+    <ul>
+        <li>Brute force attack detection</li>
+        <li>Suspicious IP address monitoring</li>
+        <li>Unauthorized access attempts</li>
+        <li>Key compromise alerts</li>
+    </ul>
+    
+    <h3>Compliance Reporting</h3>
+    <p>Generate compliance reports:</p>
+    <ul>
+        <li>GDPR compliance status</li>
+        <li>Audit trail documentation</li>
+        <li>Security incident reports</li>
+        <li>Key management logs</li>
+    </ul>
+    
+    <h2>Best Practices</h2>
+    
+    <h3>Regular Monitoring</h3>
+    <ul>
+        <li>Check system overview daily for anomalies</li>
+        <li>Review audit logs weekly for suspicious activity</li>
+        <li>Monitor user growth and engagement metrics</li>
+        <li>Verify API usage patterns</li>
+    </ul>
+    
+    <h3>Security Maintenance</h3>
+    <ul>
+        <li>Rotate encryption keys regularly</li>
+        <li>Review and update security policies</li>
+        <li>Monitor threat detection alerts</li>
+        <li>Maintain up-to-date compliance documentation</li>
+    </ul>
+    
+    <h3>User Management</h3>
+    <ul>
+        <li>Deactivate inactive user accounts</li>
+        <li>Monitor account access patterns</li>
+        <li>Review user permission levels</li>
+        <li>Handle password reset requests promptly</li>
+    </ul>
+    
+    <h2>Troubleshooting</h2>
+    
+    <h3>Common Issues</h3>
+    
+    <h4>Dashboard Loading Problems</h4>
+    <ul>
+        <li>Refresh the browser page</li>
+        <li>Clear browser cache and cookies</li>
+        <li>Check internet connection</li>
+        <li>Verify admin account permissions</li>
+    </ul>
+    
+    <h4>Audit Log Access Issues</h4>
+    <ul>
+        <li>Ensure proper date range selection</li>
+        <li>Check filter criteria</li>
+        <li>Verify admin privileges</li>
+        <li>Contact system administrator if issues persist</li>
+    </ul>
+    
+    <h4>Export Functionality Problems</h4>
+    <ul>
+        <li>Verify date range parameters</li>
+        <li>Check file download permissions</li>
+        <li>Ensure sufficient disk space</li>
+        <li>Try different export formats</li>
+    </ul>
+    
+    <h3>Support Resources</h3>
+    <ul>
+        <li>Contact system administrator for account issues</li>
+        <li>Refer to technical documentation for advanced configuration</li>
+        <li>Submit support tickets for persistent problems</li>
+        <li>Check system status page for known issues</li>
+    </ul>
+    
+    <h2>Appendix</h2>
+    
+    <h3>Keyboard Shortcuts</h3>
+    <ul>
+        <li><strong>Ctrl+R</strong>: Refresh dashboard</li>
+        <li><strong>Ctrl+F</strong>: Focus on filter input</li>
+        <li><strong>Esc</strong>: Close modal dialogs</li>
+        <li><strong>Tab</strong>: Navigate between UI elements</li>
+    </ul>
+    
+    <h3>Browser Requirements</h3>
+    <ul>
+        <li>Chrome 80+</li>
+        <li>Firefox 75+</li>
+        <li>Safari 13+</li>
+        <li>Edge 80+</li>
+    </ul>
+    
+    <h3>Mobile Access</h3>
+    <p>The admin dashboard is optimized for desktop use. Mobile access is limited and may not provide full functionality.</p>
+    
+    <h2>Version Information</h2>
+    <ul>
+        <li>Current Version: 1.0.0</li>
+        <li>Last Updated: November 2025</li>
+        <li>Next Review Date: May 2026</li>
+    </ul>
+    
+    <div class="footer">
+        <p>SmartLaw Admin User Guide | Version 1.0.0 | © 2025 SmartLaw GmbH</p>
+    </div>
+</body>
+</html>

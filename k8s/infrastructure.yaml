@@ -1,0 +1,164 @@
+# PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-postgres
+  template:
+    metadata:
+      labels:
+        app: smartlaw-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: smartlaw_prod
+        - name: POSTGRES_USER
+          value: smartlaw_user
+        - name: POSTGRES_PASSWORD
+          value: smartlaw_password
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        emptyDir: {} # Use PVC in real prod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-postgres
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: smartlaw-postgres
+---
+# Redis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-redis
+  template:
+    metadata:
+      labels:
+        app: smartlaw-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-redis
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: smartlaw-redis
+---
+# Elasticsearch (Single Node for Demo)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-elasticsearch
+  template:
+    metadata:
+      labels:
+        app: smartlaw-elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+        ports:
+        - containerPort: 9200
+        env:
+        - name: discovery.type
+          value: single-node
+        - name: xpack.security.enabled
+          value: "false"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-elasticsearch
+spec:
+  ports:
+  - port: 9200
+  selector:
+    app: smartlaw-elasticsearch
+---
+# ClamAV (Virus Scanning)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-clamav
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-clamav
+  template:
+    metadata:
+      labels:
+        app: smartlaw-clamav
+    spec:
+      containers:
+      - name: clamav
+        image: clamav/clamav:latest
+        ports:
+        - containerPort: 3310
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - /usr/local/bin/clamdcheck.sh
+          initialDelaySeconds: 120
+          periodSeconds: 60
+          timeoutSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /usr/local/bin/clamdcheck.sh
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-clamav
+spec:
+  ports:
+  - port: 3310
+  selector:
+    app: smartlaw-clamav

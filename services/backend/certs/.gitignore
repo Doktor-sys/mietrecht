@@ -1,0 +1,10 @@
+# Ignoriere alle Zertifikate und Keys
+*.pem
+*.key
+*.crt
+*.csr
+*.srl
+
+# Behalte nur die README
+!README.md
+!.gitignore

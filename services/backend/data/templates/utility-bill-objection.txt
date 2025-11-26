@@ -1,0 +1,46 @@
+{{tenantName}}
+{{tenantAddress}}
+
+{{landlordName}}
+{{landlordAddress}}
+
+{{date}}
+
+Betreff: Widerspruch gegen Nebenkostenabrechnung {{billingYear}} - {{propertyAddress}}
+
+Sehr geehrte/r {{landlordName}},
+
+hiermit widerspreche ich fristgerecht Ihrer Nebenkostenabrechnung für den Zeitraum {{billingPeriodStart}} bis {{billingPeriodEnd}} für die Wohnung in {{propertyAddress}}.
+
+**Gründe für den Widerspruch:**
+
+1. **Formelle Mängel:**
+{{formalDefects}}
+
+2. **Nicht umlagefähige Kosten:**
+Folgende Positionen sind nach der Betriebskostenverordnung (BetrKV) nicht umlagefähig:
+{{nonDeductibleCosts}}
+
+3. **Berechnungsfehler:**
+{{calculationErrors}}
+
+4. **Fehlende Belege:**
+Für folgende Positionen fehlen nachvollziehbare Belege:
+{{missingDocuments}}
+
+**Forderungen:**
+
+1. Ich fordere Sie auf, die Nebenkostenabrechnung zu korrigieren und mir eine berichtigte Abrechnung zuzusenden.
+
+2. Ich bitte um Einsicht in alle Originalbelege, Verträge und Rechnungen gemäß § 259 BGB.
+
+3. Bis zur Klärung zahle ich lediglich den unstrittigen Betrag von {{undisputedAmount}} EUR.
+
+Bitte senden Sie mir die korrigierte Abrechnung sowie die angeforderten Unterlagen bis zum {{responseDeadline}} zu.
+
+Mit freundlichen Grüßen
+
+{{tenantName}}
+
+---
+Rechtliche Grundlage: § 556 BGB, Betriebskostenverordnung (BetrKV), § 259 BGB

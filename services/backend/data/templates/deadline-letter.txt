@@ -1,0 +1,39 @@
+{{tenantName}}
+{{tenantAddress}}
+
+{{landlordName}}
+{{landlordAddress}}
+
+{{date}}
+
+Betreff: Fristsetzung zur Mängelbeseitigung - {{propertyAddress}}
+
+Sehr geehrte/r {{landlordName}},
+
+wie bereits mündlich/schriftlich mitgeteilt, bestehen in der von mir gemieteten Wohnung in {{propertyAddress}} folgende Mängel:
+
+{{defectDescription}}
+
+Diese Mängel beeinträchtigen die vertragsgemäße Nutzung der Mietsache erheblich und stellen einen Verstoß gegen Ihre Pflichten aus § 535 Abs. 1 BGB dar.
+
+**Fristsetzung:**
+Hiermit setze ich Ihnen eine Frist bis zum {{deadline}} zur vollständigen Beseitigung der oben genannten Mängel.
+
+**Rechtsfolgen bei Fristablauf:**
+Sollten Sie die Mängel nicht bis zum Ablauf der Frist beseitigen, behalte ich mir folgende Maßnahmen vor:
+
+1. Mietminderung gemäß § 536 BGB
+2. Selbstvornahme der Mängelbeseitigung auf Ihre Kosten gemäß § 536a Abs. 2 BGB
+3. Geltendmachung von Schadensersatzansprüchen gemäß § 536a Abs. 1 BGB
+4. Im Falle einer erheblichen Gesundheitsgefährdung: Fristlose Kündigung gemäß § 543 Abs. 1 BGB
+
+Ich bitte um schriftliche Bestätigung des Eingangs dieses Schreibens sowie um Mitteilung, wann Sie mit der Mängelbeseitigung beginnen werden.
+
+Mit freundlichen Grüßen
+
+{{tenantName}}
+
+---
+Anlagen:
+- Fotodokumentation
+- Ggf. frühere Korrespondenz

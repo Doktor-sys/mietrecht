@@ -1,0 +1,313 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  AWS_REGION: eu-central-1
+  ECR_REPOSITORY_BACKEND: smartlaw-backend
+  ECR_REPOSITORY_WEBAPP: smartlaw-webapp
+  DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME_BACKEND: smartlaw/backend
+  IMAGE_NAME_WEBAPP: smartlaw/webapp
+  NODE_VERSION: '18'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Run Tests
+      run: npm test
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./services/backend/coverage/lcov.info
+        flags: unittests
+        name: backend-coverage
+
+  lint:
+    name: Run Linting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    - name: Install Dependencies
+      run: npm ci
+    - name: Run Linting
+      run: npm run lint
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    - name: Install Dependencies
+      run: npm ci
+    - name: Run Security Audit
+      run: npm run dependency:audit
+
+    - name: Run Snyk Security Scan
+      uses: snyk/actions/node@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  mutation-test:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    - name: Install Dependencies
+      run: npm ci
+    - name: Run Mutation Tests
+      run: cd services/backend && npm run test:mutation
+    - name: Archive Mutation Test Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: mutation-test-reports
+        path: services/backend/reports/mutation/
+
+  visual-regression-web:
+    name: Visual Regression Testing (Web)
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    - name: Install Web App Dependencies
+      run: cd web-app && npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Web Visual Regression Tests
+      run: cd web-app && npm run visual-test
+    - name: Archive Visual Test Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: visual-regression-web-reports
+        path: web-app/test-results/
+
+  container-scan:
+    name: Container Scan
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Set up Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        trivy-version: latest
+    
+    - name: Run Trivy vulnerability scanner on Backend image
+      id: trivy-backend
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_BACKEND }}:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+        output: 'trivy-backend-results.txt'
+    
+    - name: Run Trivy vulnerability scanner on WebApp image
+      id: trivy-webapp
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_WEBAPP }}:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+        output: 'trivy-webapp-results.txt'
+    
+    - name: Generate detailed scan reports
+      if: always()
+      run: |
+        # Create scan reports directory
+        mkdir -p scan-reports
+        
+        # Copy scan results
+        cp trivy-backend-results.txt scan-reports/ || true
+        cp trivy-webapp-results.txt scan-reports/ || true
+        
+        # Generate summary
+        echo "## Container Scan Results - $(date)" > scan-reports/summary.md
+        echo "" >> scan-reports/summary.md
+        echo "### Backend Image Scan" >> scan-reports/summary.md
+        cat trivy-backend-results.txt >> scan-reports/summary.md 2>/dev/null || echo "No results" >> scan-reports/summary.md
+        echo "" >> scan-reports/summary.md
+        echo "### WebApp Image Scan" >> scan-reports/summary.md
+        cat trivy-webapp-results.txt >> scan-reports/summary.md 2>/dev/null || echo "No results" >> scan-reports/summary.md
+    
+    - name: Upload scan reports as artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: container-scan-reports
+        path: scan-reports/
+    
+    - name: Fail build on critical vulnerabilities
+      if: steps.trivy-backend.outcome == 'failure' || steps.trivy-webapp.outcome == 'failure'
+      run: |
+        echo "❌ CRITICAL OR HIGH SEVERITY VULNERABILITIES FOUND IN CONTAINER IMAGES!"
+        echo "Deployment blocked to prevent security risks."
+        echo "Check the scan reports for details."
+        exit 1
+    
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-backend-results.sarif'
+
+  build-and-push:
+    name: Build and Push
+    needs: [test, lint, security-audit]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata (Backend)
+      id: meta-backend
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=semver,pattern={{version}}
+
+    - name: Build, tag, and push Backend image to Amazon ECR
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./services/backend/Dockerfile
+        push: true
+        tags: ${{ steps.meta-backend.outputs.tags }}
+        labels: ${{ steps.meta-backend.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Extract metadata (Web-App)
+      id: meta-webapp
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_WEBAPP }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=semver,pattern={{version}}
+
+    - name: Build, tag, and push WebApp image to Amazon ECR
+      uses: docker/build-push-action@v5
+      with:
+        context: ./web-app
+        file: ./web-app/Dockerfile
+        push: true
+        tags: ${{ steps.meta-webapp.outputs.tags }}
+        labels: ${{ steps.meta-webapp.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to EKS
+    needs: [build-and-push, container-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Update Kubeconfig
+      run: aws eks update-kubeconfig --name smartlaw-cluster-prod --region ${{ env.AWS_REGION }}
+
+    - name: Deploy to EKS
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }} # Or derive from account ID
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Update image tags in k8s manifests (simple sed replacement for demo)
+        sed -i "s|image: smartlaw-backend:latest|image: $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG|g" k8s/backend.yaml
+        sed -i "s|image: smartlaw-webapp:latest|image: $ECR_REGISTRY/$ECR_REPOSITORY_WEBAPP:$IMAGE_TAG|g" k8s/webapp.yaml
+        
+        kubectl apply -f k8s/

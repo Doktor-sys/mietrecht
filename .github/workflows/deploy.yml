@@ -1,0 +1,376 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '18'
+  DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME_BACKEND: smartlaw/backend
+  IMAGE_NAME_WEBAPP: smartlaw/webapp
+
+jobs:
+  # ==========================================
+  # LINTING & TYPE CHECKING
+  # ==========================================
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint (Backend)
+        run: cd services/backend && npm run lint
+
+      - name: TypeScript Check (Backend)
+        run: cd services/backend && npx tsc --noEmit
+
+      - name: Run ESLint (Web-App)
+        run: cd web-app && npm run lint
+
+      - name: TypeScript Check (Web-App)
+        run: cd web-app && npx tsc --noEmit
+
+  # ==========================================
+  # UNIT TESTS
+  # ==========================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: smartlaw_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test database
+        run: cd services/backend && npm run db:test:reset
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/smartlaw_test
+
+      - name: Run unit tests
+        run: cd services/backend && npm run test:unit
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/smartlaw_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./services/backend/coverage/lcov.info
+          flags: unittests
+          name: backend-coverage
+
+  # ==========================================
+  # INTEGRATION TESTS
+  # ==========================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, unit-tests]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: smartlaw_test
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+        ports:
+          - 9200:9200
+
+      minio:
+        image: minio/minio
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: cd services/backend && npm run test:integration
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/smartlaw_test
+          REDIS_URL: redis://localhost:6379
+          ELASTICSEARCH_URL: http://localhost:9200
+          MINIO_ENDPOINT: localhost
+          MINIO_PORT: 9000
+
+  # ==========================================
+  # E2E TESTS
+  # ==========================================
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start services with Docker Compose
+        run: docker-compose -f docker-compose.dev.yml up -d
+
+      - name: Wait for services
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done'
+
+      - name: Run E2E tests
+        run: cd services/backend && npm run test:e2e
+
+      - name: Stop services
+        if: always()
+        run: docker-compose -f docker-compose.dev.yml down
+
+  # ==========================================
+  # SECURITY SCANNING
+  # ==========================================
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run npm audit
+        run: |
+          cd services/backend && npm audit --audit-level=moderate
+          cd ../../web-app && npm audit --audit-level=moderate
+
+  # ==========================================
+  # BUILD DOCKER IMAGES
+  # ==========================================
+  build-docker:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, security-scan]
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (Backend)
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./services/backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract metadata (Web-App)
+        id: meta-webapp
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_WEBAPP }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+
+      - name: Build and push Web-App image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./web-app
+          file: ./web-app/Dockerfile
+          push: true
+          tags: ${{ steps.meta-webapp.outputs.tags }}
+          labels: ${{ steps.meta-webapp.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ==========================================
+  # DEPLOY TO STAGING
+  # ==========================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-docker]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.smartlaw.de
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
+          export KUBECONFIG=./kubeconfig
+
+      - name: Deploy to Kubernetes (Staging)
+        run: |
+          kubectl set image deployment/smartlaw-backend \
+            smartlaw-backend=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:develop-${{ github.sha }} \
+            -n smartlaw-staging
+          
+          kubectl set image deployment/smartlaw-webapp \
+            smartlaw-webapp=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_WEBAPP }}:develop-${{ github.sha }} \
+            -n smartlaw-staging
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/smartlaw-backend -n smartlaw-staging --timeout=5m
+          kubectl rollout status deployment/smartlaw-webapp -n smartlaw-staging --timeout=5m
+
+      - name: Run smoke tests
+        run: npm run test:smoke -- --env=staging
+
+  # ==========================================
+  # DEPLOY TO PRODUCTION
+  # ==========================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://smartlaw.de
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > kubeconfig
+          export KUBECONFIG=./kubeconfig
+
+      - name: Deploy to Kubernetes (Production)
+        run: |
+          kubectl set image deployment/smartlaw-backend \
+            smartlaw-backend=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:main-${{ github.sha }} \
+            -n smartlaw-production
+          
+          kubectl set image deployment/smartlaw-webapp \
+            smartlaw-webapp=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME_WEBAPP }}:main-${{ github.sha }} \
+            -n smartlaw-production
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/smartlaw-backend -n smartlaw-production --timeout=10m
+          kubectl rollout status deployment/smartlaw-webapp -n smartlaw-production --timeout=10m
+
+      - name: Run smoke tests
+        run: npm run test:smoke -- --env=production
+
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment completed successfully!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()

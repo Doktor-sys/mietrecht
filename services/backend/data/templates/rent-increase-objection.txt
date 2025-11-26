@@ -1,0 +1,32 @@
+{{tenantName}}
+{{tenantAddress}}
+
+{{landlordName}}
+{{landlordAddress}}
+
+{{date}}
+
+Betreff: Widerspruch gegen Mieterhöhung - {{propertyAddress}}
+
+Sehr geehrte/r {{landlordName}},
+
+hiermit widerspreche ich fristgerecht Ihrer Mieterhöhung vom {{rentIncreaseNoticeDate}} für die Wohnung in {{propertyAddress}}.
+
+**Gründe für den Widerspruch:**
+
+1. Die geforderte Mieterhöhung auf {{newRentAmount}} EUR überschreitet die ortsübliche Vergleichsmiete gemäß dem aktuellen Mietspiegel für {{city}}.
+
+2. Laut Mietspiegel beträgt die ortsübliche Vergleichsmiete für eine vergleichbare Wohnung maximal {{comparableRent}} EUR.
+
+3. Die Mieterhöhung ist daher nicht durch § 558 BGB gedeckt.
+
+Ich fordere Sie auf, die Mieterhöhung zurückzunehmen. Bis zur endgültigen Klärung werde ich weiterhin die bisherige Miete von {{currentRent}} EUR zahlen.
+
+Sollten Sie an der Mieterhöhung festhalten wollen, bitte ich um Übersendung einer qualifizierten Begründung gemäß § 558a BGB sowie um Vorlage der Daten, auf die sich Ihre Berechnung stützt.
+
+Mit freundlichen Grüßen
+
+{{tenantName}}
+
+---
+Rechtliche Grundlage: § 558 BGB, § 558a BGB

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLaw Agent – Mietrecht | KI-gestützte Mietrechtsberatung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .hero {
+            background: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #666;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .features {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
+        .benefits {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .benefits h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .benefit-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .benefit-item .icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #28a745;
+        }
+
+        .target-groups {
+            background: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .target-groups h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .group-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .group-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-stack {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .tech-stack h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .tech-item {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .privacy {
+            background: #1e3c72;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .privacy h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .privacy-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .privacy-item {
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .demo-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .demo-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chat-demo {
+            background: white;
+            color: #333;
+            max-width: 600px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .chat-header {
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            padding: 1.5rem;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .user-message {
+            background: #e3f2fd;
+            margin-left: 2rem;
+        }
+
+        .ai-message {
+            background: #f1f8e9;
+            margin-right: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">⚖️ SmartLaw Agent</div>
+            <div class="tagline">Mietrecht – Intelligente Rechtsberatung für alle</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Mietrecht einfach gemacht</h1>
+            <p>Der SmartLaw Agent bietet Mietern und Vermietern schnellen, verständlichen und zuverlässigen Zugang zu mietrechtlicher Beratung. KI-gestützt, DSGVO-konform und mit nahtloser Anwaltsvermittlung.</p>
+            <a href="#demo" class="cta-button">Jetzt kostenlos testen</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Ihre Vorteile im Überblick</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>KI-gestützte Analyse</h3>
+                    <p>Unsere KI erkennt Ihren mietrechtlichen Fall und gibt sofort passende Handlungsempfehlungen mit Verweis auf relevante Gesetze und Urteile.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Dokumenten-Check</h3>
+                    <p>Laden Sie Mietverträge, Nebenkostenabrechnungen oder Abmahnungen hoch und erhalten Sie eine erste rechtliche Einschätzung.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍💼</div>
+                    <h3>Anwaltsvermittlung</h3>
+                    <p>Bei komplexen Fällen vermitteln wir Sie nahtlos an spezialisierte Mietrechtsanwälte in Ihrer Nähe.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Lokale Besonderheiten</h3>
+                    <p>Berücksichtigung regionaler Mietspiegel und landesspezifischer Gesetze für präzise, standortbezogene Beratung.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Musterbriefe</h3>
+                    <p>Automatische Generierung rechtssicherer Musterbriefe für Mietminderung, Widersprüche und Fristsetzungen.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♿</div>
+                    <h3>Barrierefrei</h3>
+                    <p>Screenreader-kompatibel, mehrsprachig (Deutsch, Türkisch, Arabisch) und in einfacher Sprache.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="container">
+            <h2>Zentrale Wertversprechen</h2>
+            <div class="benefit-list">
+                <div class="benefit-item">
+                    <span class="icon">⚡</span>
+                    <div>
+                        <strong>Soforthilfe:</strong> Keine Wartezeit – innerhalb von Minuten eine erste Einschätzung
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">💰</span>
+                    <div>
+                        <strong>Kosteneffizienz:</strong> Grundberatung kostenfrei, Anwaltsvermittlung nur bei Bedarf
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">💡</span>
+                    <div>
+                        <strong>Verständlichkeit:</strong> Juristische Fachbegriffe in Alltagssprache übersetzt
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">📋</span>
+                    <div>
+                        <strong>Dokumenten-Assistenz:</strong> Generierung von Musterschreiben und Vorlagen
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">🔒</span>
+                    <div>
+                        <strong>Vertrauen & Sicherheit:</strong> Klare KI-Grenzen, nur zugelassene Anwälte
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">🇩🇪</span>
+                    <div>
+                        <strong>DSGVO-konform:</strong> Hosting in Deutschland, höchste Datenschutzstandards
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="target-groups">
+        <div class="container">
+            <h2>Für wen ist SmartLaw Agent?</h2>
+            <div class="group-grid">
+                <div class="group-card">
+                    <div class="icon">🏠</div>
+                    <h3>Mieter</h3>
+                    <p>Junge Erwachsene, Familien, Senioren – besonders Menschen mit geringem Einkommen oder wenig Rechtserfahrung</p>
+                </div>
+                <div class="group-card">
+                    <div class="icon">🏢</div>
+                    <h3>Vermieter</h3>
+                    <p>Privatvermieter und kleine Immobilienverwaltungen ohne eigene Rechtsabteilung</p>
+                </div>
+                <div class="group-card">
+                    <div class="icon">🏛️</div>
+                    <h3>Unternehmen</h3>
+                    <p>Wohnungsgenossenschaften und Hausverwaltungen als B2B-Kunden für Massenabfragen</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2>Live-Demo: Fragen Sie den SmartLaw Agent</h2>
+            <p>So einfach funktioniert die KI-gestützte Mietrechtsberatung:</p>
+            
+            <div class="chat-demo">
+                <div class="chat-header">
+                    💬 SmartLaw Agent – Mietrecht
+                </div>
+                <div class="chat-messages">
+                    <div class="message ai-message">
+                        <strong>SmartLaw Agent:</strong> Hallo! Ich bin Ihr KI-Assistent für Mietrecht. Beschreiben Sie mir Ihr Problem, und ich helfe Ihnen gerne weiter.
+                    </div>
+                    <div class="message user-message">
+                        <strong>Sie:</strong> Meine Heizung ist seit 3 Wochen kaputt. Kann ich die Miete mindern?
+                    </div>
+                    <div class="message ai-message">
+                        <strong>SmartLaw Agent:</strong> Das ist ein klassischer Fall für eine Mietminderung nach § 536 BGB. Bei Heizungsausfall können Sie die Miete um 10-30% mindern, je nach Jahreszeit und Dauer des Ausfalls.
+                        <br><br>
+                        <strong>Meine Empfehlungen:</strong><br>
+                        1. Setzen Sie dem Vermieter schriftlich eine Frist zur Reparatur<br>
+                        2. Dokumentieren Sie den Mangel mit Fotos<br>
+                        3. Mindern Sie die Miete ab dem 4. Tag des Ausfalls<br>
+                        <br>
+                        Soll ich Ihnen einen Musterbrief für die Mietminderung erstellen?
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-stack">
+        <div class="container">
+            <h2>Moderne Technologie</h2>
+            <div class="tech-grid">
+                <div class="tech-item">🧠 KI & NLP<br>GPT-4 & BERT</div>
+                <div class="tech-item">📱 Frontend<br>React & React Native</div>
+                <div class="tech-item">⚙️ Backend<br>Node.js & Express</div>
+                <div class="tech-item">🗄️ Datenbank<br>PostgreSQL & Redis</div>
+                <div class="tech-item">🔍 Suche<br>Elasticsearch</div>
+                <div class="tech-item">☁️ Cloud<br>Deutsche Rechenzentren</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="privacy">
+        <div class="container">
+            <h2>🔒 Datenschutz auf höchstem Niveau</h2>
+            <p>Ihre sensiblen Rechtsdaten sind bei uns sicher – garantiert DSGVO-konform</p>
+            
+            <div class="privacy-features">
+                <div class="privacy-item">
+                    <h3>🇩🇪 Hosting in Deutschland</h3>
+                    <p>Alle Server und Daten bleiben in Deutschland</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>🔐 Ende-zu-Ende-Verschlüsselung</h3>
+                    <p>AES-256 Verschlüsselung für alle Daten</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>👤 Anonyme Nutzung möglich</h3>
+                    <p>Nutzen Sie den Service auch ohne Registrierung</p>
+                </div>
+                <div class="privacy-item">
+                    <h3>🗑️ Recht auf Löschung</h3>
+                    <p>Vollständige Datenlöschung auf Anfrage</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SmartLaw Agent – Mietrecht. Alle Rechte vorbehalten.</p>
+            <p>Entwickelt mit ❤️ für faire Mietverhältnisse in Deutschland</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards and benefit items
+        document.querySelectorAll('.feature-card, .benefit-item, .group-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{{tenantName}}
+{{tenantAddress}}
+
+{{landlordName}}
+{{landlordAddress}}
+
+{{date}}
+
+Betreff: Mietminderung wegen Mangel - {{propertyAddress}}
+
+Sehr geehrte/r {{landlordName}},
+
+hiermit zeige ich Ihnen einen erheblichen Mangel an der von mir gemieteten Wohnung in {{propertyAddress}} an und setze Ihnen eine Frist zur Mängelbeseitigung.
+
+**Mangelbeschreibung:**
+{{defectDescription}}
+
+Der Mangel besteht seit {{defectStartDate}} und beeinträchtigt die Nutzung der Mietsache erheblich.
+
+Gemäß § 536 BGB setze ich Ihnen hiermit eine Frist bis zum {{deadline}} zur Beseitigung des Mangels. Sollte der Mangel bis zu diesem Zeitpunkt nicht behoben sein, behalte ich mir vor, die Miete um {{rentReductionPercentage}}% (entspricht {{rentReductionAmount}} EUR) zu mindern.
+
+Die Mietminderung erfolgt auf Grundlage der Rechtsprechung zu vergleichbaren Mängeln. Ich weise darauf hin, dass ich zur Mietminderung berechtigt bin, solange der Mangel fortbesteht (§ 536 Abs. 1 BGB).
+
+Bitte bestätigen Sie mir den Erhalt dieses Schreibens und teilen Sie mir mit, wann Sie den Mangel beseitigen werden.
+
+Mit freundlichen Grüßen
+
+{{tenantName}}
+
+---
+Anlagen:
+- Fotodokumentation des Mangels
+- Ggf. Gutachten/Zeugenaussagen

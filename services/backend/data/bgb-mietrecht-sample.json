@@ -1,0 +1,112 @@
+[
+  {
+    "type": "LAW",
+    "reference": "§ 535 BGB",
+    "title": "Inhalt und Hauptpflichten des Mietvertrags",
+    "content": "Durch den Mietvertrag wird der Vermieter verpflichtet, dem Mieter den Gebrauch der Mietsache während der Mietzeit zu gewähren. Der Vermieter hat die Mietsache dem Mieter in einem zum vertragsgemäßen Gebrauch geeigneten Zustand zu überlassen und sie während der Mietzeit in diesem Zustand zu erhalten. Der Mieter ist verpflichtet, dem Vermieter die vereinbarte Miete zu entrichten.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2002-01-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Mietvertrag", "Pflichten"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 536 BGB",
+    "title": "Minderung der Miete bei Sach- und Rechtsmängeln",
+    "content": "Hat die Mietsache zur Zeit der Überlassung an den Mieter einen Mangel, der ihre Tauglichkeit zum vertragsgemäßen Gebrauch aufhebt oder mindert, oder entsteht während der Mietzeit ein solcher Mangel, so ist der Mieter für die Zeit, in der die Tauglichkeit aufgehoben oder gemindert ist, von der Entrichtung der Miete befreit oder zur Entrichtung nur einer angemessen herabgesetzten Miete verpflichtet.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2002-01-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Mietminderung", "Mangel"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 536a BGB",
+    "title": "Schadensersatzanspruch des Mieters wegen eines Mangels",
+    "content": "Ist ein Mangel im Sinne des § 536 bei Vertragsschluss vorhanden oder entsteht ein solcher Mangel später wegen eines Umstands, den der Vermieter zu vertreten hat, oder kommt der Vermieter mit der Beseitigung eines Mangels in Verzug, so kann der Mieter unbeschadet der Rechte aus § 536 Schadensersatz verlangen.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2002-01-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Schadensersatz", "Mangel"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 537 BGB",
+    "title": "Zurückbehaltungsrecht des Mieters",
+    "content": "Wegen Ansprüche aus dem Mietverhältnis kann der Mieter die Miete insoweit zurückbehalten, als sie zur Deckung seiner Ansprüche erforderlich ist.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2002-01-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Zurückbehaltungsrecht"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 543 BGB",
+    "title": "Außerordentliche fristlose Kündigung aus wichtigem Grund",
+    "content": "Jede Vertragspartei kann das Mietverhältnis aus wichtigem Grund außerordentlich fristlos kündigen. Ein wichtiger Grund liegt vor, wenn dem Kündigenden unter Berücksichtigung aller Umstände des Einzelfalls, insbesondere eines Verschuldens der Vertragsparteien, und unter Abwägung der beiderseitigen Interessen die Fortsetzung des Mietverhältnisses bis zum Ablauf der Kündigungsfrist oder bis zur sonstigen Beendigung des Mietverhältnisses nicht zugemutet werden kann.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2001-09-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Kündigung", "Fristlos"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 556d BGB",
+    "title": "Mietpreisbremse",
+    "content": "Bei der Wiedervermietung von Wohnraum darf die Miete höchstens 10 Prozent über der ortsüblichen Vergleichsmiete liegen, wenn die Landesregierung durch Rechtsverordnung Gebiete mit angespanntem Wohnungsmarkt bestimmt hat.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2015-06-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Mietpreisbremse", "Miete"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 558 BGB",
+    "title": "Mieterhöhung bis zur ortsüblichen Vergleichsmiete",
+    "content": "Der Vermieter kann die Zustimmung zu einer Erhöhung der Miete bis zur ortsüblichen Vergleichsmiete verlangen, wenn die Miete seit 15 Monaten unverändert ist. Die Mieterhöhung darf innerhalb von drei Jahren nicht mehr als 20 Prozent betragen (Kappungsgrenze).",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2001-09-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Mieterhöhung", "Mietspiegel"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 573 BGB",
+    "title": "Ordentliche Kündigung des Vermieters",
+    "content": "Der Vermieter kann nur kündigen, wenn er ein berechtigtes Interesse an der Beendigung des Mietverhältnisses hat. Die Kündigung zum Zwecke der Mieterhöhung ist ausgeschlossen. Ein berechtigtes Interesse des Vermieters an der Beendigung des Mietverhältnisses liegt insbesondere vor, wenn der Mieter seine vertraglichen Pflichten schuldhaft nicht unerheblich verletzt hat.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2001-09-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Kündigung", "Vermieter"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 574 BGB",
+    "title": "Widerspruch des Mieters gegen die Kündigung",
+    "content": "Der Mieter kann der Kündigung des Vermieters widersprechen und von ihm die Fortsetzung des Mietverhältnisses verlangen, wenn die Beendigung des Mietverhältnisses für den Mieter, seine Familie oder einen anderen Angehörigen seines Haushalts eine Härte bedeuten würde, die auch unter Würdigung der berechtigten Interessen des Vermieters nicht zu rechtfertigen ist.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2001-09-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Kündigung", "Widerspruch", "Härtefall"],
+    "source": "BGB",
+    "version": "1.0"
+  },
+  {
+    "type": "LAW",
+    "reference": "§ 577a BGB",
+    "title": "Vorkaufsrecht des Mieters",
+    "content": "Wird vermieteter Wohnraum nach Überlassung an den Mieter an einen Dritten verkauft, so ist der Mieter zum Vorkauf berechtigt. Das Vorkaufsrecht ist ausgeschlossen, wenn der Vermieter den Wohnraum an einen Familienangehörigen verkauft.",
+    "jurisdiction": "Deutschland",
+    "effectiveDate": "2001-09-01T00:00:00.000Z",
+    "tags": ["BGB", "Mietrecht", "Vorkaufsrecht", "Verkauf"],
+    "source": "BGB",
+    "version": "1.0"
+  }
+]

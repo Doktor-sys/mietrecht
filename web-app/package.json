@@ -1,0 +1,84 @@
+{
+  "name": "@smartlaw/web-app",
+  "version": "1.0.0",
+  "description": "Web Frontend für SmartLaw Mietrecht Agent",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@hookform/resolvers": "^3.1.1",
+    "@mui/icons-material": "^5.14.1",
+    "@mui/material": "^5.14.1",
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
+    "i18next": "^23.2.11",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-hook-form": "^7.45.2",
+    "react-i18next": "^13.0.2",
+    "react-redux": "^8.1.1",
+    "react-router-dom": "^6.14.1",
+    "recharts": "^2.7.2",
+    "socket.io-client": "^4.7.2",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "@axe-core/react": "^4.7.3",
+    "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "jest-axe": "^8.0.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint:security": "eslint src --ext .ts,.tsx --rulesdir ./eslint-security-rules",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
+    "type-check": "tsc --noEmit",
+    "validate": "npm run lint && npm run type-check",
+    "validate:security": "npm run lint:security && npm audit",
+    "accessibility-test": "npm test -- --testNamePattern=\"accessibility\"",
+    "visual-test": "npx playwright test --grep visual",
+    "test:coverage": "npm test -- --coverage",
+    "test:watch": "npm test -- --watch",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
+    "clean": "rm -rf build coverage node_modules/.cache",
+    "clean:build": "rm -rf build",
+    "security:audit": "npm audit",
+    "security:audit-fix": "npm audit fix"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:3001"
+}

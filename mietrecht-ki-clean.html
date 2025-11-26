@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrecht KI-Assistent | Intelligente Rechtsberatung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .chat-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">⚖️ Mietrecht KI-Assistent</div>
+            <div class="tagline">Intelligente Mietrechtsberatung</div>
+        </header>  
+      <div class="main-layout">
+            <div class="chat-panel">
+                <h2>Mietrechtsfrage stellen</h2>
+                
+                <div style="margin: 20px 0;">
+                    <button onclick="testQuestion()" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        📄 Mietvertrag-Details
+                    </button>
+                    <button onclick="testQuestion()" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        🏠 Mieterhoehung
+                    </button>
+                    <button onclick="testQuestion()" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        🔥 Heizungsausfall
+                    </button>
+                </div>
+
+                <div id="chatMessages" style="background: #f8f9fa; padding: 20px; border-radius: 15px; height: 400px; overflow-y: auto; margin: 20px 0;">
+                    <div style="background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                        <strong>KI-Assistent:</strong> Hallo! Ich bin Ihr Mietrechts-Assistent. Stellen Sie mir Ihre Frage oder waehlen Sie ein Thema aus den Buttons oben.
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <textarea id="questionInput" placeholder="Beschreiben Sie Ihr mietrechtliches Problem..." style="flex: 1; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; min-height: 80px; font-family: inherit;"></textarea>
+                    <button onclick="sendQuestion()" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 15px 30px; border-radius: 15px; font-weight: bold; cursor: pointer;">
+                        Frage senden
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-panel">
+                <h2>Aktuelle Analyse</h2>
+                <div id="analysisResult" style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                    <p>Stellen Sie eine Frage, um die Komplexitaetsanalyse zu sehen</p>
+                </div>
+
+                <h3>Anwaltssuche</h3>
+                <div id="lawyerSection" style="background: #f8f9ff; padding: 20px; border-radius: 15px; margin: 20px 0; display: none;">
+                    <p>Passende Anwaelte werden nach der Analyse angezeigt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testQuestion() {
+            const chatMessages = document.getElementById('chatMessages');
+            const analysisResult = document.getElementById('analysisResult');
+            const lawyerSection = document.getElementById('lawyerSection');
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = 'background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: right;';
+            userMsg.innerHTML = '<strong>Sie:</strong> Welche Details sind im Mietvertrag enthalten?';
+            chatMessages.appendChild(userMsg);
+
+            // Add AI response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.style.cssText = 'background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e9ecef;';
+                aiMsg.innerHTML = `
+                    <strong>KI-Assistent:</strong><br><br>
+                    <strong>📊 Komplexitaetsanalyse:</strong> <span style="background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">Mittlere Komplexitaet</span><br><br>
+                    
+                    <strong>⚖️ Rechtliche Grundlagen:</strong><br>
+                    § 550 BGB - Mietvertrag ueber Grundstuecke<br>
+                    § 535 BGB - Inhalt und Hauptpflichten des Mietvertrags<br><br>
+                    
+                    <strong>📋 Pflichtangaben im Mietvertrag:</strong><br>
+                    • Vollstaendige Anschrift des Vermieters<br>
+                    • Genaue Bezeichnung der Wohnung und Nebenraeume<br>
+                    • Wohnflaeche in m²<br>
+                    • Miete und Nebenkosten<br>
+                    • Kaution (max. 3 Nettokaltmieten)<br>
+                    • Mietbeginn und Vertragsdauer<br><br>
+                    
+                    <strong>💡 Empfehlung:</strong> Bei komplexen Vertragsgestaltungen Anwaltsberatung empfohlen
+                `;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Update analysis
+                analysisResult.innerHTML = `
+                    <div style="background: #fff3cd; color: #856404; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; display: inline-block; margin-bottom: 15px;">
+                        Komplexitaet: Mittel
+                    </div>
+                    <p>Ihre Frage erfordert eine detaillierte Analyse. Eine Anwaltsberatung koennte hilfreich sein.</p>
+                    <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #856404;">
+                        <strong>⚖️ Mittlere Komplexitaet erkannt:</strong><br>
+                        • Detaillierte Rechtskenntnisse erforderlich<br>
+                        • Mehrere rechtliche Aspekte zu beachten<br>
+                        • Anwaltsberatung bei Unsicherheiten empfohlen
+                    </div>
+                `;
+
+                // Show lawyer section
+                setTimeout(() => {
+                    lawyerSection.style.display = 'block';
+                    lawyerSection.innerHTML = `
+                        <h4>🎯 Passende Anwaelte fuer Ihren Fall:</h4>
+                        <div style="background: white; padding: 15px; border-radius: 10px; margin: 10px 0; border: 2px solid #e9ecef; cursor: pointer;" onclick="selectLawyer()">
+                            <strong>Dr. Maria Schmidt</strong><br>
+                            <small>Mietrecht & Wohnungseigentumsrecht</small><br>
+                            <small>📍 2.3 km entfernt</small><br>
+                            <span style="color: #ffc107;">⭐ 4.9 (187 Bewertungen)</span><br>
+                            <strong>190€/h</strong>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 10px; margin: 10px 0; border: 2px solid #e9ecef; cursor: pointer;" onclick="selectLawyer()">
+                            <strong>RA Thomas Weber</strong><br>
+                            <small>Mietrecht & Immobilienrecht</small><br>
+                            <small>📍 1.8 km entfernt</small><br>
+                            <span style="color: #ffc107;">⭐ 4.8 (203 Bewertungen)</span><br>
+                            <strong>180€/h</strong>
+                        </div>
+                    `;
+                }, 1000);
+            }, 1500);
+        }
+
+        function sendQuestion() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+            
+            if (!question) {
+                alert('Bitte geben Sie eine Frage ein.');
+                return;
+            }
+
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = 'background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: right;';
+            userMsg.innerHTML = `<strong>Sie:</strong> ${question}`;
+            chatMessages.appendChild(userMsg);
+            
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.style.cssText = 'background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e9ecef;';
+                aiMsg.innerHTML = `
+                    <strong>KI-Assistent:</strong><br><br>
+                    Ihre Frage wurde analysiert: "${question}"<br><br>
+                    <strong>📊 Komplexitaetsanalyse:</strong> <span style="background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">Mittlere Komplexitaet</span><br><br>
+                    Fuer eine detaillierte Beratung empfehle ich Ihnen einen spezialisierten Mietrechtsanwalt.
+                `;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        function selectLawyer() {
+            alert('Anwalt ausgewaehlt! Terminbuchung wird vorbereitet...');
+        }
+
+        // Enter key support
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('questionInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+web: cd scripts && node github_asana_webhook.js

@@ -1,0 +1,309 @@
+/* Reset and base styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333333;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background-color: #3498db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header p {
+    margin: 5px 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.week-info {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 8px 20px;
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+/* Content */
+.content {
+    padding: 30px;
+}
+
+.welcome {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 20px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 30px;
+}
+
+.welcome h2 {
+    margin-top: 0;
+    color: #0d47a1;
+}
+
+/* Section */
+.section {
+    margin-bottom: 35px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eeeeee;
+}
+
+.section-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #3498db;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 18px;
+}
+
+.section-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 22px;
+}
+
+.section-count {
+    background-color: #3498db;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+/* Decision Card */
+.decision-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.decision-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eeeeee;
+    background-color: #f8f9fa;
+}
+
+.court-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.court-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.decision-date {
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.case-number {
+    color: #95a5a6;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.topics {
+    margin-bottom: 15px;
+}
+
+.topic-tag {
+    display: inline-block;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.high-importance .topic-tag {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.medium-importance .topic-tag {
+    background-color: #fff8e1;
+    color: #f9a825;
+}
+
+.summary {
+    margin-bottom: 15px;
+}
+
+.summary strong {
+    color: #2c3e50;
+}
+
+.practice-notes {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    border-radius: 0 4px 4px 0;
+    margin: 15px 0;
+}
+
+.practice-notes strong {
+    color: #2c3e50;
+}
+
+.card-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #eeeeee;
+    text-align: right;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+/* Practice Summary */
+.practice-summary {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-radius: 8px;
+    padding: 25px;
+    margin: 30px 0;
+    border-left: 5px solid #ffc107;
+}
+
+.practice-summary h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+/* Footer */
+.footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.footer-links {
+    margin: 20px 0;
+}
+
+.footer-links a {
+    color: #3498db;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 500;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.disclaimer {
+    font-size: 13px;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        border-radius: 0;
+    }
+    
+    .content {
+        padding: 20px 15px;
+    }
+    
+    .header {
+        padding: 20px 15px;
+    }
+    
+    .header h1 {
+        font-size: 24px;
+    }
+    
+    .court-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .decision-date {
+        margin-top: 5px;
+    }
+}

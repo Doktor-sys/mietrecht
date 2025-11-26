@@ -1,0 +1,150 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Datenbank
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartlaw-postgres-prod
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/backend/database/init:/docker-entrypoint-initdb.d
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+  # Redis für Caching und Sessions
+  redis:
+    image: redis:7-alpine
+    container_name: smartlaw-redis-prod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+  # Elasticsearch für Rechtsdaten-Suche
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: smartlaw-elasticsearch-prod
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+  # MinIO für Dokumentenspeicherung
+  minio:
+    image: minio/minio:latest
+    container_name: smartlaw-minio-prod
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+  # ClamAV für Virus-Scanning
+  clamav:
+    image: clamav/clamav:latest
+    container_name: smartlaw-clamav-prod
+    ports:
+      - "3310:3310"
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks:
+      - smartlaw-network
+    healthcheck:
+      test: [ "CMD", "/usr/local/bin/clamdcheck.sh" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    restart: unless-stopped
+
+  # Backend Service
+  backend:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile
+    container_name: smartlaw-backend-prod
+    env_file:
+      - ./.env
+      - ./services/backend/.env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_NAME}
+      REDIS_URL: redis://redis:6379
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: 3310
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services/backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+      - elasticsearch
+      - minio
+      - clamav
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+  # Frontend Web App
+  web-app:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+    container_name: smartlaw-web-prod
+    env_file:
+      - ./.env
+      - ./web-app/.env
+    environment:
+      REACT_APP_API_URL: http://localhost:3001
+    ports:
+      - "80:80"
+    volumes:
+      - ./web-app:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - smartlaw-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  elasticsearch_data:
+  minio_data:
+  clamav_data:
+
+networks:
+  smartlaw-network:
+    driver: bridge

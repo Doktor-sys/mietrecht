@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrecht KI-Assistent | Intelligente Rechtsberatung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.8s ease;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 700px;
+            animation: slideLeft 0.8s ease;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .chat-header h2 {
+            color: #1e3c72;
+            margin-left: 15px;
+            font-size: 1.8rem;
+        }
+
+        /* Mietrecht Focus */
+        .mietrecht-focus {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        /* Input Methods */
+        .input-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .input-method {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .input-method:hover, .input-method.active {
+            border-color: #1e3c72;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: messageSlide 0.5s ease;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            background: white;
+            border: 2px solid #e9ecef;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Analysis Panel */
+        .analysis-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: 700px;
+            overflow-y: auto;
+            animation: slideRight 0.8s ease;
+        }
+
+        .analysis-section {
+            margin-bottom: 30px;
+        }
+
+        .analysis-section h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+        }
+
+        /* Complexity Analysis */
+        .complexity-analysis {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .complexity-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .complexity-low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .complexity-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .complexity-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Lawyer Recommendations */
+        .lawyer-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .lawyer-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lawyer-card:hover {
+            border-color: #1e3c72;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .lawyer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .lawyer-rating {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .consultation-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .consultation-btn {
+            padding: 10px 15px;
+            border: 2px solid #1e3c72;
+            background: white;
+            color: #1e3c72;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .consultation-btn:hover {
+            background: #1e3c72;
+            color: white;
+        }
+
+        /* Preparation Checklist */
+        .preparation-checklist {
+            background: #d4edda;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #28a745;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 1rem;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+        }
+
+        /* Export Section */
+        .export-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Mietrecht Topics */
+        .mietrecht-topics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topic-button {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .topic-button:hover {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* File Upload */
+        .upload-area {
+            border: 3px dashed #1e3c72;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .file-upload {
+            display: none;
+        }
+
+        /* Voice Input */
+        .voice-input {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .voice-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .voice-btn.recording {
+            animation: pulse 1s infinite;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 15px;
+            font-style: italic;
+            color: #666;
+            text-align: center;
+        }
+
+        .typing-indicator.show {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .chat-panel, .analysis-panel {
+                height: auto;
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 15px;
+            }
+            
+            .input-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .mietrecht-topics {
+                grid-template-columns: 1fr;
+            }
+            
+            .consultation-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .chat-panel, .analysis-panel {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles */
+        .send-button:focus,
+        .topic-button:focus,
+        .consultation-btn:focus,
+        .export-btn:focus {
+            outline: 3px solid #ffc107;
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar,
+        .analysis-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track,
+        .analysis-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb,
+        .analysis-panel::-webkit-scrollbar-thumb {
+            background: #1e3c72;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover,
+        .analysis-panel::-webkit-scrollbar-thumb:hover {
+            background: #2a5298;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">⚖️ Mietrecht KI-Assistent</div>
+            <div class="tagline">Intelligente Mietrechtsberatung mit KI-gestützter Anwaltsvermittlung</div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Chat Panel -->
+            <div class="chat-panel">
+                <div class="chat-header">
+                    <span style="font-size: 2rem;">🤖</span>
+                    <h2>Mietrechtsfrage stellen</h2>
+                </div>
+
+                <!-- Mietrecht Focus -->
+                <div class="mietrecht-focus">
+                    🏠 Spezialisiert auf deutsches Mietrecht
+                </div>
+
+                <!-- Mietrecht Topics -->
+                <div class="mietrecht-topics">
+                    <button class="topic-button" onclick="askQuestion('Mietvertrag')">📄 Mietvertrag-Details</button>
+                    <button class="topic-button" onclick="askQuestion('Mieterhöhung')">🏠 Mieterhöhung</button>
+                    <button class="topic-button" onclick="askQuestion('Heizungsausfall')">🔥 Heizungsausfall</button>
+                    <button class="topic-button" onclick="askQuestion('Kündigung')">📋 Kündigung</button>
+                    <button class="topic-button" onclick="askQuestion('Nebenkosten')">💰 Nebenkosten</button>
+                    <button class="topic-button" onclick="askQuestion('Schimmel')">🦠 Schimmel</button>
+                    <button class="topic-button" onclick="askQuestion('Kaution')">💎 Kaution</button>
+                    <button class="topic-button" onclick="askQuestion('Modernisierung')">🔧 Modernisierung</button>
+                </div>
+
+                <!-- Input Methods -->
+                <div class="input-methods">
+                    <div class="input-method active" onclick="selectInputMethod('text')">
+                        📝 Text eingeben
+                    </div>
+                    <div class="input-method" onclick="selectInputMethod('voice')">
+                        🎤 Spracheingabe
+                    </div>
+                    <div class="input-method" onclick="selectInputMethod('document')">
+                        📄 Dokument hochladen
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <strong>KI-Assistent:</strong> Hallo! Ich bin Ihr spezialisierter Mietrechts-Assistent. Stellen Sie mir Ihre Frage oder wählen Sie ein Thema aus den Buttons oben. Ich analysiere die Komplexität und vermittle Sie bei Bedarf an passende Anwälte weiter.
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    🤖 KI-Assistent analysiert Ihre Frage...
+                </div>
+
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div id="textInput">
+                        <textarea class="question-input" id="questionText" placeholder="Beschreiben Sie Ihr mietrechtliches Problem in einfachen Worten..."></textarea>
+                    </div>
+
+                    <div id="voiceInput" style="display: none;">
+                        <div class="voice-input">
+                            <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤</button>
+                            <p>Klicken Sie auf das Mikrofon und sprechen Sie Ihre Frage</p>
+                            <p id="voiceStatus"></p>
+                        </div>
+                    </div>
+
+                    <div id="documentInput" style="display: none;">
+                        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                            📄 Dokument hier ablegen oder klicken zum Auswählen
+                            <br><small>Unterstützt: PDF, JPG, PNG, DOC, DOCX</small>
+                        </div>
+                        <input type="file" id="fileUpload" class="file-upload" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="handleFileUpload(event)">
+                    </div>
+
+                    <button class="send-button" onclick="sendQuestion()">Frage senden</button>
+                </div>
+            </div>
+
+            <!-- Analysis Panel -->
+            <div class="analysis-panel">
+                <!-- Complexity Analysis -->
+                <div class="analysis-section">
+                    <h3>🎯 Aktuelle Analyse</h3>
+                    <div class="complexity-analysis" id="complexityAnalysis">
+                        <p>Stellen Sie eine Frage, um die Komplexitätsanalyse zu sehen</p>
+                    </div>
+                </div>
+
+                <!-- Lawyer Recommendations -->
+                <div class="analysis-section">
+                    <h3>👨‍💼 Passende Anwälte in der Nähe</h3>
+                    <div class="lawyer-section" id="lawyerRecommendations">
+                        <p style="text-align: center; color: #666;">Anwälte werden nach der Komplexitätsanalyse angezeigt</p>
+                    </div>
+                </div>
+
+                <!-- Preparation Checklist -->
+                <div class="analysis-section">
+                    <h3>📋 Gesprächsvorbereitung</h3>
+                    <div class="preparation-checklist" id="preparationChecklist" style="display: none;">
+                        <h4>Checkliste für das Anwaltsgespräch:</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep1">
+                            <label for="prep1">Alle relevanten Dokumente sammeln</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep2">
+                            <label for="prep2">Fragen-Antwort-Verlauf ausdrucken</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep3">
+                            <label for="prep3">Wichtige Termine und Fristen notieren</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep4">
+                            <label for="prep4">Zeugen und Beweise auflisten</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep5">
+                            <label for="prep5">Gewünschtes Ergebnis definieren</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="prep6">
+                            <label for="prep6">Budget für Anwaltskosten festlegen</label>
+                        </div>
+                    </div>
+                    <div id="preparationPlaceholder">
+                        <p style="text-align: center; color: #666;">Gesprächsvorbereitung wird nach der Anwaltsvermittlung angezeigt</p>
+                    </div>
+                </div>
+
+                <!-- Export & Storage -->
+                <div class="analysis-section">
+                    <h3>💾 Verlauf & Export</h3>
+                    <div class="export-section">
+                        <p>Speichern Sie Ihren Frage-Antwort-Verlauf für Ihre Unterlagen</p>
+                        <button class="export-btn" onclick="exportToPDF()">📄 Als PDF exportieren</button>
+                        <button class="export-btn" onclick="exportToEmail()">📧 Per E-Mail senden</button>
+                        <button class="export-btn" onclick="shareWithLawyer()">👨‍💼 Mit Anwalt teilen</button>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security -->
+                <div class="analysis-section">
+                    <h3>🔒 Datenschutz & Sicherheit</h3>
+                    <div style="background: #d4edda; padding: 20px; border-radius: 12px;">
+                        <p><strong>✅ DSGVO-konform</strong></p>
+                        <p><strong>🔐 Ende-zu-Ende-Verschlüsselung</strong></p>
+                        <p><strong>🇩🇪 Server in Deutschland</strong></p>
+                        <p><strong>🗑️ Daten jederzeit löschbar</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentInputMethod = 'text';
+        let conversationHistory = [];
+        let isRecording = false;
+
+        // Mietrecht-spezifische Antworten
+        const mietrechtAnswers = {
+            'Mietvertrag': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+                
+                <strong>§ 550 BGB - Mietvertrag über Grundstücke:</strong><br>
+                <em>"Ein Mietvertrag über Grundstücke, der für längere Zeit als ein Jahr eingegangen wird, bedarf der schriftlichen Form."</em><br><br>
+                
+                <strong>§ 535 BGB - Inhalt und Hauptpflichten des Mietvertrags:</strong><br>
+                Definiert die grundlegenden Rechte und Pflichten von Vermieter und Mieter.<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📋 Pflichtangaben im Mietvertrag</h3>
+                
+                <strong>1. Vertragsparteien (§ 535 BGB):</strong><br>
+                <strong>Vermieter-Angaben:</strong><br>
+                • ✅ Vollständiger Name (bei natürlichen Personen: Vor- und Nachname)<br>
+                • ✅ Vollständige Anschrift (Straße, Hausnummer, PLZ, Ort)<br>
+                • ✅ Bei juristischen Personen: Firmenbezeichnung, Rechtsform, Sitz<br>
+                • ✅ Vertretungsberechtigung (bei Bevollmächtigten)<br><br>
+                
+                <strong>Mieter-Angaben:</strong><br>
+                • ✅ Vollständiger Name aller Mieter<br>
+                • ✅ Aktuelle Anschrift<br>
+                • ✅ Bei mehreren Mietern: Gesamtschuldnerische Haftung<br><br>
+                
+                <strong>2. Mietobjekt-Bezeichnung (§ 535 BGB):</strong><br>
+                <strong>Genaue Objektbeschreibung:</strong><br>
+                • ✅ Vollständige Anschrift der Mietwohnung<br>
+                • ✅ Stockwerk und Lage (z.B. "2. OG links")<br>
+                • ✅ Wohnungsnummer (falls vorhanden)<br>
+                • ✅ Wohnfläche in m² (nach Wohnflächenverordnung)<br>
+                • ✅ Anzahl der Zimmer (präzise Raumaufteilung)<br><br>
+                
+                <strong>Nebenräume und Zubehör:</strong><br>
+                • ✅ Keller (mit genauer Bezeichnung/Nummer)<br>
+                • ✅ Dachboden/Speicher<br>
+                • ✅ Garage/Stellplatz (mit Nummer/Lage)<br>
+                • ✅ Balkon/Terrasse/Garten (mit Größenangabe)<br>
+                • ✅ Weitere Nebenräume (Waschküche, Fahrradkeller, etc.)<br><br>
+                
+                <strong>3. Mietzeit und Vertragsdauer:</strong><br>
+                • ✅ Mietbeginn (konkretes Datum)<br>
+                • ✅ Befristung (bei befristeten Verträgen nach § 575 BGB)<br>
+                • ✅ Kündigungsfristen (§ 573c BGB)<br><br>
+                
+                <strong>4. Miete und Nebenkosten (§ 556 BGB):</strong><br>
+                <strong>Mietpreisangaben:</strong><br>
+                • ✅ Grundmiete/Nettokaltmiete (monatlicher Betrag)<br>
+                • ✅ Betriebskosten/Nebenkosten (Vorauszahlung)<br>
+                • ✅ Gesamtmiete (Warmmiete)<br>
+                • ✅ Fälligkeit (§ 556b BGB - spätestens am 3. Werktag)<br><br>
+                
+                <strong>5. Kaution (§ 551 BGB):</strong><br>
+                • ✅ Höhe der Kaution (max. 3 Nettokaltmieten)<br>
+                • ✅ Zahlungsmodalitäten (Ratenzahlung möglich)<br>
+                • ✅ Anlageform (Sparbuch, Bürgschaft, etc.)<br>
+                • ✅ Verzinsung (Pflicht des Vermieters)<br><br>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit:</strong><br>
+                Die korrekte Vertragsgestaltung erfordert fundierte Rechtskenntnisse. Fehlerhafte Angaben können zu erheblichen rechtlichen und finanziellen Konsequenzen führen.<br><br>
+                <strong>💡 Empfehlung:</strong> Bei komplexen Vertragsgestaltungen Anwaltsberatung empfohlen
+                </div>`
+            },
+            'Mieterhöhung': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+                
+                <strong>§ 558 BGB - Mieterhöhung bis zur ortsüblichen Vergleichsmiete:</strong><br>
+                <em>"Der Vermieter kann eine Erhöhung der Miete bis zur ortsüblichen Vergleichsmiete verlangen, wenn die Miete in dem Zeitpunkt, zu dem die Erhöhung eintreten soll, seit 15 Monaten unverändert ist."</em><br><br>
+                
+                <strong>§ 558a BGB - Kappungsgrenze:</strong><br>
+                <em>"Die Miete darf innerhalb von drei Jahren, von Erhöhungen nach den §§ 559 bis 560 abgesehen, nicht um mehr als 20 vom Hundert erhöht werden."</em><br><br>
+                
+                <strong>§ 556d BGB - Mietpreisbremse:</strong><br>
+                Bei Wiedervermietung darf die Miete höchstens 10% über der ortsüblichen Vergleichsmiete liegen.<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📋 Voraussetzungen für Mieterhöhungen</h3>
+                
+                <strong>1. Formelle Voraussetzungen:</strong><br>
+                • ✅ Schriftliche Mieterhöhungserklärung (§ 558a BGB)<br>
+                • ✅ Begründung der Erhöhung erforderlich<br>
+                • ✅ Zustimmungsfrist: 2 Monate (§ 558b BGB)<br>
+                • ✅ Mindestablauf: 15 Monate seit letzter Erhöhung<br><br>
+                
+                <strong>2. Materielle Voraussetzungen:</strong><br>
+                • ✅ Erhöhung nur bis zur ortsüblichen Vergleichsmiete<br>
+                • ✅ Kappungsgrenze: Max. 20% in 3 Jahren<br>
+                • ✅ Qualifizierter Mietspiegel oder Sachverständigengutachten<br>
+                • ✅ Vergleichbare Wohnungen als Begründung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🛡️ Mieterrechte und Widerspruchsmöglichkeiten</h3>
+                
+                <strong>Widerspruchsrechte nach § 558b BGB:</strong><br>
+                • 🔄 Verweigerung der Zustimmung innerhalb 2 Monaten<br>
+                • 🔄 Begründung nicht ausreichend → Widerspruch möglich<br>
+                • 🔄 Härtefalleinwand nach § 558 Abs. 3 BGB<br>
+                • 🔄 Soziale Härte (Alter, Krankheit, finanzielle Situation)<br><br>
+                
+                <strong>Prüfschema für Mieter:</strong><br>
+                1. <strong>Formelle Prüfung:</strong> Schriftform, Begründung, Fristen<br>
+                2. <strong>Materielle Prüfung:</strong> Ortsübliche Vergleichsmiete, Kappungsgrenze<br>
+                3. <strong>Härtefallprüfung:</strong> Persönliche oder wirtschaftliche Umstände<br>
+                4. <strong>Mietpreisbremse:</strong> Bei Neuvermietung anwendbar?<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🏛️ Relevante Rechtsprechung</h3>
+                
+                <strong>BGH-Urteile zu Mieterhöhungen:</strong><br>
+                • <strong>BGH VIII ZR 234/18:</strong> Mietspiegel muss aktuell und repräsentativ sein<br>
+                • <strong>BGH VIII ZR 144/17:</strong> Modernisierungsumlagen sind bei Kappungsgrenze zu berücksichtigen<br>
+                • <strong>BGH VIII ZR 213/16:</strong> Härtefalleinwand bei sozialer Notlage<br>
+                • <strong>BGH VIII ZR 320/15:</strong> Qualifizierter Mietspiegel hat Vorrang vor einfachem Mietspiegel<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚠️ Häufige Fehler bei Mieterhöhungen</h3>
+                
+                <strong>Vermieter-Fehler:</strong><br>
+                • ❌ Unzureichende Begründung der Erhöhung<br>
+                • ❌ Veralteter oder ungeeigneter Mietspiegel<br>
+                • ❌ Überschreitung der Kappungsgrenze<br>
+                • ❌ Zu kurze Zustimmungsfrist<br><br>
+                
+                <strong>Mieter-Fehler:</strong><br>
+                • ❌ Versäumung der 2-Monats-Frist für Widerspruch<br>
+                • ❌ Stillschweigende Zustimmung durch Zahlung<br>
+                • ❌ Unzureichende Prüfung der Begründung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">💡 Praktische Handlungsempfehlungen</h3>
+                
+                <strong>Für Mieter:</strong><br>
+                1. <strong>Sofortige Prüfung:</strong> Mieterhöhung innerhalb 2 Monaten prüfen<br>
+                2. <strong>Mietspiegel beschaffen:</strong> Aktuellen Mietspiegel der Stadt einsehen<br>
+                3. <strong>Vergleichswohnungen prüfen:</strong> Sind die angegebenen Wohnungen vergleichbar?<br>
+                4. <strong>Kappungsgrenze berechnen:</strong> 20%-Grenze der letzten 3 Jahre prüfen<br>
+                5. <strong>Härtefallprüfung:</strong> Persönliche Umstände dokumentieren<br>
+                6. <strong>Rechtzeitiger Widerspruch:</strong> Schriftlich und begründet widersprechen<br><br>
+                
+                <strong>Für Vermieter:</strong><br>
+                1. <strong>Sorgfältige Vorbereitung:</strong> Aktuellen Mietspiegel verwenden<br>
+                2. <strong>Vergleichbare Wohnungen:</strong> Mindestens 3 vergleichbare Objekte<br>
+                3. <strong>Kappungsgrenze beachten:</strong> 20%-Regel der letzten 3 Jahre<br>
+                4. <strong>Formvorschriften einhalten:</strong> Schriftform und Begründung<br>
+                5. <strong>Angemessene Frist:</strong> 2 Monate Zustimmungsfrist gewähren<br><br>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #856404; margin: 20px 0;">
+                <strong>⚠️ Besondere Hinweise:</strong><br><br>
+                <strong>Mietpreisbremse:</strong> In angespannten Wohnungsmärkten gelten verschärfte Regeln<br>
+                <strong>Modernisierung:</strong> Nach Modernisierung gelten andere Erhöhungsregeln (§ 559 BGB)<br>
+                <strong>Staffelmiete:</strong> Bei Staffelmietverträgen sind Erhöhungen nach § 558 BGB ausgeschlossen<br>
+                <strong>Indexmiete:</strong> Bei Indexmietverträgen erfolgt automatische Anpassung
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit und Handlungsempfehlung:</strong><br><br>
+                <strong>Komplexitätsbewertung:</strong> Mittel bis Hoch<br>
+                • Mieterhöhungen unterliegen strengen gesetzlichen Voraussetzungen<br>
+                • Formfehler können zur Unwirksamkeit führen<br>
+                • Fristen sind unbedingt zu beachten<br><br>
+                
+                <strong>Empfehlung:</strong><br>
+                • <strong>Für Mieter:</strong> Bei Zweifeln sofort anwaltliche Beratung<br>
+                • <strong>Für Vermieter:</strong> Rechtssichere Vorbereitung durch Fachanwalt<br>
+                • <strong>Beide Seiten:</strong> Mietspiegel und aktuelle Rechtsprechung beachten
+                </div>
+                
+                <strong>💡 Empfehlung:</strong> Anwaltsberatung zur Prüfung der Rechtmäßigkeit dringend empfohlen`
+            },
+            'Heizungsausfall': {
+                complexity: 'low',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexität</span><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+                
+                <strong>§ 536 BGB - Mietminderung bei Sach- und Rechtsmängeln:</strong><br>
+                <em>"Ist die Mietsache während der Mietzeit mit einem Mangel behaftet, der ihre Tauglichkeit zum vertragsgemäßen Gebrauch aufhebt oder mindert, ist der Mieter für die Zeit, in der die Tauglichkeit aufgehoben oder gemindert ist, von der Entrichtung der Miete befreit oder zur Entrichtung nur einer angemessen herabgesetzten Miete verpflichtet."</em><br><br>
+                
+                <strong>§ 535 Abs. 1 BGB - Hauptpflichten des Vermieters:</strong><br>
+                <em>"Der Vermieter ist verpflichtet, dem Mieter die Mietsache in einem zum vertragsgemäßen Gebrauch geeigneten Zustand zu überlassen und sie während der Mietzeit in diesem Zustand zu erhalten."</em><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🔥 Heizungsausfall als Mietmangel</h3>
+                
+                <strong>Rechtliche Einordnung:</strong><br>
+                • ✅ Heizungsausfall ist grundsätzlich ein erheblicher Mietmangel<br>
+                • ✅ Vermieter ist zur unverzüglichen Reparatur verpflichtet<br>
+                • ✅ Mietminderung ab dem ersten Tag des Ausfalls<br>
+                • ✅ Keine Verschuldensprüfung erforderlich<br><br>
+                
+                <strong>Minderungsquoten nach Rechtsprechung:</strong><br>
+                • 🌡️ <strong>Kompletter Heizungsausfall (Winter):</strong> 50-100% Minderung<br>
+                • 🌡️ <strong>Teilausfall einzelner Räume:</strong> 20-50% Minderung<br>
+                • 🌡️ <strong>Unzureichende Heizleistung:</strong> 10-30% Minderung<br>
+                • 🌡️ <strong>Ausfall in Übergangszeiten:</strong> 10-25% Minderung<br>
+                • 🌡️ <strong>Sommerzeit (Juni-August):</strong> Meist keine Minderung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📋 Sofortmaßnahmen für Mieter</h3>
+                
+                <strong>1. Unverzügliche Mängelmeldung (§ 536c BGB):</strong><br>
+                • ✅ Schriftliche Benachrichtigung des Vermieters<br>
+                • ✅ Datum und Uhrzeit des Ausfalls dokumentieren<br>
+                • ✅ Fristsetzung zur Reparatur (meist 24-48 Stunden)<br>
+                • ✅ Androhung der Mietminderung<br><br>
+                
+                <strong>2. Dokumentation des Mangels:</strong><br>
+                • 📸 Fotos der defekten Heizung/Thermostate<br>
+                • 🌡️ Temperaturmessungen in den Räumen<br>
+                • 📝 Protokoll über Dauer des Ausfalls<br>
+                • 👥 Zeugen benennen (Nachbarn, Familie)<br><br>
+                
+                <strong>3. Mietminderung durchsetzen:</strong><br>
+                • 💰 Miete ab Ausfalltag entsprechend mindern<br>
+                • 📄 Schriftliche Mitteilung an Vermieter<br>
+                • 🧾 Minderungsbetrag bei nächster Mietzahlung abziehen<br>
+                • 📊 Minderungsquote angemessen wählen<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🏛️ Relevante Rechtsprechung</h3>
+                
+                <strong>Wichtige Gerichtsentscheidungen:</strong><br>
+                • <strong>BGH VIII ZR 71/18:</strong> Kompletter Heizungsausfall im Winter berechtigt zu 100% Mietminderung<br>
+                • <strong>LG Berlin 67 S 187/09:</strong> Heizungsausfall bei -10°C Außentemperatur = 80% Minderung<br>
+                • <strong>AG München 412 C 5613/18:</strong> Teilausfall Wohnzimmerheizung = 25% Minderung<br>
+                • <strong>LG Hamburg 307 S 31/17:</strong> Unzureichende Heizleistung (16°C statt 20°C) = 20% Minderung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📊 Minderungstabelle nach Jahreszeit</h3>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <strong>Winter (November - März):</strong><br>
+                • Komplettausfall: 50-100% (je nach Außentemperatur)<br>
+                • Teilausfall: 20-50%<br>
+                • Unzureichende Heizung: 15-30%<br><br>
+                
+                <strong>Übergangszeit (April/Mai, September/Oktober):</strong><br>
+                • Komplettausfall: 20-50%<br>
+                • Teilausfall: 10-25%<br>
+                • Unzureichende Heizung: 5-15%<br><br>
+                
+                <strong>Sommer (Juni - August):</strong><br>
+                • Meist keine Minderung berechtigt<br>
+                • Ausnahme: Warmwasserausfall = 5-10%
+                </div>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚠️ Häufige Fehler vermeiden</h3>
+                
+                <strong>Mieter-Fehler:</strong><br>
+                • ❌ Keine oder verspätete Mängelmeldung<br>
+                • ❌ Überhöhte Minderungsquoten<br>
+                • ❌ Fehlende Dokumentation<br>
+                • ❌ Eigenreparatur ohne Vermietererlaubnis<br><br>
+                
+                <strong>Vermieter-Fehler:</strong><br>
+                • ❌ Ignorieren der Mängelmeldung<br>
+                • ❌ Verzögerung der Reparatur<br>
+                • ❌ Bestreiten des Minderungsrechts<br>
+                • ❌ Unzureichende Wartung der Heizungsanlage<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🔧 Notfallmaßnahmen</h3>
+                
+                <strong>Bei akutem Heizungsausfall:</strong><br>
+                • 🚨 <strong>Notdienst beauftragen:</strong> Bei Gefahr für Gesundheit oder Leitungen<br>
+                • 💰 <strong>Kostenerstattung:</strong> Vermieter muss angemessene Notdienstkosten tragen<br>
+                • 🏨 <strong>Ersatzunterkunft:</strong> Bei unbewohnbarer Wohnung Hotelkosten erstattungsfähig<br>
+                • ⚡ <strong>Heizlüfter:</strong> Stromkosten können vom Vermieter verlangt werden<br><br>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
+                <strong>✅ Musterbrief - Heizungsausfall melden:</strong><br><br>
+                
+                <em>Sehr geehrte/r [Vermieter],<br><br>
+                
+                hiermit teile ich Ihnen mit, dass seit dem [Datum] um [Uhrzeit] die Heizungsanlage in meiner Wohnung [Adresse] ausgefallen ist.<br><br>
+                
+                Die Raumtemperatur beträgt derzeit nur [X]°C, was den vertragsgemäßen Gebrauch der Wohnung erheblich beeinträchtigt.<br><br>
+                
+                Ich setze Ihnen hiermit eine Frist bis zum [Datum] zur Behebung des Mangels. Sollte der Mangel nicht fristgerecht behoben werden, werde ich die Miete entsprechend mindern.<br><br>
+                
+                Mit freundlichen Grüßen<br>
+                [Name]</em>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit und Handlungsempfehlung:</strong><br><br>
+                <strong>Komplexitätsbewertung:</strong> Niedrig<br>
+                • Heizungsausfall ist ein klassischer, gut dokumentierter Mietmangel<br>
+                • Rechtslage ist eindeutig und durch Rechtsprechung gefestigt<br>
+                • Standardfall mit klaren Handlungsanweisungen<br><br>
+                
+                <strong>Empfehlung:</strong><br>
+                • <strong>Sofortige Mängelmeldung</strong> an Vermieter<br>
+                • <strong>Angemessene Mietminderung</strong> ab dem ersten Tag<br>
+                • <strong>Dokumentation</strong> aller Umstände<br>
+                • <strong>Bei Verweigerung:</strong> Anwaltliche Beratung
+                </div>
+                
+                <strong>💡 Empfehlung:</strong> KI-Beratung meist ausreichend, Musterbrief verfügbar. Bei Verweigerung des Vermieters: Anwaltsberatung`
+            },
+            'Kündigung': {
+                complexity: 'high',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-high">Hohe Komplexität</span><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+                
+                <strong>§ 573 BGB - Ordentliche Kündigung des Vermieters:</strong><br>
+                <em>"Der Vermieter kann nur kündigen, wenn er ein berechtigtes Interesse an der Beendigung des Mietverhältnisses hat."</em><br><br>
+                
+                <strong>§ 543 BGB - Fristlose Kündigung aus wichtigem Grund:</strong><br>
+                <em>"Jede Vertragspartei kann das Mietverhältnis aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen."</em><br><br>
+                
+                <strong>§ 574 BGB - Widerspruch des Mieters:</strong><br>
+                <em>"Der Mieter kann der Kündigung bis zum Ablauf von zwei Monaten vor dem Beendigungstermin widersprechen und vom Vermieter die Fortsetzung des Mietverhältnisses verlangen, wenn die Beendigung für den Mieter, seine Familie oder andere Angehörige seines Haushalts eine Härte bedeuten würde."</em><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📋 Arten der Kündigung</h3>
+                
+                <strong>1. Ordentliche Kündigung (§ 573 BGB):</strong><br>
+                <strong>Berechtigte Interessen des Vermieters:</strong><br>
+                • 🏠 <strong>Eigenbedarf (§ 573 Abs. 2 Nr. 2 BGB):</strong> Für sich, Familie oder Haushaltsangehörige<br>
+                • 💰 <strong>Wirtschaftliche Verwertung (§ 573 Abs. 2 Nr. 3 BGB):</strong> Verkauf, Abriss, Umbau<br>
+                • ⚖️ <strong>Vertragswidriges Verhalten (§ 573 Abs. 2 Nr. 1 BGB):</strong> Pflichtverletzungen des Mieters<br><br>
+                
+                <strong>Kündigungsfristen:</strong><br>
+                • Mietdauer bis 5 Jahre: 3 Monate<br>
+                • Mietdauer 5-8 Jahre: 6 Monate<br>
+                • Mietdauer über 8 Jahre: 9 Monate<br><br>
+                
+                <strong>2. Fristlose Kündigung (§ 543 BGB):</strong><br>
+                <strong>Wichtige Gründe:</strong><br>
+                • 💰 <strong>Zahlungsverzug:</strong> 2 Monatsmieten oder 2 Monate in Folge<br>
+                • 🚫 <strong>Vertragswidrige Nutzung:</strong> Gewerbliche Nutzung ohne Erlaubnis<br>
+                • 👥 <strong>Störung des Hausfriedens:</strong> Belästigung anderer Mieter<br>
+                • 🏠 <strong>Substanzgefährdung:</strong> Beschädigung der Mietsache<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🛡️ Kündigungsschutz und Mieterrechte</h3>
+                
+                <strong>Kündigungsschutzgesetz (KSchG) - Anwendbarkeit:</strong><br>
+                • ✅ Wohnraum mit mehr als 4 Wohnungen<br>
+                • ✅ Mietdauer über 6 Monate<br>
+                • ✅ Nicht bei Einliegerwohnungen<br><br>
+                
+                <strong>Widerspruchsrecht (§ 574 BGB):</strong><br>
+                <strong>Härtefallgründe:</strong><br>
+                • 👴 <strong>Persönliche Härte:</strong> Alter, Krankheit, Behinderung<br>
+                • 👨‍👩‍👧‍👦 <strong>Familiäre Härte:</strong> Schulpflichtige Kinder, Schwangerschaft<br>
+                • 💰 <strong>Wirtschaftliche Härte:</strong> Kein angemessener Ersatzwohnraum<br>
+                • 🏫 <strong>Soziale Härte:</strong> Verwurzelung im Wohnumfeld<br><br>
+                
+                <strong>Widerspruchsfrist:</strong><br>
+                • ⏰ Bis 2 Monate vor Beendigungstermin<br>
+                • 📝 Schriftform erforderlich<br>
+                • 🎯 Konkrete Härtefallgründe angeben<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🔍 Prüfschema bei Kündigung</h3>
+                
+                <strong>1. Formelle Prüfung:</strong><br>
+                • ✅ Schriftform (§ 568 BGB)<br>
+                • ✅ Kündigungsfrist eingehalten<br>
+                • ✅ Zugang der Kündigung<br>
+                • ✅ Unterschrift des Vermieters<br><br>
+                
+                <strong>2. Materielle Prüfung:</strong><br>
+                • ✅ Berechtigtes Interesse vorhanden<br>
+                • ✅ Interessenabwägung<br>
+                • ✅ Verhältnismäßigkeit<br>
+                • ✅ Keine Rechtsmissbräuchlichkeit<br><br>
+                
+                <strong>3. Kündigungsschutz prüfen:</strong><br>
+                • ✅ KSchG anwendbar<br>
+                • ✅ Härtefallgründe vorhanden<br>
+                • ✅ Widerspruchsfrist beachten<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🏛️ Relevante Rechtsprechung</h3>
+                
+                <strong>Eigenbedarfskündigungen:</strong><br>
+                • <strong>BGH VIII ZR 270/18:</strong> Eigenbedarf muss konkret und nachvollziehbar sein<br>
+                • <strong>BGH VIII ZR 180/17:</strong> Scheinvormietung führt zur Unwirksamkeit<br>
+                • <strong>BGH VIII ZR 232/16:</strong> Interessenabwägung bei langjährigen Mietern<br><br>
+                
+                <strong>Fristlose Kündigungen:</strong><br>
+                • <strong>BGH VIII ZR 124/19:</strong> Zahlungsverzug: Fälligkeit und Mahnung erforderlich<br>
+                • <strong>BGH VIII ZR 94/18:</strong> Störung des Hausfriedens muss erheblich sein<br>
+                • <strong>BGH VIII ZR 222/17:</strong> Abmahnung vor fristloser Kündigung meist erforderlich<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚠️ Häufige Kündigungsfehler</h3>
+                
+                <strong>Vermieter-Fehler:</strong><br>
+                • ❌ Unzureichende Begründung des Eigenbedarfs<br>
+                • ❌ Falsche Kündigungsfristen<br>
+                • ❌ Fehlende oder unvollständige Unterschrift<br>
+                • ❌ Keine vorherige Abmahnung bei fristloser Kündigung<br><br>
+                
+                <strong>Mieter-Fehler:</strong><br>
+                • ❌ Versäumung der Widerspruchsfrist<br>
+                • ❌ Unzureichende Begründung des Widerspruchs<br>
+                • ❌ Keine rechtzeitige anwaltliche Beratung<br>
+                • ❌ Auszug trotz unwirksamer Kündigung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🚨 Sofortmaßnahmen bei Kündigung</h3>
+                
+                <strong>Erste 48 Stunden:</strong><br>
+                • 📞 <strong>Anwalt kontaktieren:</strong> Spezialist für Mietrecht<br>
+                • 📄 <strong>Kündigung prüfen lassen:</strong> Form- und Inhaltsfehler<br>
+                • 📝 <strong>Dokumentation:</strong> Alle Unterlagen sammeln<br>
+                • ⏰ <strong>Fristen notieren:</strong> Widerspruchsfrist berechnen<br><br>
+                
+                <strong>Erste Woche:</strong><br>
+                • 🔍 <strong>Rechtslage prüfen:</strong> Kündigungsgrund berechtigt?<br>
+                • 📋 <strong>Härtefallgründe sammeln:</strong> Persönliche Umstände dokumentieren<br>
+                • 🏠 <strong>Wohnungssuche:</strong> Ersatzwohnraum erkunden<br>
+                • 💰 <strong>Finanzierung klären:</strong> Umzugskosten, Kaution<br><br>
+                
+                <strong>Bis Widerspruchsfrist:</strong><br>
+                • ✍️ <strong>Widerspruch einlegen:</strong> Schriftlich und begründet<br>
+                • 📨 <strong>Einschreiben versenden:</strong> Zugang nachweisen<br>
+                • 🎯 <strong>Verhandlungen führen:</strong> Außergerichtliche Einigung<br><br>
+                
+                <div style="background: #f8d7da; padding: 15px; border-radius: 10px; border-left: 4px solid #721c24; margin: 20px 0;">
+                <strong>🚨 Kritische Fristen:</strong><br><br>
+                
+                <strong>Widerspruch bei ordentlicher Kündigung:</strong><br>
+                • ⏰ Bis 2 Monate vor Beendigungstermin<br>
+                • 📝 Schriftform zwingend erforderlich<br>
+                • 📮 Rechtzeitiger Zugang beim Vermieter<br><br>
+                
+                <strong>Räumungsklage:</strong><br>
+                • ⚖️ Vermieter kann nach Ablauf der Kündigungsfrist klagen<br>
+                • 🏠 Ohne Widerspruch: Meist erfolgreiche Klage<br>
+                • 💰 Prozesskosten trägt unterlegene Partei
+                </div>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
+                <strong>✅ Muster-Widerspruch gegen Kündigung:</strong><br><br>
+                
+                <em>Sehr geehrte/r [Vermieter],<br><br>
+                
+                gegen Ihre Kündigung vom [Datum] bezüglich der Wohnung [Adresse] lege ich hiermit fristgerecht Widerspruch ein und verlange die Fortsetzung des Mietverhältnisses.<br><br>
+                
+                Die Beendigung des Mietverhältnisses würde für mich und meine Familie eine unzumutbare Härte bedeuten, weil:<br>
+                • [Härtefallgrund 1]<br>
+                • [Härtefallgrund 2]<br>
+                • [Härtefallgrund 3]<br><br>
+                
+                Ich bitte um Rücknahme der Kündigung.<br><br>
+                
+                Mit freundlichen Grüßen<br>
+                [Name]</em>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit und Handlungsempfehlung:</strong><br><br>
+                <strong>Komplexitätsbewertung:</strong> Hoch<br>
+                • Kündigungen unterliegen strengen gesetzlichen Voraussetzungen<br>
+                • Komplexe Interessenabwägung erforderlich<br>
+                • Kurze Fristen mit weitreichenden Konsequenzen<br>
+                • Hohe Prozessrisiken bei falscher Einschätzung<br><br>
+                
+                <strong>Empfehlung:</strong><br>
+                • <strong>Sofortige Anwaltsberatung</strong> innerhalb 24-48 Stunden<br>
+                • <strong>Keine Eigenversuche</strong> bei der rechtlichen Bewertung<br>
+                • <strong>Fristen unbedingt beachten</strong> - Versäumung meist irreversibel<br>
+                • <strong>Dokumentation aller Umstände</strong> für Härtefallprüfung
+                </div>
+                
+                <strong>💡 Empfehlung:</strong> Sofortige Anwaltsberatung innerhalb 24 Stunden dringend empfohlen! Kündigungen sind hochkomplex und fristgebunden.`
+            },
+            'Nebenkosten': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚖️ Rechtliche Grundlagen</h3>
+                
+                <strong>§ 556 BGB - Vereinbarung über Betriebskosten:</strong><br>
+                <em>"Die Vertragsparteien können vereinbaren, dass der Mieter Betriebskosten trägt. Betriebskosten sind die Kosten, die dem Eigentümer oder Erbbauberechtigten durch das Eigentum oder Erbbaurecht am Grundstück oder durch den bestimmungsgemäßen Gebrauch des Gebäudes, der Nebengebäude, Anlagen, Einrichtungen und des Grundstücks laufend entstehen."</em><br><br>
+                
+                <strong>§ 556 Abs. 3 BGB - Abrechnungsfrist:</strong><br>
+                <em>"Die Abrechnung ist dem Mieter spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums mitzuteilen."</em><br><br>
+                
+                <strong>Betriebskostenverordnung (BetrKV):</strong><br>
+                Konkretisiert die umlagefähigen Betriebskosten in § 2 BetrKV<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">💰 Umlagefähige Betriebskosten</h3>
+                
+                <strong>§ 2 BetrKV - Katalog der Betriebskosten:</strong><br>
+                
+                <strong>1. Wasserversorgung:</strong><br>
+                • ✅ Wasserverbrauchskosten<br>
+                • ✅ Grundgebühren<br>
+                • ✅ Kosten der Wasseruhr<br>
+                • ✅ Wartung der Wasserversorgungsanlage<br><br>
+                
+                <strong>2. Entwässerung:</strong><br>
+                • ✅ Abwassergebühren<br>
+                • ✅ Niederschlagswasser<br>
+                • ✅ Wartung der Entwässerungsanlage<br><br>
+                
+                <strong>3. Heizung und Warmwasser:</strong><br>
+                • ✅ Brennstoffkosten (Gas, Öl, Fernwärme)<br>
+                • ✅ Wartung und Reinigung der Heizungsanlage<br>
+                • ✅ Schornsteinreinigung<br>
+                • ✅ Heizungsstrom<br><br>
+                
+                <strong>4. Aufzug:</strong><br>
+                • ✅ Strom für Aufzugsbetrieb<br>
+                • ✅ Wartung und Prüfung<br>
+                • ✅ Reinigung<br><br>
+                
+                <strong>5. Straßenreinigung und Müllbeseitigung:</strong><br>
+                • ✅ Straßenreinigungsgebühren<br>
+                • ✅ Müllabfuhrgebühren<br>
+                • ✅ Kosten für Müllbehälter<br><br>
+                
+                <strong>6. Gebäudereinigung:</strong><br>
+                • ✅ Reinigung von Treppenhäusern<br>
+                • ✅ Reinigung von Kellern und Dachböden<br>
+                • ✅ Fensterreinigung (nur Außenseite)<br><br>
+                
+                <strong>7. Gartenpflege:</strong><br>
+                • ✅ Pflege von Grünanlagen<br>
+                • ✅ Winterdienst<br>
+                • ✅ Spielplatzwartung<br><br>
+                
+                <strong>8. Beleuchtung:</strong><br>
+                • ✅ Strom für Hausbeleuchtung<br>
+                • ✅ Außenbeleuchtung<br>
+                • ✅ Wartung der Beleuchtungsanlage<br><br>
+                
+                <strong>9. Schädlingsbekämpfung:</strong><br>
+                • ✅ Regelmäßige Schädlingsbekämpfung<br>
+                • ✅ Taubenschutzmaßnahmen<br><br>
+                
+                <strong>10. Hausmeister:</strong><br>
+                • ✅ Lohn des Hausmeisters<br>
+                • ✅ Sozialabgaben<br>
+                • ✅ Sachbezüge (z.B. freie Wohnung)<br><br>
+                
+                <strong>11. Hausverwaltung:</strong><br>
+                • ✅ Kosten der Hausverwaltung<br>
+                • ✅ Nur bei kleineren Objekten<br><br>
+                
+                <strong>12. Grundsteuer:</strong><br>
+                • ✅ Grundsteuer A und B<br><br>
+                
+                <strong>13. Versicherungen:</strong><br>
+                • ✅ Haftpflichtversicherung<br>
+                • ✅ Gebäudeversicherung<br>
+                • ✅ Nicht: Rechtsschutzversicherung<br><br>
+                
+                <strong>14. Kabel-/Antennenanlage:</strong><br>
+                • ✅ Grundgebühren für Kabelanschluss<br>
+                • ✅ Wartung der Antennenanlage<br><br>
+                
+                <strong>15. Wascheinrichtungen:</strong><br>
+                • ✅ Strom und Wasser für Gemeinschaftswaschküche<br>
+                • ✅ Wartung der Waschmaschinen<br><br>
+                
+                <strong>16. Sonstige Betriebskosten:</strong><br>
+                • ✅ Nur wenn im Mietvertrag konkret benannt<br>
+                • ✅ Z.B. Kosten für Schwimmbad, Sauna<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">❌ Nicht umlagefähige Kosten</h3>
+                
+                <strong>Verwaltungskosten:</strong><br>
+                • ❌ Kosten der Hausverwaltung (bei größeren Objekten)<br>
+                • ❌ Bankgebühren<br>
+                • ❌ Porto und Telefon<br>
+                • ❌ Rechtsberatung und Prozesskosten<br><br>
+                
+                <strong>Instandhaltung und Reparaturen:</strong><br>
+                • ❌ Reparaturen an der Heizungsanlage<br>
+                • ❌ Erneuerung von Anlagen<br>
+                • ❌ Schönheitsreparaturen<br>
+                • ❌ Instandsetzung nach Vandalismusschäden<br><br>
+                
+                <strong>Kapitalkosten:</strong><br>
+                • ❌ Zinsen und Tilgung<br>
+                • ❌ Abschreibungen<br>
+                • ❌ Eigenkapitalverzinsung<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">📊 Prüfschema für Nebenkostenabrechnung</h3>
+                
+                <strong>1. Formelle Prüfung:</strong><br>
+                • ✅ Fristgerechte Zustellung (12 Monate nach Abrechnungszeitraum)<br>
+                • ✅ Vollständigkeit der Abrechnung<br>
+                • ✅ Nachvollziehbarkeit der Berechnung<br>
+                • ✅ Belegbeifügung oder Belegeinsichtsrecht<br><br>
+                
+                <strong>2. Materielle Prüfung:</strong><br>
+                • ✅ Umlagefähigkeit der Kosten nach BetrKV<br>
+                • ✅ Angemessenheit der Kosten<br>
+                • ✅ Richtigkeit des Verteilerschlüssels<br>
+                • ✅ Korrekte Berechnung des Mieteranteils<br><br>
+                
+                <strong>3. Verteilerschlüssel prüfen:</strong><br>
+                • 📐 <strong>Nach Wohnfläche:</strong> Heizung, Warmwasser, Grundsteuer<br>
+                • 👥 <strong>Nach Personenzahl:</strong> Wasser, Müll<br>
+                • 🏠 <strong>Nach Wohneinheiten:</strong> Hausmeister, Beleuchtung<br>
+                • 📊 <strong>Nach Verbrauch:</strong> Heizung (mind. 50%), Warmwasser<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🏛️ Relevante Rechtsprechung</h3>
+                
+                <strong>Wichtige BGH-Urteile:</strong><br>
+                • <strong>BGH VIII ZR 189/18:</strong> Hausmeisterkosten nur bei tatsächlicher Tätigkeit umlagefähig<br>
+                • <strong>BGH VIII ZR 144/17:</strong> Wartungskosten für Heizung sind Betriebskosten<br>
+                • <strong>BGH VIII ZR 209/16:</strong> Abrechnungsfrist ist Ausschlussfrist<br>
+                • <strong>BGH VIII ZR 96/15:</strong> Belegeinsichtsrecht des Mieters<br><br>
+                
+                <strong>Abrechnungsfristen:</strong><br>
+                • <strong>BGH VIII ZR 107/17:</strong> Verspätete Abrechnung führt zum Wegfall der Nachforderung<br>
+                • <strong>BGH VIII ZR 189/16:</strong> 12-Monats-Frist ist Ausschlussfrist<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">⚠️ Häufige Abrechnungsfehler</h3>
+                
+                <strong>Vermieter-Fehler:</strong><br>
+                • ❌ Verspätete Abrechnung (nach 12 Monaten)<br>
+                • ❌ Umlage nicht umlagefähiger Kosten<br>
+                • ❌ Falscher Verteilerschlüssel<br>
+                • ❌ Fehlende oder unvollständige Belege<br>
+                • ❌ Doppelte Kostenumlage<br><br>
+                
+                <strong>Mieter-Fehler:</strong><br>
+                • ❌ Keine Prüfung der Abrechnung<br>
+                • ❌ Versäumung der Einwendungsfrist<br>
+                • ❌ Zahlung ohne Prüfung<br>
+                • ❌ Keine Belegeinsicht verlangt<br><br>
+                
+                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">🔍 Praktisches Vorgehen bei Abrechnungsprüfung</h3>
+                
+                <strong>Schritt 1 - Sofortprüfung:</strong><br>
+                • 📅 Zustellungsdatum prüfen (12-Monats-Frist)<br>
+                • 📊 Vollständigkeit der Abrechnung<br>
+                • 💰 Höhe der Nachforderung/Guthaben<br><br>
+                
+                <strong>Schritt 2 - Detailprüfung:</strong><br>
+                • 📋 Alle Kostenpositionen auf Umlagefähigkeit prüfen<br>
+                • 🧮 Verteilerschlüssel kontrollieren<br>
+                • 📐 Wohnflächenangabe überprüfen<br>
+                • 📈 Kostensteigerungen hinterfragen<br><br>
+                
+                <strong>Schritt 3 - Belegeinsicht:</strong><br>
+                • 📄 Schriftliche Anforderung der Belege<br>
+                • 🔍 Originalrechnungen einsehen<br>
+                • 📊 Gesamtkosten und Verteilung prüfen<br><br>
+                
+                <strong>Schritt 4 - Einwendungen:</strong><br>
+                • ✍️ Schriftliche Einwendungen binnen 12 Monaten<br>
+                • 🎯 Konkrete Beanstandungen formulieren<br>
+                • 💰 Zu viel gezahlte Beträge zurückfordern<br><br>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #856404; margin: 20px 0;">
+                <strong>⚠️ Wichtige Fristen:</strong><br><br>
+                
+                <strong>Abrechnungsfrist (Vermieter):</strong><br>
+                • 12 Monate nach Ende des Abrechnungszeitraums<br>
+                • Ausschlussfrist - bei Versäumung keine Nachforderung<br><br>
+                
+                <strong>Einwendungsfrist (Mieter):</strong><br>
+                • 12 Monate nach Zugang der Abrechnung<br>
+                • Danach nur noch bei grober Unrichtigkeit<br><br>
+                
+                <strong>Belegeinsichtsfrist:</strong><br>
+                • Bis zum Ende des 12. Monats nach Abrechnungszugang<br>
+                • Verlängerung bei berechtigtem Interesse möglich
+                </div>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
+                <strong>✅ Muster-Einwendung gegen Nebenkostenabrechnung:</strong><br><br>
+                
+                <em>Sehr geehrte/r [Vermieter],<br><br>
+                
+                gegen Ihre Nebenkostenabrechnung für den Zeitraum [Zeitraum] erhebe ich folgende Einwendungen:<br><br>
+                
+                1. Die Position "[Kostenart]" in Höhe von [Betrag] € ist nicht umlagefähig nach § 2 BetrKV<br>
+                2. Der Verteilerschlüssel für "[Kostenart]" ist nicht sachgerecht<br>
+                3. Die Kostensteigerung bei "[Kostenart]" um [%] ist nicht nachvollziehbar<br><br>
+                
+                Ich bitte um Korrektur der Abrechnung und Erstattung des zu viel gezahlten Betrags.<br><br>
+                
+                Hilfsweise beantrage ich Belegeinsicht gemäß § 556 Abs. 3 S. 2 BGB.<br><br>
+                
+                Mit freundlichen Grüßen<br>
+                [Name]</em>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
+                <strong>🎯 Fazit und Handlungsempfehlung:</strong><br><br>
+                <strong>Komplexitätsbewertung:</strong> Mittel<br>
+                • Nebenkostenabrechnungen erfordern detaillierte Rechtskenntnisse<br>
+                • Viele Fehlerquellen bei Vermietern<br>
+                • Fristen sind unbedingt zu beachten<br>
+                • Erhebliches Einsparpotential für Mieter<br><br>
+                
+                <strong>Empfehlung:</strong><br>
+                • <strong>Jede Abrechnung prüfen</strong> - auch bei geringen Beträgen<br>
+                • <strong>Belegeinsicht verlangen</strong> bei Unklarheiten<br>
+                • <strong>Einwendungen fristgerecht erheben</strong><br>
+                • <strong>Bei komplexen Fällen:</strong> Anwaltliche Beratung
+                </div>
+                
+                <strong>💡 Empfehlung:</strong> Detailprüfung durch Anwalt bei Auffälligkeiten oder hohen Nachforderungen empfohlen`
+            },
+            'Schimmel': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>⚖️ Wichtige Schritte:</strong><br>
+                • Ursache klären (Baumangel vs. Nutzerverhalten)<br>
+                • Mietminderung bis zu 50% möglich<br>
+                • Dokumentation mit Fotos<br><br>
+                <strong>💡 Empfehlung:</strong> Sachverständigen-Gutachten + Anwaltsberatung`
+            },
+            'Kaution': {
+                complexity: 'low',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexität</span><br><br>
+                <strong>⚖️ Ihre Rechte:</strong><br>
+                • Rückgabe binnen 6 Monaten nach Auszug<br>
+                • Verzinsung bei Anlage erforderlich<br>
+                • Begründete Einbehalte möglich<br><br>
+                <strong>💡 Empfehlung:</strong> Mahnung ausreichend, bei Verweigerung Anwalt`
+            },
+            'Modernisierung': {
+                complexity: 'medium',
+                answer: `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>⚖️ Ihre Rechte:</strong><br>
+                • Duldungspflicht nach § 555b BGB<br>
+                • Mieterhöhung max. 8% jährlich<br>
+                • 3 Monate Ankündigungsfrist<br><br>
+                <strong>💡 Empfehlung:</strong> Anwaltsberatung bei umfangreichen Maßnahmen`
+            }
+        };
+
+        // Spezialisierte Mietrechts-Anwälte
+        const mietrechtsAnwaelte = [
+            {
+                name: "Dr. Maria Schmidt",
+                specialization: "Mietrecht & Wohnungseigentumsrecht",
+                location: "2.3 km entfernt",
+                rating: 4.9,
+                reviews: 187,
+                hourlyRate: "190€/h",
+                available: true,
+                expertise: "Mietminderung, Kündigungsschutz"
+            },
+            {
+                name: "RA Thomas Weber",
+                specialization: "Mietrecht & Immobilienrecht",
+                location: "1.8 km entfernt",
+                rating: 4.8,
+                reviews: 203,
+                hourlyRate: "180€/h",
+                available: true,
+                expertise: "Nebenkostenabrechnungen, Modernisierung"
+            },
+            {
+                name: "RA Sarah Klein",
+                specialization: "Mietrecht & Verbraucherschutz",
+                location: "3.1 km entfernt",
+                rating: 4.7,
+                reviews: 156,
+                hourlyRate: "170€/h",
+                available: true,
+                expertise: "Mieterhöhungen, Schimmelschäden"
+            },
+            {
+                name: "Dr. Michael Hoffmann",
+                specialization: "Mietrecht & Baurecht",
+                location: "4.2 km entfernt",
+                rating: 4.9,
+                reviews: 234,
+                hourlyRate: "210€/h",
+                available: false,
+                expertise: "Baumängel, Gewährleistung"
+            }
+        ];
+
+        // Input Method Selection
+        function selectInputMethod(method) {
+            currentInputMethod = method;
+            
+            // Update active state
+            document.querySelectorAll('.input-method').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide input methods
+            document.getElementById('textInput').style.display = method === 'text' ? 'block' : 'none';
+            document.getElementById('voiceInput').style.display = method === 'voice' ? 'block' : 'none';
+            document.getElementById('documentInput').style.display = method === 'document' ? 'block' : 'none';
+        }
+
+        // Voice Recording
+        function toggleVoiceRecording() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            const voiceStatus = document.getElementById('voiceStatus');
+            
+            if (!isRecording) {
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+                voiceStatus.textContent = 'Aufnahme läuft... Sprechen Sie jetzt!';
+                
+                // Simulate voice recording
+                setTimeout(() => {
+                    document.getElementById('questionText').value = "Mein Vermieter will die Miete um 25% erhöhen, obwohl ich erst vor einem Jahr eingezogen bin. Ist das rechtens?";
+                    isRecording = false;
+                    voiceBtn.classList.remove('recording');
+                    voiceStatus.textContent = 'Aufnahme beendet. Text wurde übertragen.';
+                    selectInputMethod('text');
+                    
+                    setTimeout(() => {
+                        voiceStatus.textContent = '';
+                    }, 3000);
+                }, 3000);
+            }
+        }
+
+        // File Upload
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Simulate document analysis
+                setTimeout(() => {
+                    document.getElementById('questionText').value = `Ich habe ein Dokument hochgeladen (${file.name}). Können Sie mir dabei helfen, die rechtlichen Aspekte zu verstehen?`;
+                    selectInputMethod('text');
+                    alert('Dokument erfolgreich analysiert! Die Frage wurde generiert.');
+                }, 2000);
+                alert('Dokument wird analysiert...');
+            }
+        }
+
+        // Ask Question
+        function askQuestion(topic) {
+            const response = mietrechtAnswers[topic];
+            if (response) {
+                showComplexityAnalysis(response.answer, response.complexity);
+                addMessage(`Frage zu: ${topic}`, 'user');
+                addMessage(response.answer, 'ai');
+                
+                // Show lawyer recommendations for medium/high complexity
+                if (response.complexity !== 'low') {
+                    showLawyerRecommendations();
+                    showPreparationChecklist();
+                }
+            }
+        }
+
+        // Send Question
+        function sendQuestion() {
+            const questionText = document.getElementById('questionText').value.trim();
+            if (!questionText) {
+                alert('Bitte geben Sie eine Frage ein.');
+                return;
+            }
+
+            // Add user message
+            addMessage(questionText, 'user');
+            
+            // Show typing indicator
+            document.getElementById('typingIndicator').classList.add('show');
+            
+            // Clear input
+            document.getElementById('questionText').value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                analyzeQuestion(questionText);
+                document.getElementById('typingIndicator').classList.remove('show');
+            }, 2000);
+        }
+
+        // Analyze Question
+        function analyzeQuestion(question) {
+            let response = '';
+            let complexity = 'medium';
+            
+            // Check for specific keywords
+            if (question.toLowerCase().includes('mietvertrag') || 
+                question.toLowerCase().includes('vertrag') || 
+                question.toLowerCase().includes('pflichtangaben')) {
+                response = mietrechtAnswers['Mietvertrag'].answer;
+                complexity = 'medium';
+            } else if (question.toLowerCase().includes('mieterhöhung') || 
+                       question.toLowerCase().includes('miete') && question.toLowerCase().includes('erhöh')) {
+                response = mietrechtAnswers['Mieterhöhung'].answer;
+                complexity = 'medium';
+            } else if (question.toLowerCase().includes('heizung') || 
+                       question.toLowerCase().includes('minder')) {
+                response = mietrechtAnswers['Heizungsausfall'].answer;
+                complexity = 'low';
+            } else if (question.toLowerCase().includes('kündigung') || 
+                       question.toLowerCase().includes('kündig')) {
+                response = mietrechtAnswers['Kündigung'].answer;
+                complexity = 'high';
+            } else {
+                // Default response
+                response = `<strong>📊 Komplexitätsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexität</span><br><br>
+                <strong>🤖 KI-Analyse Ihrer Frage:</strong><br>
+                Ihre Frage wurde analysiert und dem Mietrecht zugeordnet.<br><br>
+                <strong>⚖️ Erste Einschätzung:</strong><br>
+                Ihr Fall erfordert eine individuelle Betrachtung der spezifischen Umstände.<br><br>
+                <strong>💡 Empfehlung:</strong> Für eine detaillierte Beratung empfehle ich Ihnen einen spezialisierten Mietrechtsanwalt.`;
+                complexity = 'medium';
+            }
+            
+            addMessage(response, 'ai');
+            showComplexityAnalysis(response, complexity);
+            
+            // Show lawyer recommendations for medium/high complexity
+            if (complexity !== 'low') {
+                showLawyerRecommendations();
+                showPreparationChecklist();
+            }
+        }
+
+        // Add Message
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>Sie:</strong> ${text}`;
+            } else {
+                messageDiv.innerHTML = text;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to conversation history
+            conversationHistory.push({
+                sender: sender,
+                text: text,
+                timestamp: new Date()
+            });
+        }
+
+        // Show Complexity Analysis
+        function showComplexityAnalysis(response, complexity) {
+            const analysisDiv = document.getElementById('complexityAnalysis');
+            
+            let complexityText = 'Mittel';
+            let complexityClass = 'complexity-medium';
+            let analysis = '';
+
+            if (complexity === 'high') {
+                complexityText = 'Hoch';
+                complexityClass = 'complexity-high';
+                analysis = 'Ihre Frage betrifft komplexe rechtliche Aspekte, die eine individuelle Beratung durch einen Anwalt erfordern.';
+            } else if (complexity === 'medium') {
+                complexityText = 'Mittel';
+                complexityClass = 'complexity-medium';
+                analysis = 'Ihre Frage erfordert eine detaillierte Analyse. Eine Anwaltsberatung könnte hilfreich sein.';
+            } else {
+                complexityText = 'Niedrig';
+                complexityClass = 'complexity-low';
+                analysis = 'Ihre Frage kann in der Regel durch eine KI-gestützte Erstberatung beantwortet werden.';
+            }
+
+            analysisDiv.innerHTML = `
+                <div class="complexity-badge ${complexityClass}">
+                    Komplexität: ${complexityText}
+                </div>
+                <p style="margin-top: 15px;">${analysis}</p>
+            `;
+        }
+
+        // Show Lawyer Recommendations
+        function showLawyerRecommendations() {
+            const lawyerSection = document.getElementById('lawyerRecommendations');
+            lawyerSection.innerHTML = '<h4 style="margin-bottom: 20px;">🎯 Passende Anwälte für Ihren Fall:</h4>';
+            
+            mietrechtsAnwaelte.forEach(lawyer => {
+                const lawyerCard = document.createElement('div');
+                lawyerCard.className = 'lawyer-card';
+                lawyerCard.innerHTML = `
+                    <div class="lawyer-info">
+                        <div>
+                            <strong>${lawyer.name}</strong><br>
+                            <small>${lawyer.specialization}</small><br>
+                            <small style="color: #666;">${lawyer.expertise}</small><br>
+                            <small>${lawyer.location}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="lawyer-rating">⭐ ${lawyer.rating} (${lawyer.reviews})</div>
+                            <small>${lawyer.hourlyRate}</small><br>
+                            <small style="color: ${lawyer.available ? '#28a745' : '#dc3545'};">
+                                ${lawyer.available ? '✅ Verfügbar' : '❌ Ausgebucht'}
+                            </small>
+                        </div>
+                    </div>
+                    ${lawyer.available ? `
+                    <div class="consultation-options">
+                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'phone')">
+                            📞 Telefon
+                        </button>
+                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'video')">
+                            💻 Video
+                        </button>
+                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'office')">
+                            🏢 Vor Ort
+                        </button>
+                    </div>
+                    ` : '<p style="text-align: center; color: #666; margin-top: 10px;">Derzeit keine Termine verfügbar</p>'}
+                `;
+                lawyerSection.appendChild(lawyerCard);
+            });
+        }
+
+        // Show Preparation Checklist
+        function showPreparationChecklist() {
+            document.getElementById('preparationChecklist').style.display = 'block';
+            document.getElementById('preparationPlaceholder').style.display = 'none';
+        }
+
+        // Book Consultation
+        function bookConsultation(lawyerName, type) {
+            const typeText = {
+                'phone': 'Telefonberatung',
+                'video': 'Videoberatung',
+                'office': 'Termin vor Ort'
+            };
+            
+            alert(`${typeText[type]} mit ${lawyerName} wird gebucht...\n\nSie erhalten in Kürze eine Bestätigung per E-Mail mit den Terminen und Zugangsdaten.`);
+            
+            // Simulate booking confirmation
+            setTimeout(() => {
+                addMessage(`<strong>System:</strong> ✅ ${typeText[type]} mit ${lawyerName} erfolgreich gebucht!<br><br>📅 <strong>Nächste verfügbare Termine:</strong><br>• Heute, 16:30 Uhr<br>• Morgen, 10:00 Uhr<br>• Übermorgen, 14:15 Uhr<br><br>Sie erhalten eine Bestätigungs-E-Mail mit allen Details.`, 'ai');
+            }, 1500);
+        }
+
+        // Export Functions
+        function exportToPDF() {
+            if (conversationHistory.length === 0) {
+                alert('Noch keine Unterhaltung zum Exportieren vorhanden.');
+                return;
+            }
+            
+            alert('PDF wird generiert...\n\nIhr Frage-Antwort-Verlauf wird als PDF-Datei heruntergeladen.');
+            
+            setTimeout(() => {
+                alert('✅ PDF erfolgreich erstellt!\n\nDatei: "Mietrecht_Verlauf_' + new Date().toLocaleDateString('de-DE') + '.pdf"');
+            }, 2000);
+        }
+
+        function exportToEmail() {
+            const email = prompt('E-Mail-Adresse für den Versand:');
+            if (email) {
+                alert(`Verlauf wird an ${email} gesendet...`);
+                setTimeout(() => {
+                    alert('✅ E-Mail erfolgreich versendet!');
+                }, 1500);
+            }
+        }
+
+        function shareWithLawyer() {
+            alert('Verlauf wird für die Anwaltsberatung vorbereitet...\n\nIhre Daten werden verschlüsselt übertragen und stehen dem Anwalt für die Beratung zur Verfügung.');
+        }
+
+        // Drag and Drop
+        const uploadArea = document.querySelector('.upload-area');
+        
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload({target: {files: files}});
+                }
+            });
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendQuestion();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-scroll to bottom
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add enter key support for textarea
+            document.getElementById('questionText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

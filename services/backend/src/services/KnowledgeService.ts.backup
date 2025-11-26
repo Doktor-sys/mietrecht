@@ -1,0 +1,816 @@
+from ?: Date
+to ?: Date
+  }
+relevanceThreshold ?: number
+tags ?: string[]
+}
+
+export interface SearchResult {
+  id: string
+  type: LegalType
+  reference: string
+  title: string
+  content: string
+  jurisdiction: string
+  effectiveDate: Date
+  lastUpdated: Date
+  tags: string[]
+  score?: number
+  highlights?: {
+    title?: string[]
+    content?: string[]
+  }
+}
+
+export interface SearchResponse {
+  results: SearchResult[]
+  total: number
+  page: number
+  totalPages: number
+  aggregations?: {
+    types: Record<string, number>
+    jurisdictions: Record<string, number>
+    tags: Record<string, number>
+  }
+}
+
+export interface LegalText {
+  id: string
+  reference: string
+  title: string
+  content: string
+  type: LegalType
+  jurisdiction: string
+  effectiveDate: Date
+  lastUpdated: Date
+  tags: string[]
+  relatedLaws?: LegalText[]
+}
+
+export interface UpdateResult {
+  updated: number
+  created: number
+  errors: string[]
+}
+
+export class KnowledgeService {
+  private elasticsearch: ElasticsearchClient
+  private indexName: string
+
+  constructor(private prisma: PrismaClient) {
+    this.elasticsearch = new ElasticsearchClient({
+      node: config.elasticsearch.url,
+      requestTimeout: 30000,
+      maxRetries: 3,
+    })
+    this.indexName = config.elasticsearch.index
+  }
+
+  /**
+   * Initialisiert Elasticsearch Index
+   */
+  async initializeIndex(): Promise<void> {
+    try {
+      const indexExists = await this.elasticsearch.indices.exists({
+        index: this.indexName
+      })
+
+      if (!indexExists) {
+        await this.elasticsearch.indices.create({
+          index: this.indexName,
+          body: {
+            settings: {
+              number_of_shards: 1,
+              number_of_replicas: 0,
+              analysis: {
+                analyzer: {
+                  german_analyzer: {
+                    type: 'custom',
+                    tokenizer: 'standard',
+                    filter: [
+                      'lowercase',
+                      'german_normalization',
+                      'german_keywords',
+                      'german_stemmer'
+                    ]
+                  }
+                },
+                filter: {
+                  german_keywords: {
+                    type: 'keyword_marker',
+                    keywords: ['BGB', 'StGB', 'ZPO', 'GG', 'WEG']
+                  },
+                  german_stemmer: {
+                    type: 'stemmer',
+                    language: 'light_german'
+                  }
+                }
+              }
+            },
+            mappings: {
+              properties: {
+                reference: {
+                  type: 'keyword'
+                },
+                title: {
+                  type: 'text',
+                  analyzer: 'german_analyzer',
+                  fields: {
+                    keyword: {
+                      type: 'keyword'
+                    }
+                  }
+                },
+                content: {
+                  type: 'text',
+                  analyzer: 'german_analyzer'
+                },
+                type: {
+                  type: 'keyword'
+                },
+                jurisdiction: {
+                  type: 'keyword'
+                },
+                effectiveDate: {
+                  type: 'date'
+                },
+                lastUpdated: {
+                  type: 'date'
+                },
+                tags: {
+                  type: 'keyword'
+                },
+                embeddings: {
+                  type: 'dense_vector',
+                  dims: 1536 // OpenAI Embedding Dimension
+                }
+              }
+            }
+          }
+        })
+
+        logger.info('Elasticsearch Index erstellt:', { index: this.indexName })
+      }
+    } catch (error) {
+      logger.error('Fehler beim Initialisieren des Elasticsearch Index:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Sucht in der Rechtsdatenbank
+   */
+  async searchLegalContent(
+    query: string,
+    filters?: SearchFilters,
+    page: number = 1,
+    limit: number = 20
+  ): Promise<SearchResponse> {
+    try {
+      const from = (page - 1) * limit
+
+      // Cache-Key für häufige Suchanfragen
+      const cacheKey = `search:${Buffer.from(JSON.stringify({ query, filters, page, limit })).toString('base64')}`
+      const cachedResult = await redis.get<SearchResponse>(cacheKey)
+
+      if (cachedResult) {
+        return cachedResult
+      }
+
+      // Baue Elasticsearch Query
+      const searchBody: any = {
+        query: {
+          bool: {
+            must: [],
+            filter: []
+          }
+        },
+        highlight: {
+          fields: {
+            title: {
+              pre_tags: ['<mark>'],
+              post_tags: ['</mark>'],
+              number_of_fragments: 1
+            },
+            content: {
+              pre_tags: ['<mark>'],
+              post_tags: ['</mark>'],
+              fragment_size: 150,
+              number_of_fragments: 3
+            }
+          }
+        },
+        aggs: {
+          types: {
+            terms: { field: 'type' }
+          },
+          jurisdictions: {
+            terms: { field: 'jurisdiction' }
+          },
+          tags: {
+            terms: { field: 'tags', size: 20 }
+          }
+        }
+      }
+
+      // Hauptsuchanfrage
+      if (query && query.trim()) {
+        searchBody.query.bool.must.push({
+          multi_match: {
+            query: query.trim(),
+            fields: [
+              'title^3',
+              'content^2',
+              'reference^4',
+              'tags^2'
+            ],
+            type: 'best_fields',
+            fuzziness: 'AUTO',
+            minimum_should_match: '75%'
+          }
+        })
+      } else {
+        searchBody.query.bool.must.push({
+          match_all: {}
+        })
+      }
+
+      // Filter anwenden
+      if (filters) {
+        if (filters.contentType) {
+          searchBody.query.bool.filter.push({
+            term: { type: filters.contentType }
+          })
+        }
+
+        if (filters.jurisdiction) {
+          searchBody.query.bool.filter.push({
+            term: { jurisdiction: filters.jurisdiction }
+          })
+        }
+
+        if (filters.tags && filters.tags.length > 0) {
+          searchBody.query.bool.filter.push({
+            terms: { tags: filters.tags }
+          })
+        }
+
+        if (filters.dateRange) {
+          const dateFilter: any = {}
+          if (filters.dateRange.from) {
+            dateFilter.gte = filters.dateRange.from
+          }
+          if (filters.dateRange.to) {
+            dateFilter.lte = filters.dateRange.to
+          }
+          if (Object.keys(dateFilter).length > 0) {
+            searchBody.query.bool.filter.push({
+              range: { effectiveDate: dateFilter }
+            })
+          }
+        }
+
+        if (filters.relevanceThreshold) {
+          searchBody.min_score = filters.relevanceThreshold
+        }
+      }
+
+      // Elasticsearch Suche ausführen
+      const response = await this.elasticsearch.search({
+        index: this.indexName,
+        body: searchBody,
+        from,
+        size: limit
+      })
+
+      // Ergebnisse formatieren
+      const results: SearchResult[] = (response as any).body.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        type: hit._source.type,
+        reference: hit._source.reference,
+        title: hit._source.title,
+        content: hit._source.content,
+        jurisdiction: hit._source.jurisdiction,
+        effectiveDate: new Date(hit._source.effectiveDate),
+        lastUpdated: new Date(hit._source.lastUpdated),
+        tags: hit._source.tags || [],
+        score: hit._score,
+        highlights: hit.highlight
+      }))
+
+      // Aggregationen formatieren
+      const responseBody = (response as any).body;
+      const aggregations = {
+        types: this.formatAggregation(responseBody.aggregations?.types),
+        jurisdictions: this.formatAggregation(responseBody.aggregations?.jurisdictions),
+        tags: this.formatAggregation(responseBody.aggregations?.tags)
+      }
+
+      const searchResponse: SearchResponse = {
+        results,
+        total: responseBody.hits.total.value,
+        page,
+        totalPages: Math.ceil(responseBody.hits.total.value / limit),
+        aggregations
+      }
+
+      // Cache für 5 Minuten
+      await redis.set(cacheKey, searchResponse, 300)
+
+      // Log Suchanfrage
+      loggers.businessEvent('LEGAL_SEARCH_PERFORMED', '', {
+        query: query.substring(0, 100),
+        resultsCount: results.length,
+        filters
+      })
+
+      return searchResponse
+    } catch (error) {
+      logger.error('Fehler bei der Rechtsdatenbank-Suche:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Ruft einen spezifischen Rechtstext ab
+   */
+  async getLegalText(reference: string): Promise<LegalText | null> {
+    try {
+      // Cache prüfen
+      const cacheKey = `legal_text:${reference}`
+      const cachedText = await redis.get<LegalText>(cacheKey)
+
+      if (cachedText) {
+        return cachedText
+      }
+
+      // Aus Datenbank laden
+      const legalKnowledge = await this.prisma.legalKnowledge.findUnique({
+        where: { reference }
+      })
+
+      if (!legalKnowledge) {
+        return null
+      }
+
+      // Verwandte Gesetze finden
+      const relatedLaws = await this.findRelatedLaws(legalKnowledge)
+
+      const legalText: LegalText = {
+        id: legalKnowledge.id,
+        reference: legalKnowledge.reference,
+        title: legalKnowledge.title,
+        content: legalKnowledge.content,
+        type: legalKnowledge.type,
+        jurisdiction: legalKnowledge.jurisdiction,
+        effectiveDate: legalKnowledge.effectiveDate,
+        lastUpdated: legalKnowledge.lastUpdated,
+        tags: legalKnowledge.tags,
+        relatedLaws
+      }
+
+      // Cache für 1 Stunde
+      await redis.set(cacheKey, legalText, 3600)
+
+      return legalText
+    } catch (error) {
+      logger.error('Fehler beim Abrufen des Rechtstexts:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Aktualisiert die Rechtsdatenbank
+   */
+  async updateKnowledgeBase(): Promise<UpdateResult> {
+    try {
+      logger.info('Starte Aktualisierung der Rechtsdatenbank')
+
+      let updated = 0
+      let created = 0
+      const errors: string[] = []
+
+      // Lade alle Rechtsdaten aus der Datenbank
+      const allLegalKnowledge = await this.prisma.legalKnowledge.findMany({
+        orderBy: { lastUpdated: 'desc' }
+      })
+
+      // Batch-Update in Elasticsearch
+      const batchSize = 100
+      for (let i = 0; i < allLegalKnowledge.length; i += batchSize) {
+        const batch = allLegalKnowledge.slice(i, i + batchSize)
+
+        try {
+          const bulkOperations: any[] = []
+
+          for (const item of batch) {
+            // Index Operation
+            bulkOperations.push({
+              index: {
+                _index: this.indexName,
+                _id: item.id
+              }
+            })
+
+            // Document
+            bulkOperations.push({
+              reference: item.reference,
+              title: item.title,
+              content: item.content,
+              type: item.type,
+              jurisdiction: item.jurisdiction,
+              effectiveDate: item.effectiveDate,
+              lastUpdated: item.lastUpdated,
+              tags: item.tags,
+              embeddings: item.embeddings
+            })
+          }
+
+          const bulkResponse = await this.elasticsearch.bulk({
+            body: bulkOperations
+          })
+
+          // Verarbeite Antwort
+          const bulkBody = (bulkResponse as any).body;
+          if (bulkBody.errors) {
+            bulkBody.items.forEach((item: any, index: number) => {
+              if (item.index?.error) {
+                errors.push(`${batch[index].reference}: ${item.index.error.reason}`)
+              } else if (item.index?.result === 'created') {
+                created++
+              } else if (item.index?.result === 'updated') {
+                updated++
+              }
+            })
+          } else {
+            bulkBody.items.forEach((item: any) => {
+              if (item.index?.result === 'created') {
+                created++
+              } else if (item.index?.result === 'updated') {
+                updated++
+              }
+            })
+          }
+        } catch (error) {
+          errors.push(`Batch ${i}-${i + batchSize}: ${error}`)
+        }
+      }
+
+      // Cache invalidieren
+      await this.invalidateSearchCache()
+
+      const result: UpdateResult = { updated, created, errors }
+
+      logger.info('Rechtsdatenbank-Update abgeschlossen', result)
+      loggers.businessEvent('KNOWLEDGE_BASE_UPDATED', '', result)
+
+      return result
+    } catch (error) {
+      logger.error('Fehler beim Aktualisieren der Rechtsdatenbank:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Fügt neuen Rechtstext hinzu
+   */
+  async addLegalContent(data: {
+    reference: string
+    title: string
+    content: string
+    type: LegalType
+    jurisdiction: string
+    effectiveDate: Date
+    tags?: string[]
+  }): Promise<LegalKnowledge> {
+    try {
+      // Validierung
+      this.validateLegalContent(data)
+
+      // Prüfe auf Duplikate
+      const existing = await this.prisma.legalKnowledge.findUnique({
+        where: { reference: data.reference }
+      })
+
+      if (existing) {
+        throw new ValidationError(`Rechtstext mit Referenz ${data.reference} existiert bereits`)
+      }
+
+      // Erstelle in Datenbank
+      const legalKnowledge = await this.prisma.legalKnowledge.create({
+        data: {
+          reference: data.reference,
+          title: data.title,
+          content: data.content,
+          type: data.type,
+          jurisdiction: data.jurisdiction,
+          effectiveDate: data.effectiveDate,
+          tags: data.tags || [],
+          embeddings: await this.generateEmbeddings(data.title, data.content)
+        }
+      })
+
+      // Indexiere in Elasticsearch
+      await this.indexLegalContent(legalKnowledge)
+
+      // Cache invalidieren
+      await this.invalidateSearchCache()
+
+      loggers.businessEvent('LEGAL_CONTENT_ADDED', '', {
+        reference: data.reference,
+        type: data.type
+      })
+
+      return legalKnowledge
+    } catch (error) {
+      logger.error('Fehler beim Hinzufügen von Rechtsinhalten:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Aktualisiert bestehenden Rechtstext
+   */
+  async updateLegalContent(
+    reference: string,
+    data: Partial<{
+      title: string
+      content: string
+      jurisdiction: string
+      effectiveDate: Date
+      tags: string[]
+    }>
+  ): Promise<LegalKnowledge> {
+    try {
+      const existing = await this.prisma.legalKnowledge.findUnique({
+        where: { reference }
+      })
+
+      if (!existing) {
+        throw new NotFoundError(`Rechtstext mit Referenz ${reference} nicht gefunden`)
+      }
+
+      // Aktualisiere in Datenbank
+      const updated = await this.prisma.legalKnowledge.update({
+        where: { reference },
+        data: {
+          ...data,
+          lastUpdated: new Date()
+        }
+      })
+
+      // Re-indexiere in Elasticsearch
+      await this.indexLegalContent(updated)
+
+      // Cache invalidieren
+      await this.invalidateSearchCache()
+      await redis.del(`legal_text:${reference}`)
+
+      loggers.businessEvent('LEGAL_CONTENT_UPDATED', '', {
+        reference,
+        updatedFields: Object.keys(data)
+      })
+
+      return updated
+    } catch (error) {
+      logger.error('Fehler beim Aktualisieren von Rechtsinhalten:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Löscht Rechtstext
+   */
+  async deleteLegalContent(reference: string): Promise<void> {
+    try {
+      const existing = await this.prisma.legalKnowledge.findUnique({
+        where: { reference }
+      })
+
+      if (!existing) {
+        throw new NotFoundError(`Rechtstext mit Referenz ${reference} nicht gefunden`)
+      }
+
+      // Lösche aus Datenbank
+      await this.prisma.legalKnowledge.delete({
+        where: { reference }
+      })
+
+      // Lösche aus Elasticsearch
+      try {
+        await this.elasticsearch.delete({
+          index: this.indexName,
+          id: existing.id
+        })
+      } catch (esError) {
+        logger.warn('Fehler beim Löschen aus Elasticsearch:', esError)
+      }
+
+      // Cache invalidieren
+      await this.invalidateSearchCache()
+      await redis.del(`legal_text:${reference}`)
+
+      loggers.businessEvent('LEGAL_CONTENT_DELETED', '', { reference })
+    } catch (error) {
+      logger.error('Fehler beim Löschen von Rechtsinhalten:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Sucht ähnliche Rechtstexte
+   */
+  async findSimilarContent(
+    reference: string,
+    limit: number = 5
+  ): Promise<SearchResult[]> {
+    try {
+      const legalText = await this.getLegalText(reference)
+      if (!legalText) {
+        throw new NotFoundError('Rechtstext nicht gefunden')
+      }
+
+      // More-like-this Query
+      const response = await this.elasticsearch.search({
+        index: this.indexName,
+        body: {
+          query: {
+            more_like_this: {
+              fields: ['title', 'content', 'tags'],
+              like: [
+                {
+                  _index: this.indexName,
+                  _id: legalText.id
+                }
+              ],
+              min_term_freq: 1,
+              max_query_terms: 12,
+              minimum_should_match: '30%'
+            }
+          }
+        },
+        size: limit
+      })
+
+      return (response as any).body.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        type: hit._source.type,
+        reference: hit._source.reference,
+        title: hit._source.title,
+        content: hit._source.content,
+        jurisdiction: hit._source.jurisdiction,
+        effectiveDate: new Date(hit._source.effectiveDate),
+        lastUpdated: new Date(hit._source.lastUpdated),
+        tags: hit._source.tags || [],
+        score: hit._score
+      }))
+    } catch (error) {
+      logger.error('Fehler beim Finden ähnlicher Inhalte:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Hilfsmethoden
+   */
+  private async indexLegalContent(legalKnowledge: LegalKnowledge): Promise<void> {
+    try {
+      await this.elasticsearch.index({
+        index: this.indexName,
+        id: legalKnowledge.id,
+        body: {
+          reference: legalKnowledge.reference,
+          title: legalKnowledge.title,
+          content: legalKnowledge.content,
+          type: legalKnowledge.type,
+          jurisdiction: legalKnowledge.jurisdiction,
+          effectiveDate: legalKnowledge.effectiveDate,
+          lastUpdated: legalKnowledge.lastUpdated,
+          tags: legalKnowledge.tags,
+          embeddings: legalKnowledge.embeddings
+        }
+      })
+    } catch (error) {
+      logger.error('Fehler beim Indexieren in Elasticsearch:', error)
+      throw error
+    }
+  }
+
+  private async findRelatedLaws(legalKnowledge: LegalKnowledge): Promise<LegalText[]> {
+    try {
+      // Finde verwandte Gesetze basierend auf Tags und Inhalt
+      const related = await this.prisma.legalKnowledge.findMany({
+        where: {
+          AND: [
+            { id: { not: legalKnowledge.id } },
+            {
+              OR: [
+                { tags: { hasSome: legalKnowledge.tags } },
+                { jurisdiction: legalKnowledge.jurisdiction }
+              ]
+            }
+          ]
+        },
+        take: 5,
+        orderBy: { lastUpdated: 'desc' }
+      })
+
+      return related.map(item => ({
+        id: item.id,
+        reference: item.reference,
+        title: item.title,
+        content: item.content,
+        type: item.type,
+        jurisdiction: item.jurisdiction,
+        effectiveDate: item.effectiveDate,
+        lastUpdated: item.lastUpdated,
+        tags: item.tags
+      }))
+    } catch (error) {
+      logger.warn('Fehler beim Finden verwandter Gesetze:', error)
+      return []
+    }
+  }
+
+  private formatAggregation(agg: any): Record<string, number> {
+    if (!agg?.buckets) return {}
+
+    const result: Record<string, number> = {}
+    agg.buckets.forEach((bucket: any) => {
+      result[bucket.key] = bucket.doc_count
+    })
+    return result
+  }
+
+  private validateLegalContent(data: any): void {
+    const errors: string[] = []
+
+    if (!data.reference || data.reference.trim().length === 0) {
+      errors.push('Referenz ist erforderlich')
+    }
+
+    if (!data.title || data.title.trim().length === 0) {
+      errors.push('Titel ist erforderlich')
+    }
+
+    if (!data.content || data.content.trim().length === 0) {
+      errors.push('Inhalt ist erforderlich')
+    }
+
+    if (!data.type || !Object.values(LegalType).includes(data.type)) {
+      errors.push('Gültiger Typ ist erforderlich')
+    }
+
+    if (!data.jurisdiction || data.jurisdiction.trim().length === 0) {
+      errors.push('Jurisdiktion ist erforderlich')
+    }
+
+    if (!data.effectiveDate || !(data.effectiveDate instanceof Date)) {
+      errors.push('Gültiges Datum ist erforderlich')
+    }
+
+    const [esHealth, dbHealth] = await Promise.all([
+      this.elasticsearch.ping().then(() => true).catch(() => false),
+      this.prisma.legalKnowledge.count().then(() => true).catch(() => false)
+    ])
+
+    return {
+      elasticsearch: esHealth,
+      database: dbHealth
+    }
+  } catch(error) {
+    return {
+      elasticsearch: false,
+      database: false
+    }
+  }
+}
+
+  /**
+   * Generiert Embeddings für Rechtstext
+   */
+  private async generateEmbeddings(title: string, content: string): Promise < number[] > {
+  try {
+    // Import OpenAIService dynamically to avoid circular dependencies
+    const { openaiService } = await import('./OpenAIService');
+
+    if(!openaiService.isConfigured()) {
+  logger.warn('OpenAI nicht konfiguriert, keine Embeddings generiert');
+  return [];
+}
+
+const embeddings = await openaiService.generateLegalContentEmbedding(title, content);
+
+logger.debug('Embeddings generiert', {
+  title: title.substring(0, 50),
+  dimensions: embeddings.length
+});
+
+return embeddings;
+    } catch (error) {
+  logger.error('Fehler beim Generieren von Embeddings:', error);
+  // Fail-safe: Leeres Array zurückgeben
+  return [];
+}
+  }
+}

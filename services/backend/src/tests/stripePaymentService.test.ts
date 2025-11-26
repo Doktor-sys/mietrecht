@@ -1,0 +1,456 @@
+import { PaymentStatus, PaymentMethod, BookingStatus } from '@prisma/client';
+import { StripePaymentService } from '../services/StripePaymentService';
+import { NotFoundError, ValidationError, ConflictError } from '../middleware/errorHandler';
+import Stripe from 'stripe';
+
+// Mock Stripe
+jest.mock('stripe');
+
+// Mock Prisma Client
+const mockPrisma = {
+  payment: {
+    create: jest.fn(),
+    findUnique: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+  },
+  booking: {
+    findUnique: jest.fn(),
+    update: jest.fn(),
+  },
+  invoice: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findUnique: jest.fn(),
+  },
+  refund: {
+    create: jest.fn(),
+    update: jest.fn(),
+  },
+} as any;
+
+// Mock Stripe Instance
+const mockStripeInstance = {
+  paymentIntents: {
+    create: jest.fn(),
+    retrieve: jest.fn(),
+  },
+  refunds: {
+    create: jest.fn(),
+  },
+  webhooks: {
+    constructEvent: jest.fn(),
+  },
+} as any;
+
+describe('StripePaymentService', () => {
+  let stripeService: StripePaymentService;
+
+  beforeEach(() => {
+    (Stripe as any).mockImplementation(() => mockStripeInstance);
+    stripeService = new StripePaymentService(mockPrisma, 'sk_test_123');
+    jest.clearAllMocks();
+  });
+
+  describe('createPaymentIntent', () => {
+    const mockBooking = {
+      id: 'booking-1',
+      userId: 'user-1',
+      lawyerId: 'lawyer-1',
+      timeSlotId: 'slot-1',
+      status: BookingStatus.CONFIRMED,
+      meetingType: 'VIDEO',
+      lawyer: {
+        id: 'lawyer-1',
+        name: 'Dr. Schmidt',
+        hourlyRate: 180
+      },
+      timeSlot: {
+        startTime: new Date('2024-01-15T10:00:00Z'),
+        endTime: new Date('2024-01-15T11:00:00Z')
+      },
+      user: {
+        email: 'user@example.com',
+        profile: {}
+      }
+    };
+
+    it('sollte einen Stripe Payment Intent erfolgreich erstellen', async () => {
+      mockPrisma.booking.findUnique.mockResolvedValue(mockBooking as any);
+      mockPrisma.payment.findFirst.mockResolvedValue(null);
+      
+      mockStripeInstance.paymentIntents.create.mockResolvedValue({
+        id: 'pi_stripe_123',
+        client_secret: 'pi_stripe_123_secret_abc',
+        amount: 18000,
+        currency: 'eur',
+        status: 'requires_payment_method'
+      } as any);
+
+      mockPrisma.payment.create.mockResolvedValue({
+        id: 'payment-1',
+        bookingId: 'booking-1',
+        userId: 'user-1',
+        lawyerId: 'lawyer-1',
+        amount: 18000,
+        currency: 'EUR',
+        status: PaymentStatus.PENDING,
+        paymentMethod: PaymentMethod.CREDIT_CARD,
+        transactionId: 'pi_stripe_123',
+        createdAt: new Date()
+      } as any);
+
+      const result = await stripeService.createPaymentIntent('booking-1', 'user-1');
+
+      expect(result).toMatchObject({
+        id: 'payment-1',
+        amount: 18000,
+        currency: 'EUR',
+        status: PaymentStatus.PENDING,
+        clientSecret: 'pi_stripe_123_secret_abc',
+        metadata: {
+          bookingId: 'booking-1',
+          userId: 'user-1',
+          lawyerId: 'lawyer-1'
+        }
+      });
+
+      expect(mockStripeInstance.paymentIntents.create).toHaveBeenCalledWith({
+        amount: 18000,
+        currency: 'eur',
+        automatic_payment_methods: {
+          enabled: true,
+        },
+        metadata: {
+          bookingId: 'booking-1',
+          userId: 'user-1',
+          lawyerId: 'lawyer-1',
+          duration: '60',
+          hourlyRate: '180'
+        },
+        description: 'Rechtsberatung - Dr. Schmidt',
+        receipt_email: 'user@example.com',
+      });
+    });
+
+    it('sollte Stripe-Fehler korrekt behandeln', async () => {
+      mockPrisma.booking.findUnique.mockResolvedValue(mockBooking as any);
+      mockPrisma.payment.findFirst.mockResolvedValue(null);
+
+      const stripeError = new Stripe.errors.StripeCardError(
+        'Your card was declined',
+        'card_declined',
+        'card_error'
+      );
+      mockStripeInstance.paymentIntents.create.mockRejectedValue(stripeError);
+
+      await expect(
+        stripeService.createPaymentIntent('booking-1', 'user-1')
+      ).rejects.toThrow(ValidationError);
+    });
+
+    it('sollte Fehler werfen wenn Buchung nicht gefunden', async () => {
+      mockPrisma.booking.findUnique.mockResolvedValue(null);
+
+      await expect(
+        stripeService.createPaymentIntent('booking-1', 'user-1')
+      ).rejects.toThrow(NotFoundError);
+    });
+  });
+
+  describe('confirmPayment', () => {
+    const mockPayment = {
+      id: 'payment-1',
+      bookingId: 'booking-1',
+      userId: 'user-1',
+      lawyerId: 'lawyer-1',
+      amount: 18000,
+      currency: 'EUR',
+      status: PaymentStatus.PENDING,
+      paymentMethod: PaymentMethod.CREDIT_CARD,
+      transactionId: 'pi_stripe_123',
+      createdAt: new Date()
+    };
+
+    it('sollte Zahlung nach Stripe-Verifizierung bestätigen', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue(mockPayment as any);
+      
+      mockStripeInstance.paymentIntents.retrieve.mockResolvedValue({
+        id: 'pi_stripe_123',
+        status: 'succeeded',
+        amount: 18000
+      } as any);
+
+      mockPrisma.payment.update.mockResolvedValue({
+        ...mockPayment,
+        status: PaymentStatus.COMPLETED,
+        paidAt: new Date()
+      } as any);
+
+      mockPrisma.booking.update.mockResolvedValue({} as any);
+
+      const result = await stripeService.confirmPayment('payment-1', 'pi_stripe_123');
+
+      expect(result.status).toBe(PaymentStatus.COMPLETED);
+      expect(mockStripeInstance.paymentIntents.retrieve).toHaveBeenCalledWith('pi_stripe_123');
+      expect(mockPrisma.booking.update).toHaveBeenCalledWith({
+        where: { id: 'booking-1' },
+        data: { paymentStatus: 'PAID' }
+      });
+    });
+
+    it('sollte Fehler werfen wenn Stripe-Zahlung nicht erfolgreich', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue(mockPayment as any);
+      
+      mockStripeInstance.paymentIntents.retrieve.mockResolvedValue({
+        id: 'pi_stripe_123',
+        status: 'requires_payment_method',
+        amount: 18000
+      } as any);
+
+      await expect(
+        stripeService.confirmPayment('payment-1', 'pi_stripe_123')
+      ).rejects.toThrow(ValidationError);
+    });
+  });
+
+  describe('createRefund', () => {
+    const mockPayment = {
+      id: 'payment-1',
+      bookingId: 'booking-1',
+      userId: 'user-1',
+      lawyerId: 'lawyer-1',
+      amount: 18000,
+      currency: 'EUR',
+      status: PaymentStatus.COMPLETED,
+      transactionId: 'pi_stripe_123',
+      booking: {}
+    };
+
+    it('sollte Stripe-Rückerstattung erfolgreich erstellen', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue(mockPayment as any);
+      
+      mockStripeInstance.refunds.create.mockResolvedValue({
+        id: 'ref_stripe_123',
+        amount: 18000,
+        status: 'succeeded',
+        payment_intent: 'pi_stripe_123'
+      } as any);
+
+      mockPrisma.refund.create.mockResolvedValue({
+        id: 'refund-1',
+        paymentId: 'payment-1',
+        amount: 18000,
+        reason: 'Stornierung',
+        status: 'COMPLETED',
+        processedAt: new Date()
+      } as any);
+
+      mockPrisma.payment.update.mockResolvedValue({
+        ...mockPayment,
+        status: PaymentStatus.REFUNDED,
+        refundedAmount: 18000,
+        refundedAt: new Date()
+      } as any);
+
+      const result = await stripeService.createRefund(
+        {
+          paymentId: 'payment-1',
+          reason: 'Stornierung'
+        },
+        'user-1'
+      );
+
+      expect(result.status).toBe(PaymentStatus.REFUNDED);
+      expect(mockStripeInstance.refunds.create).toHaveBeenCalledWith({
+        payment_intent: 'pi_stripe_123',
+        amount: 18000,
+        reason: 'requested_by_customer',
+        metadata: {
+          paymentId: 'payment-1',
+          userId: 'user-1',
+          reason: 'Stornierung'
+        }
+      });
+    });
+
+    it('sollte Teilerstattung über Stripe erstellen', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue(mockPayment as any);
+      
+      mockStripeInstance.refunds.create.mockResolvedValue({
+        id: 'ref_stripe_123',
+        amount: 9000,
+        status: 'succeeded'
+      } as any);
+
+      mockPrisma.refund.create.mockResolvedValue({
+        id: 'refund-1',
+        amount: 9000,
+        status: 'COMPLETED'
+      } as any);
+
+      mockPrisma.payment.update.mockResolvedValue({
+        ...mockPayment,
+        status: PaymentStatus.REFUNDED,
+        refundedAmount: 9000
+      } as any);
+
+      await stripeService.createRefund(
+        {
+          paymentId: 'payment-1',
+          amount: 9000,
+          reason: 'Teilstornierung'
+        },
+        'user-1'
+      );
+
+      expect(mockStripeInstance.refunds.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          amount: 9000
+        })
+      );
+    });
+  });
+
+  describe('handleWebhook', () => {
+    const webhookPayload = JSON.stringify({
+      type: 'payment_intent.succeeded',
+      data: {
+        object: {
+          id: 'pi_stripe_123',
+          status: 'succeeded'
+        }
+      }
+    });
+
+    it('sollte payment_intent.succeeded Event verarbeiten', async () => {
+      const mockEvent = {
+        id: 'evt_123',
+        type: 'payment_intent.succeeded',
+        data: {
+          object: {
+            id: 'pi_stripe_123',
+            status: 'succeeded'
+          }
+        }
+      };
+
+      mockStripeInstance.webhooks.constructEvent.mockReturnValue(mockEvent);
+
+      mockPrisma.payment.findFirst.mockResolvedValue({
+        id: 'payment-1',
+        bookingId: 'booking-1',
+        userId: 'user-1',
+        status: PaymentStatus.PENDING,
+        transactionId: 'pi_stripe_123'
+      } as any);
+
+      mockPrisma.payment.update.mockResolvedValue({} as any);
+      mockPrisma.booking.update.mockResolvedValue({} as any);
+
+      await stripeService.handleWebhook(
+        webhookPayload,
+        'stripe-signature',
+        'whsec_test'
+      );
+
+      expect(mockPrisma.payment.update).toHaveBeenCalledWith({
+        where: { id: 'payment-1' },
+        data: {
+          status: PaymentStatus.COMPLETED,
+          paidAt: expect.any(Date)
+        }
+      });
+    });
+
+    it('sollte payment_intent.payment_failed Event verarbeiten', async () => {
+      const mockEvent = {
+        id: 'evt_123',
+        type: 'payment_intent.payment_failed',
+        data: {
+          object: {
+            id: 'pi_stripe_123',
+            status: 'failed',
+            last_payment_error: {
+              message: 'Card declined'
+            }
+          }
+        }
+      };
+
+      mockStripeInstance.webhooks.constructEvent.mockReturnValue(mockEvent);
+
+      mockPrisma.payment.findFirst.mockResolvedValue({
+        id: 'payment-1',
+        userId: 'user-1',
+        status: PaymentStatus.PENDING,
+        transactionId: 'pi_stripe_123'
+      } as any);
+
+      mockPrisma.payment.update.mockResolvedValue({} as any);
+
+      await stripeService.handleWebhook(
+        webhookPayload,
+        'stripe-signature',
+        'whsec_test'
+      );
+
+      expect(mockPrisma.payment.update).toHaveBeenCalledWith({
+        where: { id: 'payment-1' },
+        data: {
+          status: PaymentStatus.FAILED
+        }
+      });
+    });
+
+    it('sollte Fehler werfen bei ungültiger Signatur', async () => {
+      const signatureError = new Stripe.errors.StripeSignatureVerificationError(
+        'Invalid signature',
+        'stripe-signature'
+      );
+      mockStripeInstance.webhooks.constructEvent.mockImplementation(() => {
+        throw signatureError;
+      });
+
+      await expect(
+        stripeService.handleWebhook(
+          webhookPayload,
+          'invalid-signature',
+          'whsec_test'
+        )
+      ).rejects.toThrow(ValidationError);
+    });
+  });
+
+  describe('getStripePaymentIntent', () => {
+    it('sollte Payment Intent von Stripe abrufen', async () => {
+      const mockIntent = {
+        id: 'pi_stripe_123',
+        amount: 18000,
+        currency: 'eur',
+        status: 'succeeded'
+      };
+
+      mockStripeInstance.paymentIntents.retrieve.mockResolvedValue(mockIntent as any);
+
+      const result = await stripeService.getStripePaymentIntent('pi_stripe_123');
+
+      expect(result).toEqual(mockIntent);
+      expect(mockStripeInstance.paymentIntents.retrieve).toHaveBeenCalledWith('pi_stripe_123');
+    });
+
+    it('sollte Stripe-Fehler korrekt behandeln', async () => {
+      const stripeError = new Stripe.errors.StripeInvalidRequestError(
+        'No such payment_intent',
+        'payment_intent',
+        404
+      );
+      mockStripeInstance.paymentIntents.retrieve.mockRejectedValue(stripeError);
+
+      await expect(
+        stripeService.getStripePaymentIntent('pi_invalid')
+      ).rejects.toThrow(ValidationError);
+    });
+  });
+});

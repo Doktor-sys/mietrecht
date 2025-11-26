@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Installiere Dependencies
+COPY package*.json ./
+RUN npm install --legacy-peer-deps || npm install --force
+
+# Kopiere Source Code
+COPY . .
+
+# Generiere Prisma Client
+RUN npx prisma generate || echo "Prisma generate skipped"
+
+# Exponiere Port
+EXPOSE 3001
+
+# Starte Development Server
+CMD ["npm", "run", "dev"]

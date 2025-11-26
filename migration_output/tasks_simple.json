@@ -1,0 +1,226 @@
+[
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Projekt-Setup",
+    "attributes": "Prio: High | Est: 2 days | Owner: Max",
+    "description": "High | Est: 2 days | Owner: Max): Initialisierung von Monorepo, TypeScript, ESLint, Prettier."
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Datenbank-Design",
+    "attributes": "Prio: High | Est: 3 days | Owner: Sarah",
+    "description": "High | Est: 3 days | Owner: Sarah): Prisma Schema für User, Cases, Documents, Lawyers."
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Authentication",
+    "attributes": "Prio: Critical | Est: 4 days | Owner: Max",
+    "description": "Critical | Est: 4 days | Owner: Max): JWT-basierte Auth, Password Hashing, Role-based Access Control."
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Core Services",
+    "attributes": "",
+    "description": ""
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Task 11.3: Audit & Monitoring",
+    "attributes": "Prio: Medium | Est: 4 days | Depends on: Authentication | Owner: Alex",
+    "description": "Audit & Monitoring** (Prio: Medium | Est: 4 days | Depends on: Authentication | Owner: Alex):"
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 1: Core Services & Backend Foundation",
+    "status": "Completed",
+    "title": "Task 12.1: Testing",
+    "attributes": "Prio: Critical | Est: 5 days | Depends on: Core Services | Owner: Team",
+    "description": "Testing** (Prio: Critical | Est: 5 days | Depends on: Core Services | Owner: Team):"
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 2: Web Application",
+    "status": "Completed",
+    "title": "Task 8.5: Lawyer Search & Booking",
+    "attributes": "Prio: High | Est: 5 days | Depends on: UserService | Owner: Lisa",
+    "description": "Lawyer Search & Booking** (Prio: High | Est: 5 days | Depends on: UserService | Owner: Lisa):"
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 2: Web Application",
+    "status": "Completed",
+    "title": "UI/UX",
+    "attributes": "Prio: Medium | Est: 4 days | Depends on: Projekt-Setup | Owner: Anna",
+    "description": "Medium | Est: 4 days | Depends on: Projekt-Setup | Owner: Anna):"
+  },
+  {
+    "section": "✅ Abgeschlossene Aufgaben",
+    "subsection": "Phase 3: Mobile Application",
+    "status": "Completed",
+    "title": "Task 9.2: Chat & Documents",
+    "attributes": "Prio: High | Est: 5 days | Depends on: Authentication | Owner: Tom",
+    "description": "Chat & Documents** (Prio: High | Est: 5 days | Depends on: Authentication | Owner: Tom):"
+  },
+  {
+    "section": "🚧 In Bearbeitung / Nächste Schritte",
+    "subsection": "Infrastructure & DevOps",
+    "status": "Completed",
+    "title": "CI/CD Pipeline Finalisierung",
+    "attributes": "Prio: High | Est: 3 days | Depends on: Projekt-Setup | Owner: DevOps Team",
+    "description": "High | Est: 3 days | Depends on: Projekt-Setup | Owner: DevOps Team):"
+  },
+  {
+    "section": "🚧 In Bearbeitung / Nächste Schritte",
+    "subsection": "Infrastructure & DevOps",
+    "status": "Completed",
+    "title": "Infrastructure as Code (Terraform)",
+    "attributes": "Terraform",
+    "description": "Medium | Est: 4 days | Depends on: CI/CD Pipeline Finalisierung | Owner: DevOps Team):"
+  },
+  {
+    "section": "🚧 In Bearbeitung / Nächste Schritte",
+    "subsection": "Backend",
+    "status": "Completed",
+    "title": "PDF Generierung",
+    "attributes": "Prio: Medium | Est: 3 days | Depends on: DocumentStorage | Owner: Alex",
+    "description": "Medium | Est: 3 days | Depends on: DocumentStorage | Owner: Alex): Implementierung der echten PDF-Erstellung (aktuell Placeholder)."
+  },
+  {
+    "section": "🚧 In Bearbeitung / Nächste Schritte",
+    "subsection": "Backend",
+    "status": "Completed",
+    "title": "Performance Optimierung",
+    "attributes": "Prio: High | Est: 4 days | Depends on: Core Services | Owner: Max",
+    "description": "High | Est: 4 days | Depends on: Core Services | Owner: Max): Load Testing für High-Traffic Szenarien."
+  },
+  {
+    "section": "🚧 In Bearbeitung / Nächste Schritte",
+    "subsection": "Backend",
+    "status": "Completed",
+    "title": "Container Scanning",
+    "attributes": "Prio: High | Est: 2 days | Depends on: CI/CD Pipeline Finalisierung | Owner: DevOps Team",
+    "description": "High | Est: 2 days | Depends on: CI/CD Pipeline Finalisierung | Owner: DevOps Team): Integration von Container Security Scanning in die CI/CD Pipeline."
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Alerting",
+    "status": "Completed",
+    "title": "Monitoring Integration",
+    "attributes": "Prio: Medium | Est: 2 days | Depends on: Task 11.3: Audit & Monitoring | Owner: Alex",
+    "description": "Medium | Est: 2 days | Depends on: Task 11.3: Audit & Monitoring | Owner: Alex):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Alerting",
+    "status": "Completed",
+    "title": "Slack",
+    "attributes": "z.B. Brute-Force-Attacken, Systemausfälle",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Testing",
+    "status": "Completed",
+    "title": "Mutation Testing",
+    "attributes": "Prio: Medium | Est: 3 days | Depends on: Task 12.1: Testing | Owner: QA Team",
+    "description": "Medium | Est: 3 days | Depends on: Task 12.1: Testing | Owner: QA Team):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Testing",
+    "status": "Completed",
+    "title": "Mutation Testing",
+    "attributes": "z.B. mit Stryker",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Testing",
+    "status": "Completed",
+    "title": "Visual Regression Tests",
+    "attributes": "Prio: Medium | Est: 3 days | Depends on: UI/UX | Owner: Anna",
+    "description": "Medium | Est: 3 days | Depends on: UI/UX | Owner: Anna):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Testing",
+    "status": "Completed",
+    "title": "Visual Regression Tests",
+    "attributes": "Web & Mobile",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Dokumentation",
+    "status": "Completed",
+    "title": "API Dokumentation",
+    "attributes": "Prio: Medium | Est: 2 days | Depends on: Core Services | Owner: Max",
+    "description": "Medium | Est: 2 days | Depends on: Core Services | Owner: Max):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Dokumentation",
+    "status": "Completed",
+    "title": "API-Dokumentation",
+    "attributes": "Swagger/OpenAPI",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Dokumentation",
+    "status": "Completed",
+    "title": "Admin User Guide",
+    "attributes": "Prio: Low | Est: 3 days | Depends on: Task 11.3: Audit & Monitoring | Owner: Sarah",
+    "description": "Low | Est: 3 days | Depends on: Task 11.3: Audit & Monitoring | Owner: Sarah):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Dokumentation",
+    "status": "Completed",
+    "title": "User Guides",
+    "attributes": "",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Security",
+    "status": "Completed",
+    "title": "Dependency Audits",
+    "attributes": "Prio: High | Est: 1 day | Depends on: Projekt-Setup | Owner: Alex",
+    "description": "High | Est: 1 day | Depends on: Projekt-Setup | Owner: Alex):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Security",
+    "status": "Completed",
+    "title": "Dependency Audits",
+    "attributes": "`npm audit`",
+    "description": ""
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Security",
+    "status": "Completed",
+    "title": "Container Scanning",
+    "attributes": "Prio: High | Est: 2 days | Depends on: Container Scanning | Owner: DevOps Team",
+    "description": "High | Est: 2 days | Depends on: Container Scanning | Owner: DevOps Team):"
+  },
+  {
+    "section": "📋 Geplante Aufgaben (Backlog)",
+    "subsection": "Security",
+    "status": "Completed",
+    "title": "Container Scanning",
+    "attributes": "",
+    "description": ""
+  }
+]

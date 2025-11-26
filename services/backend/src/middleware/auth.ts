@@ -1,0 +1,383 @@
+import { Request, Response, NextFunction } from 'express'
+import { AuthService } from '../services/AuthService'
+import { prisma } from '../config/database'
+import { AuthenticationError, AuthorizationError } from './errorHandler'
+import { UserType } from '@prisma/client'
+import { logger, loggers } from '../utils/logger'
+
+// Erweitere Request Interface
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string
+        email: string
+        userType: UserType
+        sessionId: string
+      }
+    }
+  }
+}
+
+const authService = new AuthService(prisma)
+
+/**
+ * Middleware zur Authentifizierung von Requests
+ */
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers.authorization
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new AuthenticationError('Authorization Header fehlt oder ist ungültig')
+    }
+
+    const token = authHeader.substring(7) // Entferne "Bearer "
+
+    if (!token) {
+      throw new AuthenticationError('Token fehlt')
+    }
+
+    // Verifiziere Token
+    const payload = await authService.verifyToken(token)
+
+    // Setze Benutzerinformationen in Request
+    req.user = {
+      id: payload.userId,
+      email: payload.email,
+      userType: payload.userType,
+      sessionId: payload.sessionId
+    }
+
+    next()
+  } catch (error) {
+    // Log Authentifizierungsfehler
+    loggers.securityEvent('AUTHENTICATION_FAILED', undefined, req.ip, {
+      url: req.url,
+      method: req.method,
+      userAgent: req.get('User-Agent'),
+      error: error instanceof Error ? error.message : 'Unknown error'
+    })
+
+    next(error)
+  }
+}
+
+/**
+ * Middleware zur Autorisierung basierend auf Benutzertyp
+ */
+export const authorize = (...allowedUserTypes: UserType[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw new AuthenticationError('Benutzer nicht authentifiziert')
+      }
+
+      if (!allowedUserTypes.includes(req.user.userType)) {
+        loggers.securityEvent('AUTHORIZATION_FAILED', req.user.id, req.ip, {
+          requiredTypes: allowedUserTypes,
+          userType: req.user.userType,
+          url: req.url,
+          method: req.method
+        })
+
+        throw new AuthorizationError('Nicht autorisiert für diese Aktion')
+      }
+
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+/**
+ * Middleware zur Überprüfung ob Benutzer Admin-Rechte hat
+ * Für Audit-Logs und andere administrative Funktionen
+ */
+export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      throw new AuthenticationError('Benutzer nicht authentifiziert')
+    }
+
+    // Lade aktuellen Benutzer aus Datenbank
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }
+    })
+
+    if (!user) {
+      throw new AuthenticationError('Benutzer nicht gefunden')
+    }
+
+    // Nur Business-Benutzer haben Admin-Rechte für Audit-Logs
+    // In einer echten Implementierung würde man hier eine separate Admin-Rolle prüfen
+    if (user.userType !== UserType.BUSINESS) {
+      loggers.securityEvent('ADMIN_ACCESS_DENIED', req.user.id, req.ip, {
+        url: req.url,
+        method: req.method,
+        userType: user.userType
+      })
+
+      throw new AuthorizationError('Admin-Rechte erforderlich')
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Middleware zur Überprüfung ob Benutzer verifiziert ist
+ */
+export const requireVerified = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      throw new AuthenticationError('Benutzer nicht authentifiziert')
+    }
+
+    // Lade aktuellen Benutzer aus Datenbank
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }
+    })
+
+    if (!user) {
+      throw new AuthenticationError('Benutzer nicht gefunden')
+    }
+
+    if (!user.isVerified) {
+      throw new AuthorizationError('E-Mail-Adresse muss verifiziert werden')
+    }
+
+    if (!user.isActive) {
+      throw new AuthorizationError('Benutzerkonto ist deaktiviert')
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Middleware zur Überprüfung ob Benutzer Zugriff auf Ressource hat
+ */
+export const requireOwnership = (resourceUserIdField: string = 'userId') => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw new AuthenticationError('Benutzer nicht authentifiziert')
+      }
+
+      // Business-Benutzer haben erweiterte Rechte
+      if (req.user.userType === UserType.BUSINESS) {
+        return next()
+      }
+
+      const resourceUserId = req.params[resourceUserIdField] || req.body[resourceUserIdField]
+
+      if (!resourceUserId) {
+        throw new AuthorizationError('Ressourcen-Benutzer-ID nicht gefunden')
+      }
+
+      if (req.user.id !== resourceUserId) {
+        loggers.securityEvent('OWNERSHIP_VIOLATION', req.user.id, req.ip, {
+          resourceUserId,
+          url: req.url,
+          method: req.method
+        })
+
+        throw new AuthorizationError('Zugriff auf fremde Ressource nicht erlaubt')
+      }
+
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+/**
+ * Optionale Authentifizierung - setzt req.user wenn Token vorhanden
+ */
+export const optionalAuth = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers.authorization
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7)
+
+      if (token) {
+        try {
+          const payload = await authService.verifyToken(token)
+          req.user = {
+            id: payload.userId,
+            email: payload.email,
+            userType: payload.userType,
+            sessionId: payload.sessionId
+          }
+        } catch (error) {
+          // Bei optionaler Auth ignorieren wir Token-Fehler
+          logger.debug('Optional auth failed:', error)
+        }
+      }
+    }
+
+    next()
+  } catch (error) {
+    // Bei optionaler Auth sollten Fehler nicht den Request blockieren
+    logger.debug('Optional auth error:', error)
+    next()
+  }
+}
+
+/**
+ * Rate Limiting für authentifizierte Benutzer
+ */
+export const authenticatedRateLimit = (maxRequests: number = 1000, windowMinutes: number = 60) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        return next()
+      }
+
+      const key = `auth_rate_limit:${req.user.id}`
+      const windowSeconds = windowMinutes * 60
+
+      const { redis } = await import('../config/redis')
+      const requests = await redis.incrementRateLimit(key, windowSeconds)
+
+      if (requests > maxRequests) {
+        loggers.securityEvent('AUTHENTICATED_RATE_LIMIT_EXCEEDED', req.user.id, req.ip, {
+          requests,
+          limit: maxRequests,
+          windowMinutes
+        })
+
+        throw new AuthorizationError(`Zu viele Anfragen. Limit: ${maxRequests} pro ${windowMinutes} Minuten`)
+      }
+
+      // Setze Rate Limit Headers
+      res.set({
+        'X-RateLimit-Limit': maxRequests.toString(),
+        'X-RateLimit-Remaining': Math.max(0, maxRequests - requests).toString(),
+        'X-RateLimit-Reset': new Date(Date.now() + windowSeconds * 1000).toISOString()
+      })
+
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+/**
+ * Middleware zur Überprüfung von API-Keys für B2B-Kunden
+ */
+export const authenticateApiKey = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const apiKey = req.headers['x-api-key'] as string
+
+    if (!apiKey) {
+      throw new AuthenticationError('API-Key fehlt')
+    }
+
+    // Validiere API-Key aus Datenbank
+    const apiKeyRecord = await prisma.apiKey.findUnique({
+      where: { key: apiKey },
+      include: {
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            users: {
+              where: { userType: UserType.BUSINESS },
+              take: 1,
+              select: {
+                id: true,
+                email: true,
+                userType: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    if (!apiKeyRecord) {
+      throw new AuthenticationError('Ungültiger API-Key')
+    }
+
+    // Prüfe ob API-Key aktiv ist
+    if (!apiKeyRecord.isActive) {
+      loggers.securityEvent('API_KEY_INACTIVE', undefined, req.ip, {
+        apiKeyId: apiKeyRecord.id,
+        organizationId: apiKeyRecord.organizationId
+      })
+      throw new AuthenticationError('API-Key ist deaktiviert')
+    }
+
+    // Prüfe ob API-Key abgelaufen ist
+    if (apiKeyRecord.expiresAt && apiKeyRecord.expiresAt < new Date()) {
+      loggers.securityEvent('API_KEY_EXPIRED', undefined, req.ip, {
+        apiKeyId: apiKeyRecord.id,
+        organizationId: apiKeyRecord.organizationId,
+        expiresAt: apiKeyRecord.expiresAt
+      })
+      throw new AuthenticationError('API-Key ist abgelaufen')
+    }
+
+    // Prüfe Quota
+    if (apiKeyRecord.quotaLimit && apiKeyRecord.quotaUsed >= apiKeyRecord.quotaLimit) {
+      loggers.securityEvent('API_KEY_QUOTA_EXCEEDED', undefined, req.ip, {
+        apiKeyId: apiKeyRecord.id,
+        organizationId: apiKeyRecord.organizationId,
+        quotaUsed: apiKeyRecord.quotaUsed,
+        quotaLimit: apiKeyRecord.quotaLimit
+      })
+      throw new AuthorizationError('API-Key Quota überschritten')
+    }
+
+    // Update lastUsedAt und quotaUsed
+    await prisma.apiKey.update({
+      where: { id: apiKeyRecord.id },
+      data: {
+        lastUsedAt: new Date(),
+        quotaUsed: apiKeyRecord.quotaUsed + 1
+      }
+    })
+
+    next()
+  } catch (error) {
+    loggers.securityEvent('API_KEY_AUTHENTICATION_FAILED', undefined, req.ip, {
+      url: req.url,
+      method: req.method,
+      apiKey: req.headers['x-api-key'] ? 'provided' : 'missing',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    })
+
+    next(error)
+  }
+}
+
+/**
+ * Kombinierte Authentifizierung: JWT oder API-Key
+ */
+export const authenticateFlexible = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Versuche zuerst API-Key Authentifizierung
+    const apiKey = req.headers['x-api-key']
+    if (apiKey) {
+      return authenticateApiKey(req, res, next)
+    }
+
+    // Fallback auf JWT Authentifizierung
+    return authenticate(req, res, next)
+  } catch (error) {
+    next(error)
+  }
+}
+
+// Alias für Backward Compatibility
+export const authenticateToken = authenticate

@@ -1,0 +1,53 @@
+{
+  "name": "smartlaw-mietrecht-agent",
+  "version": "1.0.0",
+  "description": "KI-gestützte Mietrechts-Anwendung für Deutschland",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd services/backend && npm run dev",
+    "dev:frontend": "cd web-app && npm start",
+    "dev:mobile": "cd mobile-app && npm start",
+    "build": "npm run build --workspaces",
+    "build:backend": "cd services/backend && npm run build",
+    "build:frontend": "cd web-app && npm run build",
+    "test": "npm run test --workspaces",
+    "test:backend": "cd services/backend && npm run test",
+    "test:frontend": "cd web-app && npm run test",
+    "test:mobile": "cd mobile-app && npm run test",
+    "test:coverage": "npm run test --workspaces -- --coverage",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint:security": "npm audit && eslint . --ext .ts,.tsx,.js,.jsx --rulesdir ./eslint-security-rules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,yml,yaml,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,scss,yml,yaml,md}\"",
+    "type-check": "tsc --noEmit",
+    "validate": "npm run lint && npm run type-check",
+    "validate:ci": "npm run lint && npm run type-check && npm run test",
+    "validate:security": "npm run lint:security && npm audit",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up",
+    "docker:build": "docker-compose -f docker-compose.dev.yml build",
+    "docker:security-check": "docker scan .",
+    "clean": "npm run clean --workspaces && rm -rf node_modules/.cache",
+    "clean:build": "npm run clean:build --workspaces",
+    "postinstall": "npm run build --workspaces",
+    "security:check": "npm audit && npm run lint:security",
+    "audit:fix": "npm audit fix",
+    "dependency:audit": "node scripts/dependency-audit.js"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

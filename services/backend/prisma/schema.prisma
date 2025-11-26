@@ -1,0 +1,881 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Benutzer-Modell
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  userType      UserType
+  isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastLoginAt   DateTime?
+
+  // Beziehungen
+  profile       UserProfile?
+  preferences   UserPreferences?
+  cases         Case[]
+  documents     Document[]
+  bookings      Booking[]
+  sessions      UserSession[]
+  ownedShares   DocumentSharing[] @relation("DocumentSharingOwner")
+  receivedShares DocumentSharing[] @relation("DocumentSharingRecipient")
+  annotations   DocumentAnnotation[]
+  workflowActions DocumentWorkflow[]
+  
+  @@map("users")
+}
+
+model UserProfile {
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  firstName         String?
+  lastName          String?
+  location          String?
+  language          String  @default("de")
+  accessibilityNeeds Json?
+  
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_profiles")
+}
+
+model UserPreferences {
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  notifications     Json    @default("{\"email\": true, \"push\": true, \"sms\": false}")
+  privacy           Json    @default("{\"dataSharing\": false, \"analytics\": true, \"marketing\": false}")
+  language          String  @default("de")
+  
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_preferences")
+}
+
+// Rechtsfälle
+model Case {
+  id            String        @id @default(cuid())
+  userId        String
+  title         String
+  description   String?
+  category      LegalCategory
+  status        CaseStatus    @default(OPEN)
+  priority      Priority      @default(MEDIUM)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  resolvedAt    DateTime?
+  
+  // Beziehungen
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages      Message[]
+  documents     Document[]
+  legalRefs     CaseLegalReference[]
+  
+  @@index([userId, status])
+  @@index([status, priority])
+  @@map("cases")
+}
+
+model Message {
+  id            String          @id @default(cuid())
+  caseId        String
+  sender        MessageSender
+  content       String
+  metadata      Json?
+  timestamp     DateTime        @default(now())
+  
+  // Beziehungen
+  case          Case            @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  
+  @@index([caseId, timestamp])
+  @@map("messages")
+}
+
+// Dokumente
+model Document {
+  id            String          @id @default(cuid())
+  userId        String?
+  organizationId String?
+  caseId        String?
+  filename      String
+  originalName  String
+  mimeType      String
+  size          Int
+  documentType  DocumentType
+  status        DocumentStatus  @default(DRAFT)
+  metadata      Json?
+  version       Int             @default(1)
+  parentId      String?
+  isCurrent     Boolean         @default(true)
+  uploadedAt    DateTime        @default(now())
+  
+  // KMS Encryption fields
+  encryptionKeyId      String?
+  encryptionKeyVersion Int?
+  
+  // Beziehungen
+  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization  Organization?   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  case          Case?           @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  parent        Document?       @relation("DocumentVersion", fields: [parentId], references: [id], onDelete: NoAction)
+  versions      Document[]      @relation("DocumentVersion")
+  analysis      DocumentAnalysis?
+  shares        DocumentSharing[]
+  annotations   DocumentAnnotation[]
+  workflowHistory DocumentWorkflow[]
+  
+  @@index([userId, documentType])
+  @@index([uploadedAt])
+  @@index([parentId])
+  @@index([isCurrent])
+  @@index([status])
+  @@map("documents")
+}
+
+model DocumentAnalysis {
+  id            String      @id @default(cuid())
+  documentId    String      @unique
+  extractedData Json
+  riskLevel     RiskLevel
+  confidence    Float
+  analyzedAt    DateTime    @default(now())
+  
+  // Beziehungen
+  document      Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  issues        Issue[]
+  recommendations Recommendation[]
+  
+  @@map("document_analyses")
+}
+
+model Issue {
+  id            String          @id @default(cuid())
+  analysisId    String
+  type          String
+  severity      Severity
+  description   String
+  legalBasis    String?
+  suggestedAction String?
+  
+  // Beziehungen
+  analysis      DocumentAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  
+  @@map("issues")
+}
+
+model Recommendation {
+  id            String          @id @default(cuid())
+  analysisId    String
+  type          String
+  description   String
+  priority      Priority
+  actionRequired Boolean        @default(false)
+  
+  // Beziehungen
+  analysis      DocumentAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  
+  @@map("recommendations")
+}
+
+// Rechtsdatenbank
+model LegalKnowledge {
+  id            String      @id @default(cuid())
+  type          LegalType
+  reference     String      @unique
+  title         String
+  content       String
+  jurisdiction  String
+  effectiveDate DateTime
+  lastUpdated   DateTime    @updatedAt
+  tags          String[]
+  embeddings    Float[]     // Für semantische Suche
+  
+  // Beziehungen
+  caseRefs      CaseLegalReference[]
+  
+  @@map("legal_knowledge")
+}
+
+model CaseLegalReference {
+  id            String        @id @default(cuid())
+  caseId        String
+  legalId       String
+  relevantSection String?
+  
+  // Beziehungen
+  case          Case          @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  legal         LegalKnowledge @relation(fields: [legalId], references: [id], onDelete: Cascade)
+  
+  @@unique([caseId, legalId])
+  @@map("case_legal_references")
+}
+
+// Anwaltsvermittlung
+model Lawyer {
+  id            String      @id @default(cuid())
+  name          String
+  email         String      @unique
+  specializations String[]
+  location      String
+  rating        Float       @default(0)
+  reviewCount   Int         @default(0)
+  hourlyRate    Float?
+  languages     String[]    @default(["de"])
+  verified      Boolean     @default(false)
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Beziehungen
+  availableSlots TimeSlot[]
+  bookings      Booking[]
+  reviews       LawyerReview[]
+  
+  @@map("lawyers")
+}
+
+model TimeSlot {
+  id            String      @id @default(cuid())
+  lawyerId      String
+  startTime     DateTime
+  endTime       DateTime
+  available     Boolean     @default(true)
+  
+  // Beziehungen
+  lawyer        Lawyer      @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  booking       Booking?
+  
+  @@map("time_slots")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String
+  lawyerId      String
+  timeSlotId    String        @unique
+  status        BookingStatus @default(PENDING)
+  meetingType   MeetingType
+  notes         String?
+  paymentStatus String?       @default("UNPAID")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  // Beziehungen
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lawyer        Lawyer        @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  timeSlot      TimeSlot      @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+  payment       Payment?
+  
+  @@map("bookings")
+}
+
+model LawyerReview {
+  id            String      @id @default(cuid())
+  bookingId     String?     @unique
+  lawyerId      String
+  userId        String
+  rating        Int         // 1-5
+  comment       String?
+  createdAt     DateTime    @default(now())
+  
+  // Beziehungen
+  lawyer        Lawyer      @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  
+  @@map("lawyer_reviews")
+}
+
+// Mietspiegel-Daten
+model MietspiegelData {
+  id            String      @id @default(cuid())
+  city          String
+  year          Int
+  averageRent   Float
+  rentRanges    Json        // Array von RentRange Objekten
+  specialRegulations String[]
+  lastUpdated   DateTime    @updatedAt
+  
+  @@unique([city, year])
+  @@map("mietspiegel_data")
+}
+
+// Session Management
+model UserSession {
+  id            String      @id @default(cuid())
+  userId        String
+  sessionToken  String      @unique
+  expiresAt     DateTime
+  createdAt     DateTime    @default(now())
+  
+  // Beziehungen
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_sessions")
+}
+
+// Template System
+model Template {
+  id            String      @id @default(cuid())
+  name          String
+  type          String
+  description   String
+  content       String      // Template-Inhalt mit Platzhaltern
+  category      LegalCategory
+  language      String      @default("de")
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@map("templates")
+}
+
+// Payment System
+model Payment {
+  id            String        @id @default(cuid())
+  bookingId     String        @unique
+  userId        String
+  lawyerId      String
+  amount        Int           // in Cent
+  currency      String        @default("EUR")
+  status        PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod @default(CREDIT_CARD)
+  transactionId String?
+  invoiceUrl    String?
+  refundedAmount Int?
+  refundedAt    DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  // Beziehungen
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  invoice       Invoice?
+  refunds       Refund[]
+  
+  @@map("payments")
+}
+
+model Invoice {
+  id            String      @id @default(cuid())
+  paymentId     String      @unique
+  invoiceNumber String      @unique
+  amount        Int         // Nettobetrag in Cent
+  taxAmount     Int         // Steuerbetrag in Cent
+  totalAmount   Int         // Gesamtbetrag in Cent
+  currency      String      @default("EUR")
+  issueDate     DateTime    @default(now())
+  dueDate       DateTime
+  pdfUrl        String?
+  status        String      @default("PAID")
+  createdAt     DateTime    @default(now())
+  
+  // Beziehungen
+  payment       Payment     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  
+  @@map("invoices")
+}
+
+model Refund {
+  id            String      @id @default(cuid())
+  paymentId     String
+  amount        Int         // in Cent
+  reason        String
+  status        String      @default("PENDING")
+  processedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  
+  // Beziehungen
+  payment       Payment     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  
+  @@map("refunds")
+}
+
+// Enums
+enum UserType {
+  TENANT
+  LANDLORD
+  BUSINESS
+}
+
+enum LegalCategory {
+  RENT_REDUCTION
+  TERMINATION
+  RENT_INCREASE
+  UTILITY_COSTS
+  REPAIRS
+  DEPOSIT
+  MODERNIZATION
+  OTHER
+}
+
+enum CaseStatus {
+  OPEN
+  RESOLVED
+  ESCALATED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum MessageSender {
+  USER
+  AI
+  LAWYER
+}
+
+enum DocumentType {
+  RENTAL_CONTRACT
+  UTILITY_BILL
+  WARNING_LETTER
+  OTHER
+}
+
+enum DocumentStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  ARCHIVED
+  REJECTED
+}
+
+enum WorkflowAction {
+  SUBMIT_FOR_REVIEW
+  APPROVE
+  REJECT
+  REQUEST_CHANGES
+  ARCHIVE
+  RESTORE
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Severity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum LegalType {
+  LAW
+  COURT_DECISION
+  REGULATION
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum MeetingType {
+  VIDEO
+  PHONE
+  IN_PERSON
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  SEPA
+}
+
+// B2B-spezifische Modelle
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  plan        String   @default("basic") // basic, professional, enterprise
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Beziehungen
+  apiKeys     ApiKey[]
+  documents   Document[]
+  chatInteractions ChatInteraction[]
+  templateGenerations TemplateGeneration[]
+  batchJobs   BatchJob[]
+  webhooks    Webhook[]
+  reportGenerations ReportGeneration[]
+  
+  @@map("organizations")
+}
+
+model ApiKey {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  name           String
+  organizationId String
+  permissions    String[] // Array von Berechtigungen
+  rateLimit      Int      @default(1000) // Requests pro Minute
+  quotaLimit     Int      @default(10000) // Requests pro Monat
+  quotaUsed      Int      @default(0)
+  isActive       Boolean  @default(true)
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Beziehungen
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requests       ApiRequest[]
+  
+  @@map("api_keys")
+}
+
+model ApiRequest {
+  id         String   @id @default(cuid())
+  apiKeyId   String
+  method     String
+  path       String
+  userAgent  String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  
+  // Beziehungen
+  apiKey     ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  
+  @@index([apiKeyId, createdAt])
+  @@map("api_requests")
+}
+
+model BatchJob {
+  id             String   @id @default(cuid())
+  organizationId String
+  type           String   // document_analysis, chat_bulk, etc.
+  status         String   @default("pending") // pending, processing, completed, failed
+  totalItems     Int
+  processedItems Int      @default(0)
+  metadata       Json?
+  error          String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime @default(now())
+  
+  // Beziehungen
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@map("batch_jobs")
+}
+
+model ChatInteraction {
+  id             String   @id @default(cuid())
+  organizationId String
+  sessionId      String
+  query          String
+  response       String
+  confidence     Float?
+  legalReferences Json?
+  createdAt      DateTime @default(now())
+  
+  // Beziehungen
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@map("chat_interactions")
+}
+
+model TemplateGeneration {
+  id               String   @id @default(cuid())
+  organizationId   String
+  templateType     String
+  inputData        Json
+  generatedContent String
+  createdAt        DateTime @default(now())
+  
+  // Beziehungen
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@map("template_generations")
+}
+
+model ReportGeneration {
+  id             String   @id @default(cuid())
+  organizationId String
+  reportType     String
+  periodStart    DateTime
+  periodEnd      DateTime
+  generatedAt    DateTime @default(now())
+  summary        Json
+  
+  // Beziehungen
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@map("report_generations")
+}
+
+model Webhook {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  url            String
+  events         String[] // Array von Event-Typen
+  secret         String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Beziehungen
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@map("webhooks")
+}
+
+// Erweitere bestehende Document-Modell für B2B-Support
+// (Das Document-Modell wurde bereits oben definiert, hier nur die Erweiterung)
+
+model DocumentSharing {
+  id            String      @id @default(cuid())
+  documentId    String
+  ownerId       String
+  sharedWithId  String
+  permission    Permission  @default(READ)
+  sharedAt      DateTime    @default(now())
+  expiresAt     DateTime?
+  
+  // Beziehungen
+  document      Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  owner         User        @relation("DocumentSharingOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  sharedWith    User        @relation("DocumentSharingRecipient", fields: [sharedWithId], references: [id], onDelete: Cascade)
+  
+  @@index([documentId])
+  @@index([sharedWithId])
+  @@index([ownerId])
+  @@map("document_sharing")
+}
+
+model DocumentAnnotation {
+  id            String      @id @default(cuid())
+  documentId    String
+  userId        String
+  parentId      String?
+  page          Int?
+  positionX     Float?
+  positionY     Float?
+  text          String
+  type          AnnotationType @default(COMMENT)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  resolved      Boolean     @default(false)
+  resolvedAt    DateTime?
+  
+  // Beziehungen
+  document      Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent        DocumentAnnotation? @relation("AnnotationReplies", fields: [parentId], references: [id])
+  children      DocumentAnnotation[] @relation("AnnotationReplies")
+  
+  @@index([documentId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("document_annotations")
+}
+
+model DocumentWorkflow {
+  id            String          @id @default(cuid())
+  documentId    String
+  userId        String
+  action        WorkflowAction
+  fromStatus    DocumentStatus
+  toStatus      DocumentStatus
+  comment       String?
+  createdAt     DateTime        @default(now())
+  
+  // Beziehungen
+  document      Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([documentId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("document_workflows")
+}
+
+model WorkflowRule {
+  id            String          @id @default(cuid())
+  name          String
+  description   String?
+  triggerEvent  String          // e.g., 'document_uploaded', 'status_changed'
+  condition     String?         // JSON representation of conditions
+  action        String          // e.g., 'change_status', 'send_notification'
+  actionParams  Json?           // Parameters for the action
+  enabled       Boolean         @default(true)
+  priority      Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  @@map("workflow_rules")
+}
+
+enum Permission {
+  READ
+  WRITE
+  COMMENT
+}
+
+enum AnnotationType {
+  COMMENT
+  HIGHLIGHT
+  STRIKETHROUGH
+  UNDERLINE
+  NOTE
+}
+
+// ============================================
+// Key Management System (KMS) Models
+// ============================================
+
+// Encryption Keys Table
+model EncryptionKey {
+  id            String      @id @default(cuid())
+  tenantId      String
+  purpose       String      // KeyPurpose: data_encryption, document_encryption, field_encryption, etc.
+  algorithm     String      @default("aes-256-gcm")
+  encryptedKey  String      // Der mit Master Key verschlüsselte Schlüssel
+  iv            String      // Initialization Vector für Verschlüsselung
+  authTag       String      // Authentication Tag für GCM
+  version       Int         @default(1)
+  status        String      @default("active") // active, deprecated, disabled, compromised, deleted
+  expiresAt     DateTime?
+  lastUsedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  metadata      Json?
+  
+  // Beziehungen
+  rotationSchedule RotationSchedule?
+  auditLogs     KeyAuditLog[]
+  
+  @@unique([tenantId, purpose, version])
+  @@index([tenantId, status])
+  @@index([status])
+  @@index([expiresAt])
+  @@index([purpose])
+  @@map("encryption_keys")
+}
+
+// Key Rotation Schedule
+model RotationSchedule {
+  id              String      @id @default(cuid())
+  keyId           String      @unique
+  enabled         Boolean     @default(true)
+  intervalDays    Int
+  nextRotationAt  DateTime
+  lastRotationAt  DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Beziehungen
+  key             EncryptionKey @relation(fields: [keyId], references: [id], onDelete: Cascade)
+  
+  @@index([nextRotationAt, enabled])
+  @@map("rotation_schedules")
+}
+
+// Feedback System
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  category  String   // bug, feature, general, content
+  message   String
+  rating    Int?     // 1-5
+  createdAt DateTime @default(now())
+  
+  // Beziehungen
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("feedbacks")
+}
+
+// Key Audit Log
+model KeyAuditLog {
+  id            String      @id @default(cuid())
+  keyId         String
+  tenantId      String
+  eventType     String      // key_created, key_accessed, key_rotated, key_status_changed, key_deleted, security_alert
+  action        String
+  result        String      // success | failure
+  serviceId     String?
+  userId        String?
+  ipAddress     String?
+  metadata      Json?
+  hmacSignature String      // HMAC für Integritätsprüfung
+  timestamp     DateTime    @default(now())
+  
+  // Beziehungen
+  key           EncryptionKey @relation(fields: [keyId], references: [id], onDelete: Cascade)
+  
+  @@index([keyId, timestamp])
+  @@index([tenantId, timestamp])
+  @@index([eventType, timestamp])
+  @@index([timestamp])
+  @@map("key_audit_logs")
+}
+
+// Master Key Configuration (nur ein Eintrag)
+model MasterKeyConfig {
+  id            String      @id @default(cuid())
+  version       Int         @default(1)
+  algorithm     String      @default("aes-256-gcm")
+  rotatedAt     DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@map("master_key_config")
+}
+
+// ============================================
+// Audit Logging System
+// ============================================
+
+// Comprehensive Audit Log for all system activities
+model AuditLog {
+  id            String      @id @default(cuid())
+  timestamp     DateTime    @default(now())
+  eventType     String      // AuditEventType enum values
+  userId        String?
+  tenantId      String?
+  resourceType  String?
+  resourceId    String?
+  action        String
+  result        String      // success | failure
+  ipAddress     String?
+  userAgent     String?
+  metadata      Json?
+  hmacSignature String      // HMAC für Integritätsprüfung
+  
+  @@index([userId, timestamp])
+  @@index([tenantId, timestamp])
+  @@index([eventType, timestamp])
+  @@index([resourceType, resourceId])
+  @@index([timestamp])
+  @@index([result, timestamp])
+  @@index([action, timestamp])
+  @@map("audit_logs")
+}

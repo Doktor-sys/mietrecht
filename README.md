@@ -1,3 +1,49 @@
+# Mietrecht - Lokales Test-Startskript
+
+Kurze Anleitung zur Verwendung von `start_local_test.bat` für lokale Entwicklung und Tests.
+
+## Zweck
+- Startet Backend und Mobile-App lokal.
+- Synchronisiert die Datenbank mit Prisma (`prisma db push`).
+- Nutzt lokale PostgreSQL-Instanz standardmäßig (konfigurierbar).
+- Schreibt Logdateien (`start_local_test.log`, `backend.log`).
+
+## Voraussetzungen
+- Windows (PowerShell oder CMD)
+- Node.js (mind. v18.0 empfohlen)
+- npm
+- Lokale PostgreSQL-Instanz oder erreichbarer DB-Host
+
+## Schnellstart
+1. Ins Projektverzeichnis wechseln:
+```powershell
+cd D:\JurisMind\Mietrecht
+```
+2. Skript ausführen:
+```powershell
+.\start_local_test.bat
+```
+
+Das Skript prüft Node/npm-Version, prüft PostgreSQL auf `PGHOST:PGPORT` (Standard `localhost:5432`), führt `npx prisma db push` aus, startet das Backend und die Mobile-App. Logausgaben werden in `start_local_test.log` bzw. `backend.log` geschrieben.
+
+## Wichtige Umgebungsvariablen
+- `PGHOST` / `PGPORT` : PostgreSQL-Host und Port (Defaults: `localhost` / `5432`)
+- `SKIP_PG_CHECK=1` : Falls gesetzt, ignoriert das Skript eine nicht erreichbare DB und fährt fort (nicht empfohlen)
+- `BACKEND_LOG` : `1` (Standard) schreibt Backend-Output nach `backend.log`; `0` öffnet das Backend-Fenster ohne File-Logging
+- `BACKEND_LOGFILE` : Pfad zur Backend-Logdatei (Standard: `backend.log` im Repo-Root)
+
+## Logs & Rotation
+- `start_local_test.log` enthält Ablauf-Infos, Fehler und die Ausgaben von `prisma db push` und `npm install`.
+- Logrotation ist aktiv: Dateien >5MB werden timestamp-rotated; es werden bis zu 5 Backups behalten.
+
+## Zurücksetzen auf Originalskript
+Falls etwas schiefgeht, ist eine Kopie des Originals angelegt: `start_local_test.bat.bak`.
+
+## Weiteres
+Wenn du möchtest, kann ich das Skript in eine PowerShell-Variante konvertieren oder weitere Checks/CI-Anpassungen vornehmen.
+
+---
+Automatisch hinzugefügt.
 # SmartLaw Mietrecht — Vollständiges System
 
 Intelligente rechtliche Analyse- und Entscheidungsplattform für deutsches Mietrecht mit erweiterten KI/ML-Funktionen, Offline-Unterstützung und Real-Time-Datenintegration.

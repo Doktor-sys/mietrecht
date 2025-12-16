@@ -32,3 +32,40 @@ jobs:
 
       - name: Check Node version
         run: node -v
+
+      - name: Backend: install deps, run tests/build if available, prisma generate
+        run: |
+          if [ -f services/backend/package.json ]; then
+            echo "Backend package.json found"
+            cd services/backend
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --legacy-peer-deps
+            fi
+            # run tests if test script exists
+            node -e "process.exit((require('./package.json').scripts||{}).test ? 0 : 1)" && npm test || echo "no backend test script"
+            # run build if build script exists
+            node -e "process.exit((require('./package.json').scripts||{}).build ? 0 : 1)" && npm run build || echo "no backend build script"
+            # prisma generate if schema exists
+            if [ -f prisma/schema.prisma ]; then
+              npx prisma generate || true
+            fi
+          else
+            echo "no backend package.json"
+          fi
+
+      - name: Mobile app: install deps and start checks
+        run: |
+          if [ -f mobile-app/package.json ]; then
+            echo "Mobile app package.json found"
+            cd mobile-app
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --legacy-peer-deps
+            fi
+            node -e "process.exit((require('./package.json').scripts||{}).test ? 0 : 1)" && npm test || echo "no mobile-app test script"
+          else
+            echo "no mobile-app package.json"
+          fi

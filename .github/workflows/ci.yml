@@ -115,11 +115,17 @@ jobs:
           if [ "$found" -eq 1 ]; then
             title="Security: Vulnerabilities found by npm audit"
             body="$body\nAction: Please check the full audit reports in the workflow artifacts and address the issues."
-            payload=$(jq -n --arg t "$title" --arg b "$body" '{title:$t, body:$b}')
-            echo "Creating issue in $GITHUB_REPOSITORY"
+            echo "Ensure labels exist: security, automated"
+            # create labels if they do not exist (ignore errors if they already exist)
+            curl -s -S -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
+              -d '{"name":"security","color":"b60205","description":"Security issues detected by CI"}' "https://api.github.com/repos/$GITHUB_REPOSITORY/labels" || true
+            curl -s -S -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
+              -d '{"name":"automated","color":"0e8a16","description":"Automated issues created by CI"}' "https://api.github.com/repos/$GITHUB_REPOSITORY/labels" || true
+            payload=$(jq -n --arg t "$title" --arg b "$body" --argjson labels '["security","automated"]' '{title:$t, body:$b, labels:$labels}')
+            echo "Creating issue in $GITHUB_REPOSITORY with labels security, automated"
             curl -s -S -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
               -d "$payload" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues" > /tmp/issue.json || true
-            echo "Issue creation payload:"; cat /tmp/issue.json || true
+            echo "Issue creation response:"; cat /tmp/issue.json || true
           else
             echo "No critical/high vulnerabilities found."
           fi

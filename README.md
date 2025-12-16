@@ -27,10 +27,30 @@ cd D:\JurisMind\Mietrecht
 Das Skript prüft Node/npm-Version, prüft PostgreSQL auf `PGHOST:PGPORT` (Standard `localhost:5432`), führt `npx prisma db push` aus, startet das Backend und die Mobile-App. Logausgaben werden in `start_local_test.log` bzw. `backend.log` geschrieben.
 
 ## Wichtige Umgebungsvariablen
-- `PGHOST` / `PGPORT` : PostgreSQL-Host und Port (Defaults: `localhost` / `5432`)
-- `SKIP_PG_CHECK=1` : Falls gesetzt, ignoriert das Skript eine nicht erreichbare DB und fährt fort (nicht empfohlen)
-- `BACKEND_LOG` : `1` (Standard) schreibt Backend-Output nach `backend.log`; `0` öffnet das Backend-Fenster ohne File-Logging
-- `BACKEND_LOGFILE` : Pfad zur Backend-Logdatei (Standard: `backend.log` im Repo-Root)
+
+## PowerShell-Variante
+
+Es gibt zusätzlich eine PowerShell-Version des Startskripts: `start_local_test.ps1`.
+
+- Ausführen (im Repo-Root):
+```powershell
+.\start_local_test.ps1
+```
+
+- Verhalten: entspricht funktional dem Batch-Skript, nutzt aber PowerShell‑Funktionen:
+  - bessere Logrotation mit Timestamp
+  - prüft `node`/`npm` (Node >= 18 empfohlen)
+  - prüft PostgreSQL auf `PGHOST:PGPORT` (Override: `SKIP_PG_CHECK=1`)
+  - startet Backend in einem neuen PowerShell-Fenster (Standard: Backend-Logging aktiviert)
+  - startet die Mobile-App und installiert ggf. Abhängigkeiten
+
+- Wichtige Umgebungsvariablen (wiederholt):
+  - `PGHOST`, `PGPORT` — DB-Host/Port (Defaults: `localhost` / `5432`)
+  - `SKIP_PG_CHECK=1` — Weiterfahren trotz nicht erreichbarer DB
+  - `BACKEND_LOG` — `1` oder `0` (Standard `1`)
+  - `BACKEND_LOGFILE` — Pfad zur Backend-Logdatei
+
+Die PowerShell-Variante ist nützlich, wenn du PowerShell‑spezifische Features bevorzugst oder die Ausgaben direkt in Dateien sammeln möchtest.
 
 ## Logs & Rotation
 - `start_local_test.log` enthält Ablauf-Infos, Fehler und die Ausgaben von `prisma db push` und `npm install`.

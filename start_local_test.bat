@@ -56,12 +56,26 @@ where npm >nul 2>&1 || (
         exit /b 1
 )
 
-REM Prüfe Node-Version (z. B. v16.13.0+)
-for /f "tokens=1 delims=v" %%A in ('node -v') do set "NODEVER=%%A"
+REM Prüfe Node-Version (z. B. v18.0.0+)
+REM Lese komplette Version (z.B. "v18.16.0" oder "18.16.0")
+for /f "usebackq tokens=*" %%A in (`node -v 2^>nul`) do set "NODEVER_RAW=%%A"
+if not defined NODEVER_RAW set "NODEVER_RAW="
+REM Entferne optionales führendes 'v'
+if not ""=="%NODEVER_RAW%" (
+    if "%NODEVER_RAW:~0,1%"=="v" (
+        set "NODEVER=%NODEVER_RAW:~1%"
+    ) else (
+        set "NODEVER=%NODEVER_RAW%"
+    )
+) else (
+    set "NODEVER="
+)
 for /f "tokens=1,2 delims=." %%A in ("%NODEVER%") do (
         set "NODE_MAJOR=%%A"
         set "NODE_MINOR=%%B"
 )
+if not defined NODE_MAJOR set "NODE_MAJOR=0"
+if not defined NODE_MINOR set "NODE_MINOR=0"
 if %NODE_MAJOR% LSS %MIN_NODE_MAJOR% (
         echo [Error] Node-Version %NODEVER% ist kleiner als die erforderliche %MIN_NODE_MAJOR%.x
         echo [Error] Node-Version %NODEVER% ist kleiner als die erforderliche %MIN_NODE_MAJOR%.x >> "%LOGFILE%"
@@ -78,8 +92,10 @@ if %NODE_MAJOR%==%MIN_NODE_MAJOR% if %NODE_MINOR% LSS %MIN_NODE_MINOR% (
 )
 
 REM Prüfe npm-Version (grobe Prüfung auf Major)
-for /f "tokens=1 delims=v" %%A in ('npm -v') do set "NPMVER=%%A"
+for /f "usebackq tokens=*" %%A in (`npm -v 2^>nul`) do set "NPMVER=%%A"
+if not defined NPMVER set "NPMVER=0"
 for /f "tokens=1 delims=." %%A in ("%NPMVER%") do set "NPM_MAJOR=%%A"
+if not defined NPM_MAJOR set "NPM_MAJOR=0"
 if %NPM_MAJOR% LSS %MIN_NPM_MAJOR% (
         echo [Warn] npm-Version %NPMVER% ist kleiner als empfohlen %MIN_NPM_MAJOR%.
         echo [Warn] npm-Version %NPMVER% ist kleiner als empfohlen %MIN_NPM_MAJOR%. >> "%LOGFILE%"

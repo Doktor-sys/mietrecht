@@ -70,21 +70,28 @@ jobs:
             echo "no mobile-app package.json"
           fi
 
-      - name: Security: npm audit (warn only)
+      - name: Security: npm audit (warn only) + upload reports
         run: |
           set -e
+          mkdir -p audit-reports
           if [ -f services/backend/package.json ]; then
             echo "Running npm audit for backend (warn-only)"
             cd services/backend
-            npm audit --audit-level=high || echo "npm audit returned issues (non-failing)"
+            npm audit --json > "$GITHUB_WORKSPACE/audit-reports/backend-audit.json" || echo "npm audit returned issues (non-failing)"
             cd -
           fi
           if [ -f mobile-app/package.json ]; then
             echo "Running npm audit for mobile-app (warn-only)"
             cd mobile-app
-            npm audit --audit-level=high || echo "npm audit returned issues (non-failing)"
+            npm audit --json > "$GITHUB_WORKSPACE/audit-reports/mobile-audit.json" || echo "npm audit returned issues (non-failing)"
             cd -
           fi
+
+      - name: Upload npm audit reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-reports
+          path: audit-reports/
 
       - name: TypeScript: compile check (if tsconfig exists)
         run: |

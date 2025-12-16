@@ -121,7 +121,7 @@ jobs:
               -d '{"name":"security","color":"b60205","description":"Security issues detected by CI"}' "https://api.github.com/repos/$GITHUB_REPOSITORY/labels" || true
             curl -s -S -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
               -d '{"name":"automated","color":"0e8a16","description":"Automated issues created by CI"}' "https://api.github.com/repos/$GITHUB_REPOSITORY/labels" || true
-            payload=$(jq -n --arg t "$title" --arg b "$body" --argjson labels '["security","automated"]' '{title:$t, body:$b, labels:$labels}')
+            payload=$(jq -n --arg t "$title" --arg b "$body" --argjson labels '["security","automated"]' --argjson assignees '["Doktor-sys"]' '{title:$t, body:$b, labels:$labels, assignees:$assignees}')
             echo "Creating issue in $GITHUB_REPOSITORY with labels security, automated"
             curl -s -S -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
               -d "$payload" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues" > /tmp/issue.json || true

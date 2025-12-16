@@ -1,0 +1,38 @@
+@echo off
+echo ========================================================
+echo   SmartLaw Mietrecht - Local Testing Environment 🧪
+echo ========================================================
+echo.
+echo Verwende lokale PostgreSQL-Instanz anstelle von Docker
+echo.
+
+REM Überspringe Docker und verwende lokale PostgreSQL
+echo [Skipping Docker] Verwende lokale PostgreSQL-Instanz
+echo.
+
+REM Synchronisiere die Datenbank mit Prisma
+echo [1/3] Syncing Database...
+cd services\backend
+call npx prisma db push
+cd ..\..
+
+REM Starte das Backend
+echo [2/3] Starting Backend...
+set PORT=3000
+start "SmartLaw Backend" cmd /k "cd services\backend && npm run dev"
+
+REM Starte die Mobile App
+echo.
+echo [3/3] Starting Mobile App...
+echo   - Scan QR Code or press 'a'/'i'
+echo.
+cd mobile-app
+if not exist "node_modules\expo\package.json" (
+    echo [Info] Dependencies not fully installed. Running npm install...
+    call npm install --legacy-peer-deps
+)
+
+call npm start
+
+pause
+

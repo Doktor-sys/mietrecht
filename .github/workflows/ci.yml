@@ -69,3 +69,38 @@ jobs:
           else
             echo "no mobile-app package.json"
           fi
+
+      - name: Security: npm audit (warn only)
+        run: |
+          set -e
+          if [ -f services/backend/package.json ]; then
+            echo "Running npm audit for backend (warn-only)"
+            cd services/backend
+            npm audit --audit-level=high || echo "npm audit returned issues (non-failing)"
+            cd -
+          fi
+          if [ -f mobile-app/package.json ]; then
+            echo "Running npm audit for mobile-app (warn-only)"
+            cd mobile-app
+            npm audit --audit-level=high || echo "npm audit returned issues (non-failing)"
+            cd -
+          fi
+
+      - name: TypeScript: compile check (if tsconfig exists)
+        run: |
+          if [ -f services/backend/tsconfig.json ]; then
+            echo "TypeScript config found in services/backend - running tsc --noEmit"
+            cd services/backend
+            npx tsc --noEmit || (echo "TypeScript errors in backend"; exit 1)
+            cd -
+          else
+            echo "No tsconfig in services/backend"
+          fi
+          if [ -f mobile-app/tsconfig.json ]; then
+            echo "TypeScript config found in mobile-app - running tsc --noEmit"
+            cd mobile-app
+            npx tsc --noEmit || (echo "TypeScript errors in mobile-app"; exit 1)
+            cd -
+          else
+            echo "No tsconfig in mobile-app"
+          fi

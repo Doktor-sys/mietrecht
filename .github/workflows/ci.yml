@@ -93,6 +93,37 @@ jobs:
           name: npm-audit-reports
           path: audit-reports/
 
+      - name: Create GitHub issue if critical/high vulnerabilities found
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          found=0
+          body="The automated audit detected critical/high vulnerabilities in one or more packages.\n\n"
+          for f in audit-reports/*.json; do
+            if [ -f "$f" ]; then
+              crit=$(jq -r '.metadata.vulnerabilities.critical // 0' "$f")
+              high=$(jq -r '.metadata.vulnerabilities.high // 0' "$f")
+              if [ "$crit" -gt 0 ] || [ "$high" -gt 0 ]; then
+                found=1
+                name=$(basename "$f")
+                body="$body- $name : critical=$crit, high=$high\n"
+              fi
+            fi
+          done
+          if [ "$found" -eq 1 ]; then
+            title="Security: Vulnerabilities found by npm audit"
+            body="$body\nAction: Please check the full audit reports in the workflow artifacts and address the issues."
+            payload=$(jq -n --arg t "$title" --arg b "$body" '{title:$t, body:$b}')
+            echo "Creating issue in $GITHUB_REPOSITORY"
+            curl -s -S -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
+              -d "$payload" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues" > /tmp/issue.json || true
+            echo "Issue creation payload:"; cat /tmp/issue.json || true
+          else
+            echo "No critical/high vulnerabilities found."
+          fi
+
       - name: TypeScript: compile check (if tsconfig exists)
         run: |
           if [ -f services/backend/tsconfig.json ]; then

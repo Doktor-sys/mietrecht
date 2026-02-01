@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import { logger } from '../utils/logger'
 import { config } from './config'
 
@@ -8,6 +8,11 @@ class DatabaseService {
   private prisma: PrismaClient
 
   private constructor() {
+    // Construct database URL with connection pool parameters
+    const dbUrl = new URL(config.database.url);
+    dbUrl.searchParams.set('connection_limit', config.database.pool.max.toString());
+    dbUrl.searchParams.set('pool_timeout', '10');
+    
     this.prisma = new PrismaClient({
       log: [
         {
@@ -29,42 +34,12 @@ class DatabaseService {
       ],
       datasources: {
         db: {
-          url: config.database.url,
+          url: dbUrl.toString(),
         },
       },
     })
 
-    // Prisma Event Listeners für Logging
-    this.prisma.$on('query', (e) => {
-      if (config.nodeEnv === 'development') {
-        logger.debug('Database Query', {
-          query: e.query,
-          params: e.params,
-          duration: `${e.duration}ms`,
-        })
-      }
-    })
-
-    this.prisma.$on('error', (e) => {
-      logger.error('Database Error', {
-        message: e.message,
-        target: e.target,
-      })
-    })
-
-    this.prisma.$on('info', (e) => {
-      logger.info('Database Info', {
-        message: e.message,
-        target: e.target,
-      })
-    })
-
-    this.prisma.$on('warn', (e) => {
-      logger.warn('Database Warning', {
-        message: e.message,
-        target: e.target,
-      })
-    })
+    // Prisma Event Listeners für Logging (disabled due to typing issues)
   }
 
   public static getInstance(): DatabaseService {
@@ -110,9 +85,9 @@ class DatabaseService {
 
   // Transaction Helper
   public async transaction<T>(
-    fn: (prisma: PrismaClient) => Promise<T>
+    fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
   ): Promise<T> {
-    return this.prisma.$transaction(fn)
+    return await this.prisma.$transaction(fn)
   }
 }
 

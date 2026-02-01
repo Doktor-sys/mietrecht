@@ -1,0 +1,14 @@
+﻿﻿[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.smartlaw.mietrecht",
+      "sha256_cert_fingerprints": [
+        "52:EB:0E:05:8C:C5:C0:18:D7:68:D9:BC:F0:07:86:13:07:53:20:D6:01:36:07:F6:17:2E:94:90:EC:39:B2:22"
+      ]
+    }
+  }
+]

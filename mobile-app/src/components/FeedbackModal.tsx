@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Modal, Portal, Text, Button, TextInput, SegmentedButtons, useTheme } from 'react-native-paper';
-import axios from 'axios';
-import { API_URL } from '../config'; // Assuming config exists, otherwise I'll hardcode or find it
+import { feedbackAPI } from '../services/api';
 
 interface FeedbackModalProps {
     visible: boolean;
@@ -21,12 +20,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onDismiss
 
         setLoading(true);
         try {
-            // Replace with actual API call
-            // await axios.post(`${API_URL}/api/feedback`, { category, message, userId });
-            console.log('Submitting feedback:', { category, message, userId });
-
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await feedbackAPI.submit({ category, message, userId });
+            console.log('Feedback submitted:', { category, message, userId });
 
             setMessage('');
             setCategory('general');

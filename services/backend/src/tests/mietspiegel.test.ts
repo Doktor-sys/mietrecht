@@ -2,31 +2,7 @@ import request from 'supertest'
 import { PrismaClient } from '@prisma/client'
 import app from '../index'
 import { redis } from '../config/redis'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { it } from 'node:test'
-import { describe } from 'node:test'
-import { beforeEach } from 'node:test'
-import { describe } from 'node:test'
+
 
 const prisma = new PrismaClient()
 
@@ -46,7 +22,7 @@ describe('Mietspiegel API Integration Tests', () => {
           create: {
             firstName: 'Test',
             lastName: 'User',
-            location: 'Berlin'
+            city: 'Berlin'
           }
         }
       }
@@ -213,7 +189,7 @@ describe('Mietspiegel API Integration Tests', () => {
 
       expect(response.body.success).toBe(true)
       expect(Array.isArray(response.body.data)).toBe(true)
-      
+
       // Berlin sollte Mietpreisbremse haben
       const rentBrake = response.body.data.find((reg: any) => reg.type === 'rent_brake')
       expect(rentBrake).toBeDefined()
@@ -282,7 +258,7 @@ describe('Mietspiegel API Integration Tests', () => {
 
       expect(response.body.success).toBe(true)
       expect(Array.isArray(response.body.data)).toBe(true)
-      
+
       const berlinCity = response.body.data.find((city: any) => city.city === 'Berlin')
       expect(berlinCity).toBeDefined()
       expect(berlinCity).toHaveProperty('availableYears')
@@ -363,7 +339,7 @@ describe('Mietspiegel API Integration Tests', () => {
         .expect(200)
 
       expect(response1.body.data).toEqual(response2.body.data)
-      
+
       // Prüfe ob Cache-Key existiert
       const cacheKey = 'mietspiegel:Berlin:2024'
       const cachedData = await redis.get(cacheKey)

@@ -47,11 +47,36 @@ export const config = {
   // Database Configuration
   database: {
     url: getEnvVar('DATABASE_URL', 'postgresql://smartlaw_user:smartlaw_password@localhost:5432/smartlaw_dev'),
+    // Connection Pool Configuration
+    pool: {
+      min: getEnvVarAsNumber('DB_POOL_MIN', 5),
+      max: getEnvVarAsNumber('DB_POOL_MAX', 20),
+      acquireTimeout: getEnvVarAsNumber('DB_POOL_ACQUIRE_TIMEOUT', 30000), // 30 seconds
+      createTimeout: getEnvVarAsNumber('DB_POOL_CREATE_TIMEOUT', 30000), // 30 seconds
+      destroyTimeout: getEnvVarAsNumber('DB_POOL_DESTROY_TIMEOUT', 5000), // 5 seconds
+      idleTimeout: getEnvVarAsNumber('DB_POOL_IDLE_TIMEOUT', 10000), // 10 seconds
+      evictionRunInterval: getEnvVarAsNumber('DB_POOL_EVICTION_INTERVAL', 1000), // 1 second
+      softIdleTimeoutMillis: getEnvVarAsNumber('DB_POOL_SOFT_IDLE_TIMEOUT', 30000), // 30 seconds
+    }
   },
 
   // Redis Configuration
   redis: {
     url: getEnvVar('REDIS_URL', 'redis://localhost:6379'),
+    // Connection Pool Configuration
+    pool: {
+      min: getEnvVarAsNumber('REDIS_POOL_MIN', 5),
+      max: getEnvVarAsNumber('REDIS_POOL_MAX', 20),
+      acquireTimeout: getEnvVarAsNumber('REDIS_POOL_ACQUIRE_TIMEOUT', 5000), // 5 seconds
+      idleTimeout: getEnvVarAsNumber('REDIS_POOL_IDLE_TIMEOUT', 30000), // 30 seconds
+    },
+    // Cache Configuration
+    cache: {
+      defaultTTL: getEnvVarAsNumber('REDIS_DEFAULT_TTL', 3600), // 1 hour
+      maxMemory: getEnvVar('REDIS_MAX_MEMORY', '256mb'),
+      evictionPolicy: getEnvVarWithDefault('REDIS_EVICTION_POLICY', 'allkeys-lru'),
+      lazyFree: getEnvVarAsBoolean('REDIS_LAZY_FREE', true),
+    }
   },
 
   // JWT Configuration
@@ -164,6 +189,12 @@ export const config = {
     alertDeduplicationWindowMs: process.env.ALERT_DEDUPLICATION_WINDOW_MS ? parseInt(process.env.ALERT_DEDUPLICATION_WINDOW_MS, 10) : 300000, // 5 minutes
     correlationEnabled: process.env.ALERT_CORRELATION_ENABLED === 'true',
     correlationWindowMs: process.env.ALERT_CORRELATION_WINDOW_MS ? parseInt(process.env.ALERT_CORRELATION_WINDOW_MS, 10) : 300000, // 5 minutes
+  },
+
+  // Security Configuration
+  security: {
+    passwordMinLength: getEnvVarAsNumber('PASSWORD_MIN_LENGTH', 8),
+    bcryptRounds: getEnvVarAsNumber('BCRYPT_ROUNDS', 12),
   }
 }
 

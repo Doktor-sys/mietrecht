@@ -1,23 +1,24 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { PrismaClient, UserType } from '@prisma/client'
 import { config } from '../config/config'
 import { redis } from '../config/redis'
 import { logger, loggers } from '../utils/logger'
 import { EmailService } from './EmailService'
-import { 
-  AuthenticationError, 
-  ValidationError, 
+import {
+  AuthenticationError,
+  ValidationError,
   ConflictError,
-  NotFoundError 
+  NotFoundError
 } from '../middleware/errorHandler'
+import { TwoFactorAuthService } from './TwoFactorAuthService'
 
 export interface RegisterData {
   email: string
   password: string
   userType: UserType
   acceptedTerms: boolean
-  location?: string
+  city?: string
   firstName?: string
   lastName?: string
   language?: string
@@ -37,7 +38,7 @@ export interface AuthResult {
     profile?: {
       firstName?: string
       lastName?: string
-      location?: string
+      city?: string
       language: string
     }
   }
@@ -45,6 +46,7 @@ export interface AuthResult {
     accessToken: string
     refreshToken: string
   }
+  requires2FA?: boolean
 }
 
 export interface TokenPayload {
@@ -57,9 +59,11 @@ export interface TokenPayload {
 
 export class AuthService {
   private emailService: EmailService
+  private twoFactorService: TwoFactorAuthService
 
   constructor(private prisma: PrismaClient) {
     this.emailService = new EmailService()
+    this.twoFactorService = new TwoFactorAuthService(prisma)
   }
 
   /**
@@ -92,18 +96,17 @@ export class AuthService {
             create: {
               firstName: data.firstName,
               lastName: data.lastName,
-              location: data.location,
+              city: data.city,
               language: data.language || 'de',
             }
           },
           preferences: {
             create: {
               language: data.language || 'de',
-              notifications: {
-                email: true,
-                push: true,
-                sms: false
-              },
+              notificationsEnabled: true,
+              emailNotifications: true,
+              pushNotifications: true,
+              smsNotifications: false,
               privacy: {
                 dataSharing: false,
                 analytics: true,
@@ -139,8 +142,8 @@ export class AuthService {
           profile: user.profile ? {
             firstName: user.profile.firstName || undefined,
             lastName: user.profile.lastName || undefined,
-            location: user.profile.location || undefined,
-            language: user.profile.language
+            city: user.profile.city || undefined,
+            language: user.profile.language ?? 'de'
           } : undefined
         },
         tokens
@@ -202,6 +205,45 @@ export class AuthService {
         data: { lastLoginAt: new Date() }
       })
 
+      // Prüfe ob 2FA erforderlich ist
+      const requires2FA = await this.twoFactorService.isTwoFactorEnabled(user.id)
+
+      if (requires2FA) {
+        // Bei aktivierter 2FA nur temporären Token zurückgeben
+        // Der Client muss dann den 2FA Code eingeben
+        const tempToken = jwt.sign(
+          {
+            userId: user.id,
+            email: user.email,
+            userType: user.userType,
+            requires2FA: true,
+            tempAuth: true
+          },
+          config.jwt.secret,
+          { expiresIn: '5m' } as jwt.SignOptions
+        )
+
+        return {
+          user: {
+            id: user.id,
+            email: user.email,
+            userType: user.userType,
+            isVerified: user.isVerified,
+            profile: user.profile ? {
+              firstName: user.profile.firstName || undefined,
+              lastName: user.profile.lastName || undefined,
+              city: user.profile.city || undefined,
+              language: user.profile.language ?? 'de'
+            } : undefined
+          },
+          tokens: {
+            accessToken: tempToken,
+            refreshToken: ''
+          },
+          requires2FA: true
+        }
+      }
+
       // Generiere Tokens
       const tokens = await this.generateTokens(user)
 
@@ -220,8 +262,8 @@ export class AuthService {
           profile: user.profile ? {
             firstName: user.profile.firstName || undefined,
             lastName: user.profile.lastName || undefined,
-            location: user.profile.location || undefined,
-            language: user.profile.language
+            city: user.profile.city || undefined,
+            language: user.profile.language ?? 'de'
           } : undefined
         },
         tokens
@@ -291,7 +333,7 @@ export class AuthService {
         })
 
         for (const session of sessions) {
-          await redis.deleteSession(session.sessionToken)
+          await redis.deleteSession(session.token)
         }
 
         // Lösche Session-Einträge aus der Datenbank
@@ -351,7 +393,7 @@ export class AuthService {
     await this.prisma.userSession.create({
       data: {
         userId: user.id,
-        sessionToken: sessionId,
+        token: sessionId,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 Tage
       }
     })
@@ -376,7 +418,7 @@ export class AuthService {
     return jwt.sign(
       { ...data, type: 'access' },
       config.jwt.secret,
-      { expiresIn: config.jwt.expiresIn }
+      { expiresIn: config.jwt.expiresIn } as jwt.SignOptions
     )
   }
 
@@ -387,7 +429,7 @@ export class AuthService {
     return jwt.sign(
       { ...data, type: 'refresh' },
       config.jwt.secret,
-      { expiresIn: config.jwt.refreshExpiresIn }
+      { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions
     )
   }
 
@@ -481,8 +523,9 @@ export class AuthService {
         user.email,
         resetToken,
         {
-          firstName: user.profile?.firstName,
-          expiresIn: '1 Stunde'
+          firstName: user.profile?.firstName || undefined,
+          expiresIn: '1 Stunde',
+          resetUrl: '' // Wird vom EmailService gesetzt
         }
       )
 
@@ -560,8 +603,9 @@ export class AuthService {
         user.email,
         verificationToken,
         {
-          firstName: user.profile?.firstName,
-          expiresIn: '24 Stunden'
+          firstName: user.profile?.firstName || undefined,
+          expiresIn: '24 Stunden',
+          verificationUrl: '' // Wird vom EmailService gesetzt
         }
       )
 
@@ -617,9 +661,9 @@ export class AuthService {
       await this.emailService.sendWelcomeEmail(
         user.email,
         {
-          firstName: user.profile?.firstName,
-          userType: this.getUserTypeDisplayName(user.userType),
-          loginUrl: this.getLoginUrl()
+          firstName: user.profile?.firstName || undefined,
+          userType: user.userType,
+          loginUrl: `${this.getBaseUrl()}/login`
         }
       )
 
@@ -653,7 +697,7 @@ export class AuthService {
       // Prüfe Rate Limiting
       const rateLimitKey = `resend_verification:${userId}`
       const attempts = await redis.get(rateLimitKey)
-      
+
       if (attempts && parseInt(attempts) >= 3) {
         throw new ValidationError('Zu viele Verifizierungs-E-Mails gesendet. Bitte warten Sie 1 Stunde.')
       }
@@ -770,7 +814,7 @@ export class AuthService {
       // Aktualisiere E-Mail-Adresse
       await this.prisma.user.update({
         where: { id: payload.userId },
-        data: { 
+        data: {
           email: payload.newEmail,
           isVerified: true // E-Mail ist durch Bestätigung verifiziert
         }

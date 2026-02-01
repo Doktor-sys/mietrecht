@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
+import { TrendAnalysisService, LegalTrendAnalysis } from './TrendAnalysisService';
+import { BenchmarkingService, BenchmarkReport } from './BenchmarkingService';
+import { ComplianceMonitoringService, ComplianceMonitoringReport } from './ComplianceMonitoringService';
+import { AlertManager } from './kms/AlertManager';
 
 const prisma = new PrismaClient();
+const alertManager = new AlertManager(prisma);
 
 export interface AnalyticsQuery {
   organizationId: string;
@@ -46,6 +51,9 @@ export interface AnalyticsResult {
     remaining: number;
     utilizationRate: number;
   };
+  legalTrends?: LegalTrendAnalysis; // Neue Eigenschaft für Rechtstrend-Analysen
+  benchmarkReport?: BenchmarkReport; // Neue Eigenschaft für Benchmarking
+  complianceReport?: ComplianceMonitoringReport; // Neue Eigenschaft für Compliance-Überwachung
 }
 
 export interface UsageReport {
@@ -66,9 +74,22 @@ export interface UsageReport {
     byRiskLevel: Array<{ level: string; count: number; percentage: number }>;
   };
   recommendations: string[];
+  legalTrends?: LegalTrendAnalysis; // Neue Eigenschaft für Rechtstrend-Analysen
+  benchmarkReport?: BenchmarkReport; // Neue Eigenschaft für Benchmarking
+  complianceReport?: ComplianceMonitoringReport; // Neue Eigenschaft für Compliance-Überwachung
 }
 
 export class AnalyticsService {
+  private trendAnalysisService: TrendAnalysisService;
+  private benchmarkingService: BenchmarkingService;
+  private complianceMonitoringService: ComplianceMonitoringService;
+
+  constructor() {
+    this.trendAnalysisService = new TrendAnalysisService(prisma);
+    this.benchmarkingService = new BenchmarkingService(prisma);
+    this.complianceMonitoringService = new ComplianceMonitoringService(prisma, alertManager);
+  }
+
   /**
    * Generiert umfassende Analytics für eine Organisation
    */
@@ -99,6 +120,26 @@ export class AnalyticsService {
         trends = await this.generateTrends(organizationId, startDate, endDate, groupBy);
       }
 
+      // Rechtstrend-Analyse durchführen
+      const legalTrends = await this.trendAnalysisService.analyzeTrends({
+        startDate,
+        endDate
+      });
+
+      // Benchmarking durchführen
+      const benchmarkReport = await this.benchmarkingService.performBenchmarking({
+        organizationId,
+        startDate,
+        endDate
+      });
+
+      // Compliance-Überwachung durchführen
+      const complianceReport = await this.complianceMonitoringService.monitorCompliance({
+        organizationId,
+        startDate,
+        endDate
+      });
+
       const result: AnalyticsResult = {
         period: {
           start: startDate,
@@ -125,7 +166,10 @@ export class AnalyticsService {
           remaining: (apiKey?.quotaLimit || 0) - (apiKey?.quotaUsed || 0),
           utilizationRate: apiKey?.quotaLimit ?
             Math.round(((apiKey.quotaUsed || 0) / apiKey.quotaLimit) * 100) : 0
-        }
+        },
+        legalTrends, // Neue Rechtstrend-Analyse hinzufügen
+        benchmarkReport, // Neue Benchmarking-Daten hinzufügen
+        complianceReport // Neue Compliance-Überwachungsdaten hinzufügen
       };
 
       return result;
@@ -208,7 +252,10 @@ export class AnalyticsService {
               Math.round((item.count / analytics.metrics.documentAnalyses) * 100) : 0
           }))
         },
-        recommendations
+        recommendations,
+        legalTrends: analytics.legalTrends, // Rechtstrend-Analyse hinzufügen
+        benchmarkReport: analytics.benchmarkReport, // Benchmarking-Daten hinzufügen
+        complianceReport: analytics.complianceReport // Compliance-Überwachungsdaten hinzufügen
       };
 
       return report;
@@ -499,6 +546,52 @@ export class AnalyticsService {
       recommendations.push('Sie nutzen Bulk-Processing effizient. Erwägen Sie weitere Automatisierung Ihrer Workflows.');
     }
 
+    // Rechtstrend-basierte Empfehlungen
+    if (analytics.legalTrends) {
+      if (analytics.legalTrends.emergingTrends.length > 5) {
+        recommendations.push(`Es wurden ${analytics.legalTrends.emergingTrends.length} neue Rechtstrends identifiziert. Prüfen Sie deren Auswirkungen auf Ihre Praxis.`);
+      }
+      
+      const highRelevanceTrends = analytics.legalTrends.trends.filter(t => t.relevanceScore > 80);
+      if (highRelevanceTrends.length > 3) {
+        recommendations.push(`Es gibt ${highRelevanceTrends.length} hochrelevante Rechtstrends. Priorisieren Sie diese in Ihrer strategischen Planung.`);
+      }
+    }
+
+    // Benchmarking-basierte Empfehlungen
+    if (analytics.benchmarkReport) {
+      if (analytics.benchmarkReport.overallPerformance.belowAverage > 
+          analytics.benchmarkReport.benchmarks.length * 0.5) {
+        recommendations.push('Mehr als die Hälfte Ihrer Kennzahlen liegen unter dem Branchendurchschnitt. Prüfen Sie Ihre Nutzung der Plattform.');
+      }
+      
+      if (analytics.benchmarkReport.overallPerformance.aboveAverage > 
+          analytics.benchmarkReport.benchmarks.length * 0.5) {
+        recommendations.push('Ihre Nutzung übertrifft den Branchendurchschnitt deutlich. Gute Leistung!');
+      }
+      
+      // Empfehlungen aus dem Benchmarking-Bericht hinzufügen
+      recommendations.push(...analytics.benchmarkReport.recommendations);
+    }
+
+    // Compliance-basierte Empfehlungen
+    if (analytics.complianceReport) {
+      if (analytics.complianceReport.complianceStatus.complianceRate < 80) {
+        recommendations.push(`Ihre Compliance-Rate beträgt ${analytics.complianceReport.complianceStatus.complianceRate}%. Prüfen Sie offene Compliance-Aufgaben.`);
+      }
+      
+      if (analytics.complianceReport.criticalIssues.length > 0) {
+        recommendations.push(`Es gibt ${analytics.complianceReport.criticalIssues.length} kritische Compliance-Probleme. Dringend prüfen!`);
+      }
+      
+      if (analytics.complianceReport.upcomingDeadlines.length > 0) {
+        recommendations.push(`Es stehen ${analytics.complianceReport.upcomingDeadlines.length} Compliance-Fristen an. Planen Sie Ihre Arbeit entsprechend.`);
+      }
+      
+      // Empfehlungen aus dem Compliance-Bericht hinzufügen
+      recommendations.push(...analytics.complianceReport.recommendations);
+    }
+
     return recommendations;
   }
 
@@ -540,6 +633,45 @@ export class AnalyticsService {
       });
     }
 
+    // Rechtstrend-Daten hinzufügen
+    if (analytics.legalTrends) {
+      lines.push('');
+      lines.push('Legal Trends');
+      lines.push('Title,Category,Jurisdiction,Relevance Score,Confidence');
+      analytics.legalTrends.trends.forEach(t => {
+        lines.push(`${t.title},${t.category},${t.jurisdiction},${t.relevanceScore},${t.confidence}`);
+      });
+    }
+
+    // Benchmarking-Daten hinzufügen
+    if (analytics.benchmarkReport) {
+      lines.push('');
+      lines.push('Benchmark Comparison');
+      lines.push('Metric,Your Value,Industry Average,Percentile,Performance');
+      analytics.benchmarkReport.benchmarks.forEach(b => {
+        lines.push(`${b.metric},${b.userValue},${b.industryAverage},${b.percentile},${b.performanceRating}`);
+      });
+    }
+
+    // Compliance-Daten hinzufügen
+    if (analytics.complianceReport) {
+      lines.push('');
+      lines.push('Compliance Status');
+      lines.push('Total,Pending,In Progress,Completed,Non-Compliant,Compliance Rate');
+      const status = analytics.complianceReport.complianceStatus;
+      lines.push(`${status.total},${status.pending},${status.inProgress},${status.completed},${status.nonCompliant},${status.complianceRate}%`);
+      
+      if (analytics.complianceReport.criticalIssues.length > 0) {
+        lines.push('');
+        lines.push('Critical Compliance Issues');
+        lines.push('Issue,Severity,Description');
+        analytics.complianceReport.criticalIssues.forEach(issue => {
+          const update = analytics.complianceReport.legalUpdates.find(u => u.id === issue.legalUpdateId);
+          lines.push(`${update?.title || 'Unknown'},${update?.severity || 'Unknown'},${issue.findings.join('; ')}`);
+        });
+      }
+    }
+
     return lines.join('\n');
   }
 
@@ -554,7 +686,7 @@ Metrics:
 - Documents: ${analytics.metrics.documentAnalyses}
 - Chats: ${analytics.metrics.chatInteractions}
 
-(PDF generation not available, returning text representation)`;
+(Compliance monitoring, benchmarking and legal trend analysis included in full report - PDF generation not available, returning text representation)`;
 
     return Buffer.from(content);
   }

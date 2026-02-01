@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: jurismind-app
+    restart: always
+    environment:
+      - FLASK_APP=mietrecht_full.py
+      - FLASK_ENV=production
+    expose:
+      - "5000"
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    # HIER BITTE IHRE DOMAIN EINTRAGEN (oder die IP.nip.io Adresse)
+    # Beispiel: caddy reverse-proxy --from https://jurismind-test.de --to app:5000
+    command: caddy reverse-proxy --from https://IHRE_DOMAIN --to app:5000
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,14 @@
+﻿[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.jurismind.app",
+      "sha256_cert_fingerprints": [
+        "9D:61:8B:A0:FC:CD:41:D1:79:10:0C:83:CD:52:8A:5F:96:86:1B:3D:E9:ED:C2:8B:0A:6C:A5:36:34:F6:A4:18"
+      ]
+    }
+  }
+]

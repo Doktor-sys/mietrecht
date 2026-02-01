@@ -10,6 +10,9 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 
+// Import security middleware
+const { applySecurityHeaders, applyRateLimiting } = require('./scripts/middleware/securityMiddleware');
+
 // Import database modules
 const LawyerDAO = require('./database/dao/LawyerDAO');
 const LawyerPreferencesDAO = require('./database/dao/LawyerPreferencesDAO');
@@ -30,6 +33,12 @@ const apiRoutes = require('./routes/api');
 // Create Express app
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Apply security headers
+applySecurityHeaders(app);
+
+// Apply rate limiting
+applyRateLimiting(app);
 
 // Middleware
 app.set('view engine', 'ejs');

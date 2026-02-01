@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { addMessage, setTyping, setConversationId, clearChat } from '../store/slices/chatSlice';
-import { chatAPI, documentAPI } from '../services/api';
+import { chatAPI, documentAPI } from '../services/chatbotAPI';
 import ChatMessage from '../components/ChatMessage';
 import FileUploadDialog from '../components/FileUploadDialog';
 

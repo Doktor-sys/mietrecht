@@ -1,0 +1,106 @@
+
+model User {
+  id                   String     @id @default(uuid())
+  email                String     @unique
+  password             String
+  userType             String
+  firstName            String?
+  lastName             String?
+  phone                String?
+  address              String?
+  dateOfBirth          DateTime?
+  profilePicture       String?
+  isVerified           Boolean    @default(false)
+  isActive             Boolean    @default(true)
+  failedLoginAttempts  Int        @default(0)
+  lastFailedLogin      DateTime?
+  lockedUntil          DateTime?
+  lastLoginAt          DateTime?
+  twoFactorEnabled     Boolean    @default(false)
+  twoFactorSecret      String?
+  twoFactorBackupCodes String[]
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  cases                Case[]
+  documents            Document[]
+  chats                Chat[]
+  sentMessages         Message[]  @relation("SentMessages")
+  receivedMessages     Message[]  @relation("ReceivedMessages")
+  bookings             Booking[]
+  payments             Payment[]
+  feedback             Feedback[]
+  employmentInfo       EmploymentInfo?
+  
+  // Zero Trust Security Fields
+  mfaEnabled           Boolean    @default(false)
+  mfaMethods           String[]
+  role                 String     @default("USER")
+  securityPolicy       SecurityPolicy?
+  mfaLogs              MFALog[]
+  accessLogs           AccessLog[]
+  trustedDevices       TrustedDevice[]
+}
+
+model SecurityPolicy {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  policy    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MFALog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  methods   String[]
+  success   Boolean
+  error     String?
+  timestamp DateTime @default(now())
+}
+
+model AccessLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  ipAddress String
+  userAgent String
+  location  String?
+  timestamp DateTime @default(now())
+}
+
+model TrustedDevice {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  deviceId   String
+  deviceInfo Json
+  trustedAt  DateTime @default(now())
+  expiresAt  DateTime
+}
+
+model BlacklistedIp {
+  id         String   @id @default(uuid())
+  ipAddress  String   @unique
+  reason     String
+  addedBy    String
+  createdAt  DateTime @default(now())
+}
+
+model SecurityEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  eventType String
+  severity  String
+  details   Json
+  timestamp DateTime @default(now())
+}
+
+model AnalyticsReport {
+  id        String   @id @default(uuid())
+  type      String
+  content   Json
+  createdAt DateTime @default(now())
+}

@@ -7,6 +7,7 @@ import { TemplateService } from '../services/TemplateService';
 import { LawyerMatchingService } from '../services/LawyerMatchingService';
 import { BulkProcessingService } from '../services/BulkProcessingService';
 import { AnalyticsService } from '../services/AnalyticsService';
+import { PartnershipService } from '../services/PartnershipService';
 import { logger } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,6 +24,7 @@ export class B2BController {
   private lawyerMatchingService: LawyerMatchingService;
   private bulkProcessingService: BulkProcessingService;
   private analyticsService: AnalyticsService;
+  private partnershipService: PartnershipService;
 
   constructor() {
     this.chatService = new ChatService(prisma);
@@ -31,6 +33,7 @@ export class B2BController {
     this.lawyerMatchingService = new LawyerMatchingService(prisma);
     this.bulkProcessingService = new BulkProcessingService();
     this.analyticsService = new AnalyticsService();
+    this.partnershipService = new PartnershipService();
   }
 
   /**
@@ -881,6 +884,184 @@ export class B2BController {
       res.status(500).json({
         error: 'Optimized batch analysis failed',
         message: 'An error occurred during optimized batch analysis setup',
+      });
+    }
+  };
+
+  /**
+   * Create a new partnership
+   */
+  createPartnership = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const organizationId = req.apiKey!.organizationId;
+      const {
+        partnerName,
+        partnerType,
+        partnerId,
+        integrationType,
+        apiKey,
+        config,
+        contactEmail,
+        contactPhone,
+        notes
+      } = req.body;
+
+      const partnership = await this.partnershipService.createPartnership({
+        organizationId,
+        partnerName,
+        partnerType,
+        partnerId,
+        integrationType,
+        apiKey,
+        config,
+        contactEmail,
+        contactPhone,
+        notes
+      });
+
+      res.json({
+        success: true,
+        data: partnership
+      });
+    } catch (error) {
+      logger.error('Failed to create partnership:', error);
+      res.status(500).json({
+        error: 'Failed to create partnership',
+        message: 'An error occurred while creating the partnership'
+      });
+    }
+  };
+
+  /**
+   * Get all partnerships for an organization
+   */
+  getPartnerships = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const organizationId = req.apiKey!.organizationId;
+      
+      const partnerships = await this.partnershipService.getPartnerships(organizationId);
+
+      res.json({
+        success: true,
+        data: partnerships
+      });
+    } catch (error) {
+      logger.error('Failed to get partnerships:', error);
+      res.status(500).json({
+        error: 'Failed to get partnerships',
+        message: 'An error occurred while fetching partnerships'
+      });
+    }
+  };
+
+  /**
+   * Get a specific partnership by ID
+   */
+  getPartnershipById = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      
+      const partnership = await this.partnershipService.getPartnershipById(id);
+      
+      if (!partnership) {
+        return res.status(404).json({
+          error: 'Partnership not found',
+          message: 'The requested partnership could not be found'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: partnership
+      });
+    } catch (error) {
+      logger.error('Failed to get partnership:', error);
+      res.status(500).json({
+        error: 'Failed to get partnership',
+        message: 'An error occurred while fetching the partnership'
+      });
+    }
+  };
+
+  /**
+   * Update a partnership
+   */
+  updatePartnership = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      
+      // Remove fields that shouldn't be updated
+      delete updateData.id;
+      delete updateData.organizationId;
+      delete updateData.createdAt;
+      
+      const partnership = await this.partnershipService.updatePartnership(id, updateData);
+
+      res.json({
+        success: true,
+        data: partnership
+      });
+    } catch (error) {
+      logger.error('Failed to update partnership:', error);
+      res.status(500).json({
+        error: 'Failed to update partnership',
+        message: 'An error occurred while updating the partnership'
+      });
+    }
+  };
+
+  /**
+   * Delete a partnership
+   */
+  deletePartnership = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      
+      const partnership = await this.partnershipService.deletePartnership(id);
+
+      res.json({
+        success: true,
+        data: partnership,
+        message: 'Partnership successfully deleted'
+      });
+    } catch (error) {
+      logger.error('Failed to delete partnership:', error);
+      res.status(500).json({
+        error: 'Failed to delete partnership',
+        message: 'An error occurred while deleting the partnership'
+      });
+    }
+  };
+
+  /**
+   * Get partnership interactions
+   */
+  getPartnershipInteractions = async (req: ApiKeyRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const limit = parseInt(req.query.limit as string) || 50;
+      
+      // Verify the partnership belongs to the organization
+      const partnership = await this.partnershipService.getPartnershipById(id);
+      if (!partnership) {
+        return res.status(404).json({
+          error: 'Partnership not found',
+          message: 'The requested partnership could not be found'
+        });
+      }
+      
+      const interactions = await this.partnershipService.getInteractions(id, limit);
+
+      res.json({
+        success: true,
+        data: interactions
+      });
+    } catch (error) {
+      logger.error('Failed to get partnership interactions:', error);
+      res.status(500).json({
+        error: 'Failed to get partnership interactions',
+        message: 'An error occurred while fetching partnership interactions'
       });
     }
   };

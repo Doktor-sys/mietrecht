@@ -187,6 +187,19 @@ Die API-Dokumentation ist über Swagger verfügbar:
 http://localhost:3001/api-docs
 ```
 
+### Neue Endpunkte für erweiterte Profileinstellungen
+
+Die API wurde um neue Endpunkte für erweiterte Profileinstellungen erweitert:
+
+- **GET /api/users/preferences** - Ruft die aktuellen Profileinstellungen ab
+- **PUT /api/users/preferences** - Aktualisiert die Profileinstellungen
+
+Diese Endpunkte unterstützen zusätzliche Einstellungen für:
+- Barrierefreiheit (hoher Kontrast, dyslexie-freundlich, reduzierte Bewegung, etc.)
+- Rechtsgebiete von Interesse
+- Häufig verwendete Dokumenttypen
+- Benachrichtigungseinstellungen für neue Rechtsprechung und Dokumentaktualisierungen
+
 ## Sicherheit
 
 ### Verschlüsselung

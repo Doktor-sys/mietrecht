@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .offline-icon {
+            fill: #e5e7eb;
+        }
+        .offline-text {
+            fill: #9ca3af;
+            font-family: Arial, sans-serif;
+            font-size: 5px;
+            font-weight: bold;
+        }
+    </style>
+    <rect class="offline-icon" width="24" height="24" rx="2"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#9ca3af"/>
+    <path d="M7.1 10.18v3.64l1.6-1.6 1.4 1.41-3.64 3.64-1.41-1.41 1.05-1.05H4.23v-2h2.02l-1.05-1.05 1.9-1.98zm9.8 1.82v-2h-2.02l1.05-1.05-1.9-1.98-1.4 1.41 1.6 1.6H12.5v2h2.02l-1.05 1.05 1.9 1.98 1.41-1.41-1.05-1.05h2.02v-2h-1.85z" fill="#9ca3af"/>
+    <text class="offline-text" x="12" y="20" text-anchor="middle">OFFLINE</text>
+</svg>

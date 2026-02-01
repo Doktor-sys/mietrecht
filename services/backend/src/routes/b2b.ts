@@ -605,6 +605,226 @@ router.post('/analyze/optimized-batch',
 
 /**
  * @swagger
+ * /api/b2b/partnerships:
+ *   post:
+ *     summary: Neue Partnerschaft erstellen (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               partnerName:
+ *                 type: string
+ *               partnerType:
+ *                 type: string
+ *                 enum: [LAW_FIRM, ACCOUNTING, CALENDAR, OTHER]
+ *               partnerId:
+ *                 type: string
+ *               integrationType:
+ *                 type: string
+ *               apiKey:
+ *                 type: string
+ *               config:
+ *                 type: object
+ *               contactEmail:
+ *                 type: string
+ *               contactPhone:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Partnerschaft erfolgreich erstellt
+ */
+router.post('/partnerships',
+  requirePermission('partnership:create'),
+  validateRequest([
+    body('partnerName').isString().isLength({ min: 1, max: 100 }),
+    body('partnerType').isIn(['LEGAL_TECH', 'REAL_ESTATE', 'FINANCIAL_SERVICES', 'INSURANCE', 'PROPERTY_MANAGEMENT', 'GOVERNMENT', 'NON_PROFIT', 'OTHER']),
+    body('partnerId').optional().isString(),
+    body('integrationType').optional().isString(),
+    body('apiKey').optional().isString(),
+    body('config').optional().isObject(),
+    body('contactEmail').optional().isEmail(),
+    body('contactPhone').optional().isString(),
+    body('notes').optional().isString()
+  ]),
+  b2bController.createPartnership
+);
+
+/**
+ * @swagger
+ * /api/b2b/partnerships:
+ *   get:
+ *     summary: Alle Partnerschaften abrufen (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste der Partnerschaften
+ */
+router.get('/partnerships',
+  requirePermission('partnership:read'),
+  b2bController.getPartnerships
+);
+
+/**
+ * @swagger
+ * /api/b2b/partnerships/{id}:
+ *   get:
+ *     summary: Eine spezifische Partnerschaft abrufen (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Partnerschaftsdaten
+ */
+router.get('/partnerships/:id',
+  requirePermission('partnership:read'),
+  validateRequest([
+    param('id').isString()
+  ]),
+  b2bController.getPartnershipById
+);
+
+/**
+ * @swagger
+ * /api/b2b/partnerships/{id}:
+ *   put:
+ *     summary: Eine Partnerschaft aktualisieren (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               partnerName:
+ *                 type: string
+ *               partnerType:
+ *                 type: string
+ *                 enum: [LAW_FIRM, ACCOUNTING, CALENDAR, OTHER]
+ *               partnerId:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [ACTIVE, INACTIVE, SUSPENDED]
+ *               integrationType:
+ *                 type: string
+ *               apiKey:
+ *                 type: string
+ *               config:
+ *                 type: object
+ *               contactEmail:
+ *                 type: string
+ *               contactPhone:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Partnerschaft erfolgreich aktualisiert
+ */
+router.put('/partnerships/:id',
+  requirePermission('partnership:update'),
+  validateRequest([
+    param('id').isString(),
+    body('partnerName').optional().isString().isLength({ min: 1, max: 100 }),
+    body('partnerType').optional().isIn(['LEGAL_TECH', 'REAL_ESTATE', 'FINANCIAL_SERVICES', 'INSURANCE', 'PROPERTY_MANAGEMENT', 'GOVERNMENT', 'NON_PROFIT', 'OTHER']),
+    body('partnerId').optional().isString(),
+    body('status').optional().isIn(['ACTIVE', 'INACTIVE', 'SUSPENDED']),
+    body('integrationType').optional().isString(),
+    body('apiKey').optional().isString(),
+    body('config').optional().isObject(),
+    body('contactEmail').optional().isEmail(),
+    body('contactPhone').optional().isString(),
+    body('notes').optional().isString()
+  ]),
+  b2bController.updatePartnership
+);
+
+/**
+ * @swagger
+ * /api/b2b/partnerships/{id}:
+ *   delete:
+ *     summary: Eine Partnerschaft löschen (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Partnerschaft erfolgreich gelöscht
+ */
+router.delete('/partnerships/:id',
+  requirePermission('partnership:delete'),
+  validateRequest([
+    param('id').isString()
+  ]),
+  b2bController.deletePartnership
+);
+
+/**
+ * @swagger
+ * /api/b2b/partnerships/{id}/interactions:
+ *   get:
+ *     summary: Interaktionen einer Partnerschaft abrufen (B2B)
+ *     tags: [B2B]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *     responses:
+ *       200:
+ *         description: Liste der Interaktionen
+ */
+router.get('/partnerships/:id/interactions',
+  requirePermission('partnership:read'),
+  validateRequest([
+    param('id').isString(),
+    query('limit').optional().isInt({ min: 1, max: 100 })
+  ]),
+  b2bController.getPartnershipInteractions
+);
+
+/**
+ * @swagger
  * /api/b2b/status:
  *   get:
  *     summary: API-Status und Limits (B2B)

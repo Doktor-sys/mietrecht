@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrecht Agent Performance Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #2c3e50; }
+        .metric-card { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin: 10px 0; }
+        .recommendation { padding: 10px; margin: 10px 0; border-left: 4px solid; }
+        .high { border-color: #e74c3c; background-color: #fdf2f2; }
+        .medium { border-color: #f39c12; background-color: #fff9f2; }
+        .good { color: #27ae60; }
+        .fair { color: #f39c12; }
+        .poor { color: #e67e22; }
+        .critical { color: #e74c3c; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Mietrecht Agent Performance Report</h1>
+    <p>Generated: 2025-11-30T22:37:14.571Z</p>
+    
+    <div class="metric-card">
+        <h2>System Information</h2>
+        <p>Node.js Version: v24.11.1</p>
+        <p>Platform: win32 (x64)</p>
+        <p>Uptime: 2 minutes</p>
+    </div>
+    
+    <div class="metric-card">
+        <h2>Overall Health: <span class="fair">Fair</span></h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Cache Hit Rate</td>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <td>Avg Database Query Time</td>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <td>Avg API Response Time</td>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <td>Memory Usage</td>
+                <td>90.18%</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="metric-card">
+        <h2>Performance Metrics</h2>
+        <h3>Cache Performance</h3>
+        
+        <p>Hits: N/A</p>
+        <p>Misses: N/A</p>
+        <p>Hit Rate: N/A</p>
+        <p>Current Size: N/A/N/A</p>
+        
+        
+        <h3>Database Performance</h3>
+        
+        <p>Total Queries: N/A</p>
+        <p>Average Query Time: N/A</p>
+        <p>Slowest Query: N/A</p>
+        
+        
+        <h3>API Performance</h3>
+        
+        <p>Total Requests: N/A</p>
+        <p>Average Response Time: N/A</p>
+        <p>Error Rate: N/A</p>
+        
+    </div>
+    
+    <div class="metric-card">
+        <h2>Recommendations</h2>
+        
+          <div class="recommendation medium">
+              <strong>MEDIUM:</strong> Memory usage exceeds 80%. Consider implementing more aggressive cache eviction.<br>
+              <em>Action: Review cache size limits and data retention policies</em>
+          </div>
+          
+    </div>
+</body>
+</html>

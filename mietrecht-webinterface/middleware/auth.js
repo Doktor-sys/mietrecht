@@ -26,6 +26,68 @@ async function comparePassword(password, hash) {
   }
 }
 
+// Überprüfung der Passwort-Policy
+function validatePasswordPolicy(password, userPasswordHistory = []) {
+  const errors = [];
+  
+  // Mindestlänge
+  if (password.length < 8) {
+    errors.push('Das Passwort muss mindestens 8 Zeichen lang sein.');
+  }
+  
+  // Maximallänge
+  if (password.length > 128) {
+    errors.push('Das Passwort darf maximal 128 Zeichen lang sein.');
+  }
+  
+  // Komplexitätsanforderungen
+  if (!/(?=.*[a-z])/.test(password)) {
+    errors.push('Das Passwort muss mindestens einen Kleinbuchstaben enthalten.');
+  }
+  
+  if (!/(?=.*[A-Z])/.test(password)) {
+    errors.push('Das Passwort muss mindestens einen Großbuchstaben enthalten.');
+  }
+  
+  if (!/(?=.*\d)/.test(password)) {
+    errors.push('Das Passwort muss mindestens eine Zahl enthalten.');
+  }
+  
+  // Überprüfung auf frühere Passwörter
+  if (userPasswordHistory.length > 0) {
+    // In einer echten Implementierung würden wir hier die früheren Hashes vergleichen
+    // Für dieses Beispiel vereinfachen wir es
+    for (const oldPassword of userPasswordHistory) {
+      if (password === oldPassword) {
+        errors.push('Das Passwort wurde bereits verwendet. Bitte wählen Sie ein neues Passwort.');
+        break;
+      }
+    }
+  }
+  
+  return errors;
+}
+
+// Überprüfung, ob das Konto gesperrt ist
+function isAccountLocked(accountLockedUntil) {
+  if (!accountLockedUntil) return false;
+  
+  const lockedUntil = new Date(accountLockedUntil);
+  const now = new Date();
+  
+  return lockedUntil > now;
+}
+
+// Überprüfung, ob das Passwort abgelaufen ist
+function isPasswordExpired(passwordExpiresAt) {
+  if (!passwordExpiresAt) return false;
+  
+  const expiresAt = new Date(passwordExpiresAt);
+  const now = new Date();
+  
+  return expiresAt < now;
+}
+
 // Authentication middleware
 async function authenticate(req, res, next) {
   try {
@@ -85,6 +147,9 @@ async function authenticateAdmin(req, res, next) {
 module.exports = {
   hashPassword,
   comparePassword,
+  validatePasswordPolicy,
+  isAccountLocked,
+  isPasswordExpired,
   authenticate,
   authenticateAdmin
 };

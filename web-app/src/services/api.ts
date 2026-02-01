@@ -18,18 +18,18 @@ apiClient.interceptors.request.use(
     if (csrfToken) {
       config.headers['X-CSRF-Token'] = csrfToken;
     }
-    
+
     // Add security headers
     config.headers['X-Content-Type-Options'] = 'nosniff';
     config.headers['X-Frame-Options'] = 'DENY';
     config.headers['X-XSS-Protection'] = '1; mode=block';
-    
+
     // Add Authorization header if token exists
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -70,13 +70,13 @@ export const authAPI = {
     if (!credentials.email || !credentials.password) {
       throw new Error('Email and password are required');
     }
-    
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(credentials.email)) {
       throw new Error('Invalid email format');
     }
-    
+
     // Add device fingerprint for security tracking
     const deviceInfo = {
       userAgent: navigator.userAgent,
@@ -84,19 +84,19 @@ export const authAPI = {
       platform: navigator.platform,
       timestamp: new Date().toISOString()
     };
-    
+
     const loginData = {
       ...credentials,
       deviceInfo
     };
-    
+
     const response = await apiClient.post('/auth/login', loginData);
-    
+
     // Store CSRF token if provided
     if (response.data.csrfToken) {
       localStorage.setItem('csrfToken', response.data.csrfToken);
     }
-    
+
     return response.data;
   },
   register: async (userData: { email: string; password: string; userType: string }) => {
@@ -104,18 +104,18 @@ export const authAPI = {
     if (!userData.email || !userData.password || !userData.userType) {
       throw new Error('Email, password, and user type are required');
     }
-    
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userData.email)) {
       throw new Error('Invalid email format');
     }
-    
+
     // Validate password strength
     if (userData.password.length < 8) {
       throw new Error('Password must be at least 8 characters long');
     }
-    
+
     // Add device fingerprint for security tracking
     const deviceInfo = {
       userAgent: navigator.userAgent,
@@ -123,29 +123,29 @@ export const authAPI = {
       platform: navigator.platform,
       timestamp: new Date().toISOString()
     };
-    
+
     const registerData = {
       ...userData,
       deviceInfo
     };
-    
+
     const response = await apiClient.post('/auth/register', registerData);
-    
+
     // Store CSRF token if provided
     if (response.data.csrfToken) {
       localStorage.setItem('csrfToken', response.data.csrfToken);
     }
-    
+
     return response.data;
   },
   logout: async () => {
     try {
       const response = await apiClient.post('/auth/logout');
-      
+
       // Clear all authentication tokens
       localStorage.removeItem('token');
       localStorage.removeItem('csrfToken');
-      
+
       return response.data;
     } catch (error) {
       // Even if logout fails, clear local tokens
@@ -173,22 +173,22 @@ export const documentAPI = {
     if (file.size > 10 * 1024 * 1024) {
       throw new Error('File size exceeds maximum allowed size of 10MB');
     }
-    
+
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
     if (!allowedTypes.includes(file.type)) {
       throw new Error('File type not allowed. Only PDF, JPEG, PNG, and TXT files are supported.');
     }
-    
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('documentType', documentType);
-    
+
     // Add file metadata for security validation
     formData.append('fileName', file.name);
     formData.append('fileSize', file.size.toString());
     formData.append('fileType', file.type);
-    
+
     const response = await apiClient.post('/documents/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: (progressEvent) => {
@@ -217,22 +217,22 @@ export const documentAPI = {
     if (file.size > 10 * 1024 * 1024) {
       throw new Error('File size exceeds maximum allowed size of 10MB');
     }
-    
+
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
     if (!allowedTypes.includes(file.type)) {
       throw new Error('File type not allowed. Only PDF, JPEG, PNG, and TXT files are supported.');
     }
-    
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('documentType', documentType);
-    
+
     // Add file metadata for security validation
     formData.append('fileName', file.name);
     formData.append('fileSize', file.size.toString());
     formData.append('fileType', file.type);
-    
+
     const response = await apiClient.post(`/documents/${documentId}/upload-version`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: (progressEvent) => {
@@ -395,7 +395,12 @@ export const lawyerAPI = {
     const response = await apiClient.get(`/lawyers/${lawyerId}`);
     return response.data;
   },
-  bookConsultation: async (lawyerId: string, timeSlot: string, details?: { consultationType?: string; notes?: string }) => {
+  bookConsultation: async (lawyerId: string, timeSlot: string, details?: {
+    consultationType?: string;
+    notes?: string;
+    paymentMethod?: string;
+    paymentDetails?: any;
+  }) => {
     const response = await apiClient.post(`/lawyers/${lawyerId}/book`, { timeSlot, ...details });
     return response.data;
   },
@@ -413,25 +418,36 @@ export const lawyerAPI = {
   },
 };
 
+export const userAPI = {
+  getPreferences: async () => {
+    const response = await apiClient.get('/users/preferences');
+    return response.data;
+  },
+  updatePreferences: async (preferences: any) => {
+    const response = await apiClient.put('/users/preferences', preferences);
+    return response.data;
+  },
+};
+
 // Security utility functions
 export const securityUtils = {
   clearAuthTokens: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('csrfToken');
   },
-  
+
   getAuthToken: () => {
     return localStorage.getItem('token');
   },
-  
+
   setAuthToken: (token: string) => {
     localStorage.setItem('token', token);
   },
-  
+
   getCSRFToken: () => {
     return localStorage.getItem('csrfToken');
   },
-  
+
   setCSRFToken: (token: string) => {
     localStorage.setItem('csrfToken', token);
   }

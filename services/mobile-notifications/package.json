@@ -1,0 +1,32 @@
+{
+  "name": "mobile-notifications-service",
+  "version": "1.0.0",
+  "description": "Mobile Notifications Service for the SmartLaw Mietrecht application",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^11.11.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.8.10",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1"
+  },
+  "keywords": [
+    "notifications",
+    "mobile",
+    "push",
+    "mietrecht",
+    "smartlaw"
+  ],
+  "author": "SmartLaw Team",
+  "license": "MIT"
+}

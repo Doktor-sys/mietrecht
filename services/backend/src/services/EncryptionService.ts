@@ -24,27 +24,27 @@ export interface KeyDerivationOptions {
 export class EncryptionService {
   private readonly algorithm = 'aes-256-gcm';
   private readonly keyLength = 32; // 256 bits
-  private readonly ivLength = 16; // 128 bits
+  private readonly ivLength = 12; // 96 bits (recommended for GCM)
   private readonly tagLength = 16; // 128 bits
   private readonly saltLength = 32; // 256 bits
   private readonly defaultIterations = 100000; // PBKDF2 iterations
 
   /**
-   * Generiert einen sicheren Verschlüsselungsschlüssel
+   * Generates a secure encryption key
    */
   generateKey(): string {
     return crypto.randomBytes(this.keyLength).toString('hex');
   }
 
   /**
-   * Generiert einen sicheren Salt für Key Derivation
+   * Generates a secure salt for key derivation
    */
   generateSalt(): string {
     return crypto.randomBytes(this.saltLength).toString('hex');
   }
 
   /**
-   * Leitet einen Schlüssel aus einem Passwort ab (PBKDF2)
+   * Derives a key from a password (PBKDF2)
    */
   deriveKey(options: KeyDerivationOptions): string {
     try {
@@ -71,25 +71,25 @@ export class EncryptionService {
   }
 
   /**
-   * Verschlüsselt Daten mit AES-256-GCM
+   * Encrypts data with AES-256-GCM
    */
   encrypt(data: string, key?: string): EncryptionResult {
     try {
-      // Verwende bereitgestellten Schlüssel oder generiere neuen
+      // Use provided key or generate new one
       const encryptionKey = key ? Buffer.from(key, 'hex') : crypto.randomBytes(this.keyLength);
       
-      // Generiere zufälligen IV
+      // Generate random IV
       const iv = crypto.randomBytes(this.ivLength);
       
-      // Erstelle Cipher
-      const cipher = crypto.createCipher(this.algorithm, encryptionKey);
+      // Create cipher
+      const cipher = crypto.createCipheriv(this.algorithm, encryptionKey, iv);
       cipher.setAAD(Buffer.from('smartlaw-encryption', 'utf8')); // Additional Authenticated Data
       
-      // Verschlüssele Daten
+      // Encrypt data
       let encrypted = cipher.update(data, 'utf8', 'hex');
       encrypted += cipher.final('hex');
       
-      // Hole Authentication Tag
+      // Get authentication tag
       const authTag = cipher.getAuthTag();
 
       return {
@@ -104,23 +104,23 @@ export class EncryptionService {
   }
 
   /**
-   * Entschlüsselt Daten mit AES-256-GCM
+   * Decrypts data with AES-256-GCM
    */
   decrypt(options: DecryptionOptions, key: string): string {
     try {
       const { encryptedData, iv, authTag } = options;
       
-      // Konvertiere Hex-Strings zu Buffers
+      // Convert hex strings to buffers
       const encryptionKey = Buffer.from(key, 'hex');
       const ivBuffer = Buffer.from(iv, 'hex');
       const authTagBuffer = Buffer.from(authTag, 'hex');
       
-      // Erstelle Decipher
-      const decipher = crypto.createDecipher(this.algorithm, encryptionKey);
+      // Create decipher
+      const decipher = crypto.createDecipheriv(this.algorithm, encryptionKey, ivBuffer);
       decipher.setAAD(Buffer.from('smartlaw-encryption', 'utf8'));
       decipher.setAuthTag(authTagBuffer);
       
-      // Entschlüssele Daten
+      // Decrypt data
       let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
       
@@ -132,7 +132,7 @@ export class EncryptionService {
   }
 
   /**
-   * Verschlüsselt ein JSON-Objekt
+   * Encrypts a JSON object
    */
   encryptObject(obj: any, key?: string): EncryptionResult {
     try {
@@ -145,7 +145,7 @@ export class EncryptionService {
   }
 
   /**
-   * Entschlüsselt ein JSON-Objekt
+   * Decrypts a JSON object
    */
   decryptObject<T = any>(options: DecryptionOptions, key: string): T {
     try {
@@ -158,7 +158,7 @@ export class EncryptionService {
   }
 
   /**
-   * Verschlüsselt eine Datei (Buffer)
+   * Encrypts a file (Buffer)
    */
   encryptFile(fileBuffer: Buffer, key?: string): EncryptionResult {
     try {
@@ -171,7 +171,7 @@ export class EncryptionService {
   }
 
   /**
-   * Entschlüsselt eine Datei (Buffer)
+   * Decrypts a file (Buffer)
    */
   decryptFile(options: DecryptionOptions, key: string): Buffer {
     try {
@@ -184,7 +184,7 @@ export class EncryptionService {
   }
 
   /**
-   * Erstellt einen Hash von Daten (für Integritätsprüfung)
+   * Creates a hash of data (for integrity check)
    */
   createHash(data: string, algorithm: string = 'sha256'): string {
     try {
@@ -196,7 +196,7 @@ export class EncryptionService {
   }
 
   /**
-   * Verifiziert einen Hash
+   * Verifies a hash
    */
   verifyHash(data: string, expectedHash: string, algorithm: string = 'sha256'): boolean {
     try {
@@ -212,14 +212,14 @@ export class EncryptionService {
   }
 
   /**
-   * Generiert einen sicheren Token
+   * Generates a secure token
    */
   generateSecureToken(length: number = 32): string {
     return crypto.randomBytes(length).toString('hex');
   }
 
   /**
-   * Erstellt einen HMAC für Message Authentication
+   * Creates an HMAC for message authentication
    */
   createHMAC(data: string, key: string, algorithm: string = 'sha256'): string {
     try {
@@ -231,7 +231,7 @@ export class EncryptionService {
   }
 
   /**
-   * Verifiziert einen HMAC
+   * Verifies an HMAC
    */
   verifyHMAC(data: string, expectedHmac: string, key: string, algorithm: string = 'sha256'): boolean {
     try {
@@ -247,7 +247,7 @@ export class EncryptionService {
   }
 
   /**
-   * Verschlüsselt sensitive Felder in einem Objekt
+   * Encrypts sensitive fields in an object
    */
   encryptSensitiveFields(
     obj: Record<string, any>, 
@@ -265,7 +265,7 @@ export class EncryptionService {
           
           const encrypted = this.encrypt(fieldValue, key);
           result[`${field}_encrypted`] = encrypted;
-          delete result[field]; // Entferne Klartext
+          delete result[field]; // Remove plaintext
         }
       }
       
@@ -277,7 +277,7 @@ export class EncryptionService {
   }
 
   /**
-   * Entschlüsselt sensitive Felder in einem Objekt
+   * Decrypts sensitive fields in an object
    */
   decryptSensitiveFields(
     obj: Record<string, any>, 
@@ -294,17 +294,17 @@ export class EncryptionService {
           try {
             const decrypted = this.decrypt(result[encryptedField], key);
             
-            // Versuche JSON zu parsen, falls es ein Objekt war
+            // Try to parse JSON, if it was an object
             try {
               result[field] = JSON.parse(decrypted);
             } catch {
-              result[field] = decrypted; // Bleibt String
+              result[field] = decrypted; // Stay string
             }
             
-            delete result[encryptedField]; // Entferne verschlüsselte Version
+            delete result[encryptedField]; // Remove encrypted version
           } catch (decryptError) {
             logger.warn(`Failed to decrypt field ${field}:`, decryptError);
-            // Feld bleibt verschlüsselt
+            // Field stays encrypted
           }
         }
       }
@@ -317,7 +317,7 @@ export class EncryptionService {
   }
 
   /**
-   * Rotiert Verschlüsselungsschlüssel (re-encrypt mit neuem Schlüssel)
+   * Rotates encryption key (re-encrypt with new key)
    */
   rotateKey(
     encryptedData: EncryptionResult, 
@@ -325,10 +325,10 @@ export class EncryptionService {
     newKey: string
   ): EncryptionResult {
     try {
-      // Entschlüssele mit altem Schlüssel
+      // Decrypt with old key
       const decrypted = this.decrypt(encryptedData, oldKey);
       
-      // Verschlüssele mit neuem Schlüssel
+      // Encrypt with new key
       return this.encrypt(decrypted, newKey);
     } catch (error) {
       logger.error('Error rotating encryption key:', error);
@@ -337,18 +337,18 @@ export class EncryptionService {
   }
 
   /**
-   * Validiert Verschlüsselungsparameter
+   * Validates encryption parameters
    */
   validateEncryptionParams(params: any): boolean {
     try {
       const { encryptedData, iv, authTag } = params;
       
-      // Prüfe ob alle erforderlichen Felder vorhanden sind
+      // Check if all required fields are present
       if (!encryptedData || !iv || !authTag) {
         return false;
       }
       
-      // Prüfe Hex-Format und Längen
+      // Check hex format and lengths
       const hexRegex = /^[0-9a-fA-F]+$/;
       
       if (!hexRegex.test(iv) || iv.length !== this.ivLength * 2) {
@@ -379,13 +379,13 @@ import type { KeyManagementService } from './kms/KeyManagementService';
 import { KeyPurpose, EncryptionResultWithKeyRef } from '../types/kms';
 
 /**
- * Erweiterte EncryptionService-Klasse mit KMS-Integration
+ * Extended EncryptionService class with KMS integration
  */
 export class EncryptionServiceWithKMS extends EncryptionService {
   private kms?: KeyManagementService;
 
   /**
-   * Setzt die KMS-Instanz für erweiterte Funktionen
+   * Sets the KMS instance for extended functions
    */
   setKMS(kms: KeyManagementService): void {
     this.kms = kms;
@@ -393,7 +393,7 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Verschlüsselt Daten mit KMS-verwalteten Schlüsseln
+   * Encrypts data with KMS-managed keys
    */
   async encryptWithKMS(
     data: string,
@@ -406,11 +406,11 @@ export class EncryptionServiceWithKMS extends EncryptionService {
     }
 
     try {
-      // Hole aktuellen Schlüssel für Purpose
-      const keyMetadata = await this.kms.getKeyForPurpose(tenantId, purpose);
+      // Get current key for purpose
+      const keyMetadata = await this.kms.getActiveKeyForPurpose(tenantId, purpose);
       const key = await this.kms.getKey(keyMetadata.id, tenantId, serviceId);
 
-      // Verschlüssele mit EncryptionService
+      // Encrypt with EncryptionService
       const encrypted = this.encrypt(data, key);
 
       return {
@@ -425,7 +425,7 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Entschlüsselt Daten mit KMS-verwalteten Schlüsseln
+   * Decrypts data with KMS-managed keys
    */
   async decryptWithKMS(
     encrypted: EncryptionResultWithKeyRef,
@@ -437,10 +437,10 @@ export class EncryptionServiceWithKMS extends EncryptionService {
     }
 
     try {
-      // Hole Schlüssel vom KMS
+      // Get key from KMS
       const key = await this.kms.getKey(encrypted.keyId, tenantId, serviceId);
 
-      // Entschlüssele mit EncryptionService
+      // Decrypt with EncryptionService
       return this.decrypt(encrypted, key);
     } catch (error) {
       logger.error('Failed to decrypt with KMS:', error);
@@ -449,20 +449,40 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Verschlüsselt ein Objekt mit KMS
+   * Encrypts an object with KMS
    */
-  async encryptObjectWithKMS<T = any>(
+  async encryptObjectWithKMS<T>(
     obj: T,
     tenantId: string,
     purpose: KeyPurpose,
     serviceId?: string
   ): Promise<EncryptionResultWithKeyRef> {
-    const jsonString = JSON.stringify(obj);
-    return this.encryptWithKMS(jsonString, tenantId, purpose, serviceId);
+    if (!this.kms) {
+      throw new Error('KMS not initialized - call setKMS() first');
+    }
+
+    try {
+      // Get current key for purpose
+      const keyMetadata = await this.kms.getActiveKeyForPurpose(tenantId, purpose);
+      const key = await this.kms.getKey(keyMetadata.id, tenantId, serviceId);
+
+      // Serialize and encrypt object
+      const jsonString = JSON.stringify(obj);
+      const encrypted = this.encrypt(jsonString, key);
+
+      return {
+        ...encrypted,
+        keyId: keyMetadata.id,
+        keyVersion: keyMetadata.version
+      };
+    } catch (error) {
+      logger.error('Failed to encrypt object with KMS:', error);
+      throw new Error('Object encryption with KMS failed');
+    }
   }
 
   /**
-   * Entschlüsselt ein Objekt mit KMS
+   * Decrypts an object with KMS
    */
   async decryptObjectWithKMS<T = any>(
     encrypted: EncryptionResultWithKeyRef,
@@ -474,7 +494,7 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Verschlüsselt eine Datei mit KMS
+   * Encrypts a file with KMS
    */
   async encryptFileWithKMS(
     fileBuffer: Buffer,
@@ -487,7 +507,7 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Entschlüsselt eine Datei mit KMS
+   * Decrypts a file with KMS
    */
   async decryptFileWithKMS(
     encrypted: EncryptionResultWithKeyRef,
@@ -499,49 +519,50 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Verschlüsselt sensitive Felder mit KMS
+   * Encrypts sensitive fields with KMS
    */
-  async encryptSensitiveFieldsWithKMS(
-    obj: Record<string, any>,
+  async encryptSensitiveFieldsWithKMS<T extends Record<string, any>>(
+    obj: T,
     sensitiveFields: string[],
     tenantId: string,
     purpose: KeyPurpose,
     serviceId?: string
-  ): Promise<Record<string, any>> {
+  ): Promise<T & { _encryptedFields: Record<string, EncryptionResultWithKeyRef> }> {
     if (!this.kms) {
-      throw new Error('KMS not initialized');
+      throw new Error('KMS not initialized - call setKMS() first');
     }
 
     try {
-      const result = { ...obj };
-      const keyMetadata = await this.kms.getKeyForPurpose(tenantId, purpose);
+      // Get current key for purpose
+      const keyMetadata = await this.kms.getActiveKeyForPurpose(tenantId, purpose);
       const key = await this.kms.getKey(keyMetadata.id, tenantId, serviceId);
 
-      for (const field of sensitiveFields) {
-        if (result[field] !== undefined && result[field] !== null) {
-          const fieldValue = typeof result[field] === 'string'
-            ? result[field]
-            : JSON.stringify(result[field]);
+      const result = { ...obj } as any;
+      const encryptedFields: Record<string, EncryptionResultWithKeyRef> = {};
 
-          const encrypted = this.encrypt(fieldValue, key);
-          result[`${field}_encrypted`] = {
+      // Encrypt each sensitive field
+      for (const field of sensitiveFields) {
+        if (result[field] !== undefined) {
+          const encrypted = this.encrypt(String(result[field]), key);
+          encryptedFields[field] = {
             ...encrypted,
             keyId: keyMetadata.id,
             keyVersion: keyMetadata.version
           };
-          delete result[field];
+          result[field] = '[ENCRYPTED]';
         }
       }
 
+      result._encryptedFields = encryptedFields;
       return result;
     } catch (error) {
       logger.error('Failed to encrypt sensitive fields with KMS:', error);
-      throw new Error('Failed to encrypt sensitive fields');
+      throw new Error('Sensitive field encryption with KMS failed');
     }
   }
 
   /**
-   * Entschlüsselt sensitive Felder mit KMS
+   * Decrypts sensitive fields with KMS
    */
   async decryptSensitiveFieldsWithKMS(
     obj: Record<string, any>,
@@ -586,7 +607,7 @@ export class EncryptionServiceWithKMS extends EncryptionService {
   }
 
   /**
-   * Rotiert Verschlüsselung mit neuem KMS-Schlüssel
+   * Rotates encryption with new KMS key
    */
   async rotateEncryption(
     encrypted: EncryptionResultWithKeyRef,
@@ -599,10 +620,10 @@ export class EncryptionServiceWithKMS extends EncryptionService {
     }
 
     try {
-      // Entschlüssele mit altem Schlüssel
+      // Decrypt with old key
       const decrypted = await this.decryptWithKMS(encrypted, tenantId, serviceId);
 
-      // Verschlüssele mit neuem Schlüssel
+      // Encrypt with new key
       return this.encryptWithKMS(decrypted, tenantId, purpose, serviceId);
     } catch (error) {
       logger.error('Failed to rotate encryption:', error);

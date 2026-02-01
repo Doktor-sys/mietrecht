@@ -1,0 +1,31 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# System-Abhängigkeiten
+RUN apt-get update && apt-get install -y \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Requirements kopieren und installieren
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Applikationsdateien kopieren
+COPY mietrecht_full.py .
+COPY static/ ./static/
+
+# Datenverzeichnis erstellen
+RUN mkdir -p /app/data
+
+# Port exposen
+EXPOSE 5000
+
+# Umgebungsvariablen
+ENV FLASK_APP=mietrecht_full.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+
+# Applikation starten
+CMD ["python", "mietrecht_full.py"]

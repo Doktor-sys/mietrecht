@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Alert } from 'react-native';
-import { Text, List, Button, Divider, Switch } from 'react-native-paper';
+import { Text, List, Button, Divider, Switch, Portal, Modal } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { logout } from '../../store/slices/authSlice';
 import { BiometricService } from '../../services/BiometricService';
 import { FeedbackModal } from '../../components/FeedbackModal';
+import LegalScreen from './LegalScreen';
+import { gdprAPI } from '../../services/api';
 
 const ProfileScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,6 +16,8 @@ const ProfileScreen: React.FC = () => {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
+
+  const [legalVisible, setLegalVisible] = useState(false);
 
   const checkBiometricStatus = async (): Promise<void> => {
     const supported = await BiometricService.checkAvailability();
@@ -46,6 +50,36 @@ const ProfileScreen: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Account löschen',
+      'Möchten Sie Ihren Account wirklich unwiderruflich löschen? Alle Daten werden entfernt.',
+      [
+        { text: 'Abbrechen', style: 'cancel' },
+        {
+          text: 'Löschen',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Call GDPR deletion endpoint via centralized API
+              await gdprAPI.deleteAccount({
+                reason: 'User requested deletion via app',
+                deleteDocuments: true,
+                deleteMessages: true
+              });
+
+              dispatch(logout());
+              Alert.alert('Gelöscht', 'Ihr Account wurde erfolgreich gelöscht.');
+            } catch (error) {
+              console.error('Deletion failed:', error);
+              Alert.alert('Fehler', 'Konto konnte nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.');
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -94,6 +128,20 @@ const ProfileScreen: React.FC = () => {
           left={(props: any) => <List.Icon {...props} icon="message-alert" />}
           onPress={() => setFeedbackVisible(true)}
         />
+        <Divider />
+        <List.Item
+          title="Rechtliches"
+          description="Impressum & Datenschutz"
+          left={(props: any) => <List.Icon {...props} icon="scale-balance" />}
+          onPress={() => setLegalVisible(true)}
+        />
+        <List.Item
+          title="Account löschen"
+          description="Unwiderruflich löschen"
+          left={(props: any) => <List.Icon {...props} icon="delete-forever" color="red" />}
+          titleStyle={{ color: 'red' }}
+          onPress={handleDeleteAccount}
+        />
       </List.Section>
 
       <Button
@@ -110,6 +158,14 @@ const ProfileScreen: React.FC = () => {
         onDismiss={() => setFeedbackVisible(false)}
         userId={user?.id}
       />
+
+      {/* New Legal Modal - using FeedbackModal as container for now, simplified */}
+      <Portal>
+        <Modal visible={legalVisible} onDismiss={() => setLegalVisible(false)} contentContainerStyle={{ backgroundColor: 'white', padding: 20, margin: 20 }}>
+          <LegalScreen />
+          <Button onPress={() => setLegalVisible(false)}>Schließen</Button>
+        </Modal>
+      </Portal>
     </ScrollView>
   );
 };

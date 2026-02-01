@@ -4,6 +4,18 @@ import { authenticate } from '../middleware/auth'
 import { ChatService } from '../services/ChatService'
 import { WebSocketService } from '../services/WebSocketService'
 import { logger } from '../utils/logger'
+import { AIResponse } from '../services/AIResponseGenerator'
+import { UserType } from '@prisma/client'
+
+// Erweitertes Request-Interface für authentifizierte Anfragen
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    userType: UserType;
+    sessionId: string;
+  }
+}
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -35,10 +47,21 @@ const chatService = new ChatService(prisma)
  *       401:
  *         description: Nicht authentifiziert
  */
-router.post('/start', authenticate, async (req: Request, res: Response) => {
+router.post('/start', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { query } = req.body
-    const userId = req.user!.userId
+    const userId = req.user?.id
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      })
+    }
 
     if (!query || typeof query !== 'string') {
       return res.status(400).json({
@@ -124,11 +147,22 @@ router.post('/start', authenticate, async (req: Request, res: Response) => {
  *       404:
  *         description: Konversation nicht gefunden
  */
-router.post('/:conversationId/message', authenticate, async (req: Request, res: Response) => {
+router.post('/:conversationId/message', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { conversationId } = req.params
     const { message } = req.body
-    const userId = req.user!.userId
+    const userId = req.user?.id
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      })
+    }
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -202,9 +236,21 @@ router.post('/:conversationId/message', authenticate, async (req: Request, res: 
  *       401:
  *         description: Nicht authentifiziert
  */
-router.get('/history', authenticate, async (req: Request, res: Response) => {
+router.get('/history', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = req.user!.userId
+    const userId = req.user?.id
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      })
+    }
+
     const history = await chatService.getConversationHistory(userId)
 
     res.status(200).json({
@@ -246,10 +292,21 @@ router.get('/history', authenticate, async (req: Request, res: Response) => {
  *       404:
  *         description: Konversation nicht gefunden
  */
-router.get('/:conversationId/messages', authenticate, async (req: Request, res: Response) => {
+router.get('/:conversationId/messages', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { conversationId } = req.params
-    const userId = req.user!.userId
+    const userId = req.user?.id
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      })
+    }
 
     const messages = await chatService.getConversationMessages(conversationId, userId)
 
@@ -303,10 +360,21 @@ router.get('/:conversationId/messages', authenticate, async (req: Request, res: 
  *       404:
  *         description: Konversation nicht gefunden
  */
-router.post('/:conversationId/escalate', authenticate, async (req: Request, res: Response) => {
+router.post('/:conversationId/escalate', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { conversationId } = req.params
-    const userId = req.user!.userId
+    const userId = req.user?.id
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      })
+    }
 
     await chatService.escalateToLawyer(conversationId, userId)
 
@@ -336,5 +404,190 @@ router.post('/:conversationId/escalate', authenticate, async (req: Request, res:
     })
   }
 })
+
+/**
+ * @swagger
+ * /api/chat/{conversationId}/feedback:
+ *   post:
+ *     summary: Feedback zu einer KI-Antwort geben
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: conversationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               messageId:
+ *                 type: string
+ *                 description: ID der Nachricht, zu der Feedback gegeben wird
+ *               feedback:
+ *                 type: string
+ *                 description: Feedback des Nutzers zur Antwort
+ *             required:
+ *               - messageId
+ *               - feedback
+ *     responses:
+ *       200:
+ *         description: Verfeinerte Antwort
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/ChatMessage'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/AuthenticationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+router.post('/:conversationId/feedback', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { conversationId } = req.params;
+    const { messageId, feedback } = req.body;
+    const userId = req.user?.id;
+    
+    // Überprüfe, ob der Benutzer authentifiziert ist
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Benutzer nicht authentifiziert',
+        },
+      });
+    }
+
+    if (!messageId || !feedback) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_INPUT',
+          message: 'messageId und feedback sind erforderlich',
+        },
+      });
+    }
+
+    // Get the original message and conversation
+    const originalMessage = await prisma.message.findFirst({
+      where: {
+        id: messageId,
+        caseId: conversationId,
+        sender: 'AI'
+      }
+    });
+
+    if (!originalMessage) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'MESSAGE_NOT_FOUND',
+          message: 'Nachricht nicht gefunden',
+        },
+      });
+    }
+
+    // Get the user's original query for this message
+    const userMessage = await prisma.message.findFirst({
+      where: {
+        caseId: conversationId,
+        sender: 'USER',
+        timestamp: {
+          lt: originalMessage.timestamp
+        }
+      },
+      orderBy: {
+        timestamp: 'desc'
+      }
+    });
+
+    // Refine the AI response based on feedback
+    const originalResponse: AIResponse = {
+      message: originalMessage.content,
+      confidence: (originalMessage.metadata as any)?.confidence || 0.8,
+      legalReferences: (originalMessage.metadata as any)?.legalReferences || [],
+      actionRecommendations: (originalMessage.metadata as any)?.actionRecommendations || [],
+      templateReferences: (originalMessage.metadata as any)?.templateReferences || [],
+      escalationRecommended: (originalMessage.metadata as any)?.escalationRecommended || false,
+      escalationReason: (originalMessage.metadata as any)?.escalationReason
+    };
+
+    const refinedResponse = await chatService.refineResponse(
+      originalResponse,
+      feedback,
+      userMessage?.content || ''
+    );
+
+    // Save the refined response
+    const refinedMessage = await prisma.message.create({
+      data: {
+        caseId: conversationId,
+        sender: 'AI',
+        content: refinedResponse.message,
+        metadata: {
+          category: (originalMessage.metadata as any)?.category,
+          confidence: refinedResponse.confidence,
+          riskLevel: (originalMessage.metadata as any)?.riskLevel,
+          escalationRecommended: refinedResponse.escalationRecommended,
+          legalReferences: JSON.parse(JSON.stringify(refinedResponse.legalReferences)),
+          actionRecommendations: JSON.parse(JSON.stringify(refinedResponse.actionRecommendations)),
+          templateReferences: JSON.parse(JSON.stringify(refinedResponse.templateReferences)),
+          isRefined: true,
+          originalMessageId: messageId
+        } as any
+      }
+    });
+
+    // WebSocket Service holen
+    const wsService = req.app.get('wsService') as WebSocketService;
+
+    // Verfeinerte Antwort über WebSocket senden
+    if (wsService) {
+      wsService.sendMessageToUser(userId, {
+        id: refinedMessage.id,
+        content: refinedResponse.message,
+        timestamp: refinedMessage.timestamp.toISOString(),
+        legalReferences: refinedResponse.legalReferences,
+        isRefined: true
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        id: refinedMessage.id,
+        content: refinedResponse.message,
+        timestamp: refinedMessage.timestamp,
+        sender: 'AI',
+        legalReferences: refinedResponse.legalReferences,
+        isRefined: true
+      },
+    });
+  } catch (error) {
+    logger.error('Error processing feedback', { error });
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Fehler beim Verarbeiten des Feedbacks',
+      },
+    });
+  }
+});
 
 export default router

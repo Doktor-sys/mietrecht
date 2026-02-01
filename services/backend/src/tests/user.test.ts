@@ -1,6 +1,6 @@
 import request from 'supertest'
 import { PrismaClient, UserType } from '@prisma/client'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import app from '../index'
 import { config } from '../config/config'
@@ -191,6 +191,72 @@ describe('User Management API Tests', () => {
     })
   })
 
+  describe('GET /api/users/preferences', () => {
+    it('should get user preferences', async () => {
+      // First update preferences
+      const updateData = {
+        language: 'en',
+        notifications: {
+          email: false,
+          push: true
+        }
+      }
+
+      await request(app)
+        .put('/api/users/preferences')
+        .set('Authorization', `Bearer ${tenantToken}`)
+        .send(updateData)
+        .expect(200)
+
+      // Then get preferences
+      const response = await request(app)
+        .get('/api/users/preferences')
+        .set('Authorization', `Bearer ${tenantToken}`)
+        .expect(200)
+
+      expect(response.body.success).toBe(true)
+      expect(response.body.data.language).toBe('en')
+      expect(response.body.data.notifications.email).toBe(false)
+      expect(response.body.data.notifications.push).toBe(true)
+    })
+
+    it('should get enhanced profile preferences', async () => {
+      // First update preferences with enhanced profile data
+      const updateData = {
+        accessibility: {
+          highContrast: true,
+          dyslexiaFriendly: false
+        },
+        legalTopics: ['tenant-protection'],
+        frequentDocuments: ['rental-contract'],
+        alerts: {
+          newCaseLaw: 'weekly',
+          documentUpdates: 'daily'
+        }
+      }
+
+      await request(app)
+        .put('/api/users/preferences')
+        .set('Authorization', `Bearer ${tenantToken}`)
+        .send(updateData)
+        .expect(200)
+
+      // Then get preferences
+      const response = await request(app)
+        .get('/api/users/preferences')
+        .set('Authorization', `Bearer ${tenantToken}`)
+        .expect(200)
+
+      expect(response.body.success).toBe(true)
+      expect(response.body.data.accessibility.highContrast).toBe(true)
+      expect(response.body.data.accessibility.dyslexiaFriendly).toBe(false)
+      expect(response.body.data.legalTopics).toEqual(['tenant-protection'])
+      expect(response.body.data.frequentDocuments).toEqual(['rental-contract'])
+      expect(response.body.data.alerts.newCaseLaw).toBe('weekly')
+      expect(response.body.data.alerts.documentUpdates).toBe('daily')
+    })
+  })
+
   describe('PUT /api/users/preferences', () => {
     it('should update user preferences', async () => {
       const updateData = {
@@ -234,6 +300,38 @@ describe('User Management API Tests', () => {
 
       expect(response.body.data.notifications.email).toBe(false)
       expect(response.body.data.notifications.push).toBe(true) // Sollte unverändert bleiben
+    })
+
+    it('should update enhanced profile preferences', async () => {
+      const updateData = {
+        accessibility: {
+          highContrast: true,
+          dyslexiaFriendly: true,
+          reducedMotion: false
+        },
+        legalTopics: ['tenant-protection', 'modernization'],
+        frequentDocuments: ['rental-contract'],
+        alerts: {
+          newCaseLaw: 'daily',
+          documentUpdates: 'instant',
+          newsletter: 'monthly'
+        }
+      }
+
+      const response = await request(app)
+        .put('/api/users/preferences')
+        .set('Authorization', `Bearer ${tenantToken}`)
+        .send(updateData)
+        .expect(200)
+
+      expect(response.body.success).toBe(true)
+      expect(response.body.data.accessibility.highContrast).toBe(true)
+      expect(response.body.data.accessibility.dyslexiaFriendly).toBe(true)
+      expect(response.body.data.legalTopics).toEqual(['tenant-protection', 'modernization'])
+      expect(response.body.data.frequentDocuments).toEqual(['rental-contract'])
+      expect(response.body.data.alerts.newCaseLaw).toBe('daily')
+      expect(response.body.data.alerts.documentUpdates).toBe('instant')
+      expect(response.body.data.alerts.newsletter).toBe('monthly')
     })
   })
 

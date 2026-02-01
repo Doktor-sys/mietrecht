@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLaw AI Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .card-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .chart-container {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .chart-placeholder svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-card {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .list-group {
+            list-style-type: none;
+        }
+
+        .list-group-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-active {
+            background-color: #28a745;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SmartLaw AI Dashboard</h1>
+            <p>KI-gestützte Rechtsberatung und Fallvorhersage</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Vorhersagen Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Fallvorhersagen</h2>
+                    <span class="badge">Live</span>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3V19H21V3H3ZM19 17H5V5H19V17Z" fill="#6c757d"/>
+                            <path d="M8 14H10V8H8V14ZM11 12H13V8H11V12ZM14 14H16V10H14V14Z" fill="#6c757d"/>
+                        </svg>
+                        <p>Vorhersagediagramm</p>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Genauigkeit</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">Analysen</div>
+                    </div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span>Mietvertrag Kündigung</span>
+                        <span class="badge" style="background-color: #28a745;">Gewinn (85%)</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>Nebenkostenabrechnung</span>
+                        <span class="badge" style="background-color: #dc3545;">Verlust (72%)</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>Modernisierungsmieterhöhungen</span>
+                        <span class="badge" style="background-color: #28a745;">Gewinn (91%)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Kategorien Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Fallkategorien</h2>
+                    <span class="badge">Aktuell</span>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="9" stroke="#6c757d" stroke-width="2"/>
+                            <path d="M12 3L12 12L18 12" stroke="#6c757d" stroke-width="2"/>
+                            <path d="M12 12L6 18" stroke="#6c757d" stroke-width="2"/>
+                        </svg>
+                        <p>Kategoriendiagramm</p>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">Mietrecht</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Vertragsrecht</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Familienrecht</div>
+                    </div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span>Arbeitsrecht</span>
+                        <span class="badge">10 Fälle</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>Sonstige</span>
+                        <span class="badge">5 Fälle</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Empfehlungen Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Empfehlungen</h2>
+                    <span class="badge" style="background-color: #9c27b0;">Personalisiert</span>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#6c757d" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Empfehlungsdiagramm</p>
+                    </div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div>
+                            <strong>Mietvertrag Kündigung</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                        <span>Passt zu Ihrer Spezialisierung</span>
+                    </li>
+                    <li class="list-group-item">
+                        <div>
+                            <strong>Modernisierungsmieterhöhungen</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%;"></div>
+                            </div>
+                        </div>
+                        <span>Hohe Erfahrung in diesem Bereich</span>
+                    </li>
+                    <li class="list-group-item">
+                        <div>
+                            <strong>Wohnungseigentum</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 81%;"></div>
+                            </div>
+                        </div>
+                        <span>Regionale Expertise</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Systemstatus Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Systemstatus</h2>
+                    <span class="badge" style="background-color: #28a745;">Online</span>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span>
+                            <span class="status-indicator status-active"></span>
+                            ML-Modelle
+                        </span>
+                        <span class="badge" style="background-color: #28a745;">Aktiv</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                            <span class="status-indicator status-active"></span>
+                            Datenbank
+                        </span>
+                        <span class="badge" style="background-color: #28a745;">Verbunden</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                            <span class="status-indicator status-active"></span>
+                            API-Gateway
+                        </span>
+                        <span class="badge" style="background-color: #28a745;">Online</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                            <span class="status-indicator status-active"></span>
+                            Letzte Aktualisierung
+                        </span>
+                        <span>Gerade eben</span>
+                    </li>
+                </ul>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="#6c757d" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Performance-Diagramm</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 SmartLaw - KI-gestützte Rechtsberatung</p>
+            <p>Version 1.0.0 | Letzte Aktualisierung: Dezember 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

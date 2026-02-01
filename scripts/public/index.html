@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrecht Agent - Konfiguration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mietrecht Agent Konfiguration</h1>
+            <p>Verwalten Sie die Einstellungen für den automatisierten Mietrecht-Agenten</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#data-sources" class="nav-link active" data-tab="data-sources">Datenquellen</a></li>
+                <li><a href="#nlp-settings" class="nav-link" data-tab="nlp-settings">NLP-Einstellungen</a></li>
+                <li><a href="#integrations" class="nav-link" data-tab="integrations">Integrationen</a></li>
+                <li><a href="#notifications" class="nav-link" data-tab="notifications">Benachrichtigungen</a></li>
+                <li><a href="#performance" class="nav-link" data-tab="performance">Performance</a></li>
+                <li><a href="#lawyers" class="nav-link" data-tab="lawyers">Anwälte</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Data Sources Tab -->
+            <section id="data-sources" class="tab-content active">
+                <h2>Datenquellen-Konfiguration</h2>
+                <form id="data-sources-form">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bgh-enabled" checked>
+                            Bundesgerichtshof (BGH)
+                        </label>
+                        <div class="sub-settings">
+                            <label for="bgh-baseurl">Base URL:</label>
+                            <input type="text" id="bgh-baseurl" value="https://juris.bundesgerichtshof.de">
+                            
+                            <label for="bgh-maxresults">Max. Ergebnisse:</label>
+                            <input type="number" id="bgh-maxresults" value="50" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="landgerichte-enabled" checked>
+                            Landgerichte
+                        </label>
+                        <div class="sub-settings">
+                            <label for="landgerichte-baseurl">Base URL:</label>
+                            <input type="text" id="landgerichte-baseurl" value="https://www.landesrecht.de">
+                            
+                            <label for="landgerichte-maxresults">Max. Ergebnisse:</label>
+                            <input type="number" id="landgerichte-maxresults" value="50" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bverfg-enabled" checked>
+                            Bundesverfassungsgericht (BVerfG)
+                        </label>
+                        <div class="sub-settings">
+                            <label for="bverfg-baseurl">Base URL:</label>
+                            <input type="text" id="bverfg-baseurl" value="https://www.bundesverfassungsgericht.de">
+                            
+                            <label for="bverfg-maxresults">Max. Ergebnisse:</label>
+                            <input type="number" id="bverfg-maxresults" value="50" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="beckonline-enabled">
+                            Beck-Online (Benötigt Abonnement)
+                        </label>
+                        <div class="sub-settings">
+                            <label for="beckonline-baseurl">Base URL:</label>
+                            <input type="text" id="beckonline-baseurl" value="https://beck-online.beck.de">
+                            
+                            <label for="beckonline-maxresults">Max. Ergebnisse:</label>
+                            <input type="number" id="beckonline-maxresults" value="50" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <button type="submit">Datenquellen speichern</button>
+                </form>
+            </section>
+
+            <!-- NLP Settings Tab -->
+            <section id="nlp-settings" class="tab-content">
+                <h2>NLP-Einstellungen</h2>
+                <form id="nlp-settings-form">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="nlp-summarization" checked>
+                            Automatische Zusammenfassung aktivieren
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="nlp-topic-extraction" checked>
+                            Themenextraktion aktivieren
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="nlp-entity-extraction" checked>
+                            Entitätenextraktion aktivieren
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="nlp-importance-classification" checked>
+                            Wichtigkeitsklassifizierung aktivieren
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="nlp-practice-implications" checked>
+                            Praxisimplikationen aktivieren
+                        </label>
+                    </div>
+
+                    <button type="submit">NLP-Einstellungen speichern</button>
+                </form>
+            </section>
+
+            <!-- Integrations Tab -->
+            <section id="integrations" class="tab-content">
+                <h2>Integrationen</h2>
+                <form id="integrations-form">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="asana-enabled">
+                            Asana-Integration aktivieren
+                        </label>
+                        <div class="sub-settings">
+                            <label for="asana-projectid">Project ID:</label>
+                            <input type="text" id="asana-projectid">
+                            
+                            <label for="asana-workspaceid">Workspace ID:</label>
+                            <input type="text" id="asana-workspaceid">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="github-enabled">
+                            GitHub-Integration aktivieren
+                        </label>
+                        <div class="sub-settings">
+                            <label for="github-owner">Repository Owner:</label>
+                            <input type="text" id="github-owner">
+                            
+                            <label for="github-repo">Repository Name:</label>
+                            <input type="text" id="github-repo">
+                        </div>
+                    </div>
+
+                    <button type="submit">Integrationen speichern</button>
+                </form>
+            </section>
+
+            <!-- Notifications Tab -->
+            <section id="notifications" class="tab-content">
+                <h2>Benachrichtigungen</h2>
+                <form id="notifications-form">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="email-notifications">
+                            E-Mail-Benachrichtigungen aktivieren
+                        </label>
+                        <div class="sub-settings">
+                            <label for="smtp-host">SMTP Host:</label>
+                            <input type="text" id="smtp-host" placeholder="smtp.example.com">
+                            
+                            <label for="smtp-port">SMTP Port:</label>
+                            <input type="number" id="smtp-port" value="587" min="1" max="65535">
+                            
+                            <label>
+                                <input type="checkbox" id="smtp-secure">
+                                Secure Connection (SSL/TLS)
+                            </label>
+                            
+                            <label for="smtp-user">Benutzername:</label>
+                            <input type="text" id="smtp-user">
+                            
+                            <label for="smtp-pass">Passwort:</label>
+                            <input type="password" id="smtp-pass">
+                        </div>
+                    </div>
+
+                    <button type="submit">Benachrichtigungseinstellungen speichern</button>
+                </form>
+            </section>
+
+            <!-- Performance Tab -->
+            <section id="performance" class="tab-content">
+                <h2>Performance-Einstellungen</h2>
+                <form id="performance-form">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="cache-enabled" checked>
+                            Caching aktivieren
+                        </label>
+                        <div class="sub-settings">
+                            <label for="cache-ttl">Cache TTL (Minuten):</label>
+                            <input type="number" id="cache-ttl" value="30" min="1" max="1440">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rate-limit">Rate Limit (Anfragen/Minute):</label>
+                        <input type="number" id="rate-limit" value="10" min="1" max="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max-retries">Max. Wiederholungsversuche:</label>
+                        <input type="number" id="max-retries" value="3" min="0" max="10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="retry-delay">Wiederholungsverzögerung (ms):</label>
+                        <input type="number" id="retry-delay" value="1000" min="100" max="60000">
+                    </div>
+
+                    <button type="submit">Performance-Einstellungen speichern</button>
+                </form>
+            </section>
+
+            <!-- Lawyers Tab -->
+            <section id="lawyers" class="tab-content">
+                <h2>Anwalt-Konfiguration</h2>
+                <div class="lawyers-list">
+                    <h3>Registrierte Anwälte</h3>
+                    <ul id="lawyers-container">
+                        <!-- Lawyers will be populated here dynamically -->
+                    </ul>
+                </div>
+
+                <div class="lawyer-form">
+                    <h3>Anwalt hinzufügen/bearbeiten</h3>
+                    <form id="lawyer-form">
+                        <input type="hidden" id="lawyer-id">
+                        
+                        <div class="form-group">
+                            <label for="lawyer-name">Name:</label>
+                            <input type="text" id="lawyer-name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lawyer-email">E-Mail:</label>
+                            <input type="email" id="lawyer-email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lawyer-lawfirm">Kanzlei:</label>
+                            <input type="text" id="lawyer-lawfirm">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Rechtsgebiete (mit Komma trennen):</label>
+                            <input type="text" id="lawyer-practiceareas">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Regionen (mit Komma trennen):</label>
+                            <input type="text" id="lawyer-regions">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gerichtsebenen (mit Komma trennen):</label>
+                            <input type="text" id="lawyer-courtlevels">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Themen (mit Komma trennen):</label>
+                            <input type="text" id="lawyer-topics">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lawyer-frequency">Häufigkeit:</label>
+                            <select id="lawyer-frequency">
+                                <option value="daily">Täglich</option>
+                                <option value="weekly">Wöchentlich</option>
+                                <option value="monthly">Monatlich</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lawyer-importancethreshold">Wichtigkeitsschwelle:</label>
+                            <select id="lawyer-importancethreshold">
+                                <option value="high">Hoch</option>
+                                <option value="medium">Mittel</option>
+                                <option value="low">Niedrig</option>
+                            </select>
+                        </div>
+
+                        <button type="submit">Anwalt speichern</button>
+                        <button type="button" id="cancel-lawyer">Abbrechen</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 SmartLaw Development Team. Alle Rechte vorbehalten.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

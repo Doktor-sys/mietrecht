@@ -1,0 +1,276 @@
+/* styles.css - Styling for the Mietrecht Agent Configuration Interface */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #7f8c8d;
+    font-size: 1.1em;
+}
+
+/* Navigation styles */
+nav {
+    margin-bottom: 30px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-link {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #7f8c8d;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #e9ecef;
+    color: #2c3e50;
+}
+
+.nav-link.active {
+    background-color: #fff;
+    color: #2c3e50;
+    border-color: #ddd;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+}
+
+/* Main content styles */
+main {
+    margin-bottom: 30px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.form-group input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.sub-settings {
+    margin-top: 15px;
+    padding: 15px;
+    border-left: 3px solid #3498db;
+    background-color: #fff;
+}
+
+.sub-settings label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button[type="button"] {
+    background-color: #95a5a6;
+}
+
+button[type="button"]:hover {
+    background-color: #7f8c8d;
+}
+
+/* Lawyers section styles */
+.lawyers-list {
+    margin-bottom: 30px;
+}
+
+.lawyers-list h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+#lawyers-container {
+    list-style: none;
+}
+
+.lawyer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.lawyer-info h4 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.lawyer-info p {
+    color: #7f8c8d;
+    margin: 2px 0;
+    font-size: 0.9em;
+}
+
+.lawyer-actions button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.edit-btn:hover {
+    background-color: #e67e22;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.lawyer-form {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.lawyer-form h3 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #eee;
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    nav ul {
+        flex-direction: column;
+    }
+    
+    .nav-link {
+        border: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 5px;
+    }
+    
+    .nav-link.active {
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 5px;
+    }
+    
+    .lawyer-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .lawyer-actions {
+        margin-top: 10px;
+    }
+}

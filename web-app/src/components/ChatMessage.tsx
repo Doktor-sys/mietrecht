@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Paper, Typography, Chip, Link } from '@mui/material';
+import { Box, Paper, Typography, Chip, Link, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@mui/icons-material/Person';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 interface LegalReference {
   reference: string;
@@ -24,6 +25,44 @@ interface ChatMessageProps {
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const { t } = useTranslation();
   const isUser = message.role === 'user';
+
+  // Function to handle text-to-speech for web
+  const handleTextToSpeech = () => {
+    try {
+      // Check if speech synthesis is supported
+      if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+        
+        // Create speech utterance
+        const utterance = new SpeechSynthesisUtterance(message.content);
+        utterance.lang = 'de-DE'; // German as default for legal content
+        utterance.rate = 0.9; // Slightly slower for better comprehension
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
+        // Event handlers
+        utterance.onstart = () => {
+          console.log('Text-to-speech started for message:', message.id);
+        };
+        
+        utterance.onend = () => {
+          console.log('Text-to-speech completed for message:', message.id);
+        };
+        
+        utterance.onerror = (event) => {
+          console.error('Text-to-speech error:', event);
+        };
+        
+        // Speak the text
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.warn('Speech synthesis not supported in this browser');
+      }
+    } catch (error) {
+      console.error('Error triggering text-to-speech:', error);
+    }
+  };
 
   return (
     <Box
@@ -66,17 +105,35 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             p: 2,
             bgcolor: isUser ? 'primary.light' : 'grey.100',
             color: isUser ? 'primary.contrastText' : 'text.primary',
+            position: 'relative',
           }}
         >
-          <Typography
-            variant="body1"
-            sx={{
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-            }}
-          >
-            {message.content}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                flex: 1,
+                pr: 1,
+              }}
+            >
+              {message.content}
+            </Typography>
+            {!isUser && (
+              <IconButton
+                size="small"
+                onClick={handleTextToSpeech}
+                aria-label={t('chat.textToSpeech')}
+                sx={{ 
+                  alignSelf: 'flex-start',
+                  ml: 1,
+                }}
+              >
+                <VolumeUpIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
 
           {/* Rechtliche Referenzen */}
           {message.legalReferences && message.legalReferences.length > 0 && (

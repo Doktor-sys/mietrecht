@@ -1,0 +1,201 @@
+# Edge Computing Deployment with KubeEdge
+# This configuration deploys SmartLaw services to edge nodes using KubeEdge
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-edge-agent
+  labels:
+    app: smartlaw-edge-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-edge-agent
+  template:
+    metadata:
+      labels:
+        app: smartlaw-edge-agent
+    spec:
+      containers:
+      - name: edge-agent
+        image: kubeedge/edgecore:v1.12.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 10001
+        volumeMounts:
+        - name: cert-path
+          mountPath: /etc/kubeedge/certs
+        - name: conf-path
+          mountPath: /etc/kubeedge/config
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        securityContext:
+          privileged: true
+      volumes:
+      - name: cert-path
+        hostPath:
+          path: /etc/kubeedge/certs
+          type: DirectoryOrCreate
+      - name: conf-path
+        hostPath:
+          path: /etc/kubeedge/config
+          type: DirectoryOrCreate
+      nodeSelector:
+        node-role.kubernetes.io/edge: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-edge-agent
+spec:
+  selector:
+    app: smartlaw-edge-agent
+  ports:
+    - protocol: TCP
+      port: 10001
+      targetPort: 10001
+  type: ClusterIP
+---
+# Edge Node Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-core-config
+data:
+  edgecore.yaml: |
+    apiVersion: edgecore.config.kubeedge.io/v1alpha2
+    kind: EdgeCore
+    kubeAPIConfig:
+      burst: 200
+      contentType: application/vnd.kubernetes.protobuf
+      kubeConfig: ""
+      qps: 100
+    modules:
+      edged:
+        cgroupDriver: systemd
+        cgroupRoot: ""
+        cgroupsPerQOS: true
+        clusterDNS: ""
+        clusterDomain: ""
+        devicePluginEnabled: false
+        dockerAddress: unix:///var/run/docker.sock
+        edgedMemoryCapacity: 7852396000
+        enableMetrics: true
+        enableNetworkingTopology: true
+        gpuPluginEnabled: false
+        hostnameOverride: ""
+        imageGCHighThreshold: 80
+        imageGCLowThreshold: 40
+        imagePullProgressDeadline: 60
+        interfaceName: eth0
+        iptablesDropBit: 15
+        iptablesMasqueradeBit: 14
+        maximumDeadContainersPerContainer: 1
+        networkPluginMTU: 1500
+        networkPluginName: ""
+        podSandboxImage: kubeedge/pause:3.6
+        remoteImageEndpoint: unix:///var/run/dockershim.sock
+        remoteRuntimeEndpoint: unix:///var/run/dockershim.sock
+        runtimeRequestTimeout: 2
+        runtimeType: docker
+        tailLogFilesLen: 4096
+        version: 2.0.0
+      edgehub:
+        enable: true
+        heartbeatPeriod: 15
+        projectID: e632aba927ea4ac2b575ec1603d56f10
+        quic:
+          enable: false
+          handshakeTimeout: 30
+          readDeadline: 15
+          server: 127.0.0.1:10001
+          writeDeadline: 15
+        tlsCaFile: /etc/kubeedge/ca/rootCA.crt
+        tlsCertFile: /etc/kubeedge/certs/server.crt
+        tlsPrivateKeyFile: /etc/kubeedge/certs/server.key
+        token: ""
+        websocket:
+          enable: true
+          handshakeTimeout: 30
+          readDeadline: 15
+          server: 0.0.0.0:10000
+          writeDeadline: 15
+      eventbus:
+        enable: true
+        mqttMode: 2
+        mqttQOS: 0
+        mqttRetain: false
+        mqttServerExternal: tcp://127.0.0.1:1883
+        mqttServerInternal: tcp://127.0.0.1:1884
+        mqttSessionQueueSize: 100
+        mqttSubClientID: ""
+        mqttSubPassword: ""
+        mqttSubUsername: ""
+        mqttTopic: "$ke/events"
+      metamanager:
+        contextSendGroup: hub
+        contextSendModule: websocket
+        enable: true
+        metaServerBindIP: 127.0.0.1
+        metaServerBindPort: 10550
+        remoteQueryTimeout: 60
+        sendModule: edgehub
+      servicebus:
+        enable: false
+        serviceBusURLClound: ""
+        timeout: 30
+      syncKeeper:
+        enable: true
+      edged:
+        enable: true
+      edgehub:
+        enable: true
+      eventbus:
+        enable: true
+      metamanager:
+        enable: true
+      servicebus:
+        enable: true
+      syncKeeper:
+        enable: true
+---
+# Edge Node Labels
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smartlaw-edge
+---
+# ResourceQuota for Edge Nodes
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: edge-resources
+  namespace: smartlaw-edge
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+---
+# LimitRange for Edge Pods
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: edge-limit-range
+  namespace: smartlaw-edge
+spec:
+  limits:
+  - default:
+      memory: 256Mi
+      cpu: 200m
+    defaultRequest:
+      memory: 128Mi
+      cpu: 100m
+    type: Container

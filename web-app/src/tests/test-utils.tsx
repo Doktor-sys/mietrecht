@@ -64,6 +64,22 @@ export const mockAuthenticatedState: PreloadedState<RootState> = {
     loading: false,
     error: null,
   },
+  chat: {
+    messages: [],
+    isTyping: false,
+    conversationId: null,
+  },
+  document: {
+    documents: [],
+    selectedDocument: null,
+    uploading: false,
+  },
+  lawyer: {
+    lawyers: [],
+    selectedLawyer: null,
+    searchCriteria: {},
+    loading: false,
+  },
 };
 
 // Mock unauthenticated user state
@@ -74,6 +90,22 @@ export const mockUnauthenticatedState: PreloadedState<RootState> = {
     isAuthenticated: false,
     loading: false,
     error: null,
+  },
+  chat: {
+    messages: [],
+    isTyping: false,
+    conversationId: null,
+  },
+  document: {
+    documents: [],
+    selectedDocument: null,
+    uploading: false,
+  },
+  lawyer: {
+    lawyers: [],
+    selectedLawyer: null,
+    searchCriteria: {},
+    loading: false,
   },
 };
 

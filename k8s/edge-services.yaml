@@ -1,0 +1,211 @@
+# Edge-optimized service deployments for SmartLaw
+# These services are configured to run on edge nodes with resource constraints
+
+# Edge-optimized Auth Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-auth-edge
+  labels:
+    app: smartlaw-auth-edge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-auth-edge
+  template:
+    metadata:
+      labels:
+        app: smartlaw-auth-edge
+    spec:
+      containers:
+      - name: auth-service
+        image: smartlaw/auth-service:edge-v1.0
+        ports:
+        - containerPort: 3001
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: smartlaw-secrets
+              key: auth-db-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: secret
+        - name: REDIS_URL
+          value: "redis://smartlaw-redis:6379"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      nodeSelector:
+        node-role.kubernetes.io/edge: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-auth-edge
+spec:
+  selector:
+    app: smartlaw-auth-edge
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+  type: ClusterIP
+---
+# Edge-optimized Document Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartlaw-document-edge
+  labels:
+    app: smartlaw-document-edge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartlaw-document-edge
+  template:
+    metadata:
+      labels:
+        app: smartlaw-document-edge
+    spec:
+      containers:
+      - name: document-service
+        image: smartlaw/document-service:edge-v1.0
+        ports:
+        - containerPort: 3002
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: smartlaw-secrets
+              key: document-db-url
+        - name: MINIO_ENDPOINT
+          value: "http://minio-edge:9000"
+        - name: REDIS_URL
+          value: "redis://smartlaw-redis:6379"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "400m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      nodeSelector:
+        node-role.kubernetes.io/edge: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartlaw-document-edge
+spec:
+  selector:
+    app: smartlaw-document-edge
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+  type: ClusterIP
+---
+# Edge-local MinIO for document storage
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-edge
+  labels:
+    app: minio-edge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio-edge
+  template:
+    metadata:
+      labels:
+        app: minio-edge
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /data/document-storage
+          minio server /data --console-address :9001
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        env:
+        - name: MINIO_ROOT_USER
+          value: "minioadmin"
+        - name: MINIO_ROOT_PASSWORD
+          value: "minioadmin"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "400m"
+      volumes:
+      - name: data
+        emptyDir: {}
+      nodeSelector:
+        node-role.kubernetes.io/edge: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-edge
+spec:
+  selector:
+    app: minio-edge
+  ports:
+    - name: api
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+    - name: console
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+  type: ClusterIP

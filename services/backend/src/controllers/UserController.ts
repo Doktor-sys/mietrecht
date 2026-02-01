@@ -70,6 +70,74 @@ export class UserController {
 
   /**
    * @swagger
+   * /api/users/preferences:
+   *   get:
+   *     summary: Benutzerpräferenzen abrufen
+   *     tags: [User Management]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Benutzerpräferenzen erfolgreich abgerufen
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 data:
+   *                   type: object
+   *                   properties:
+   *                     id:
+   *                       type: string
+   *                     userId:
+   *                       type: string
+   *                     notifications:
+   *                       type: object
+   *                     privacy:
+   *                       type: object
+   *                     language:
+   *                       type: string
+   *                     accessibility:
+   *                       type: object
+   *                       nullable: true
+   *                     legalTopics:
+   *                       type: array
+   *                       items:
+   *                         type: string
+   *                       nullable: true
+   *                     frequentDocuments:
+   *                       type: array
+   *                       items:
+   *                         type: string
+   *                       nullable: true
+   *                     alerts:
+   *                       type: object
+   *                       nullable: true
+   *       401:
+   *         $ref: '#/components/responses/AuthenticationError'
+   *       404:
+   *         $ref: '#/components/responses/NotFoundError'
+   */
+  getPreferences = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.id
+
+    if (!userId) {
+      throw new ValidationError('Benutzer-ID nicht gefunden')
+    }
+
+    const preferences = await this.userService.getPreferences(userId)
+
+    res.json({
+      success: true,
+      data: preferences
+    })
+  })
+
+  /**
+   * @swagger
    * /api/users/profile:
    *   put:
    *     summary: Benutzerprofil aktualisieren
@@ -185,6 +253,39 @@ export class UserController {
    *               language:
    *                 type: string
    *                 enum: [de, en, tr, ar]
+   *               accessibility:
+   *                 type: object
+   *                 properties:
+   *                   highContrast:
+   *                     type: boolean
+   *                   dyslexiaFriendly:
+   *                     type: boolean
+   *                   reducedMotion:
+   *                     type: boolean
+   *                   largerText:
+   *                     type: boolean
+   *                   screenReaderMode:
+   *                     type: boolean
+   *               legalTopics:
+   *                 type: array
+   *                 items:
+   *                   type: string
+   *               frequentDocuments:
+   *                 type: array
+   *                 items:
+   *                   type: string
+   *               alerts:
+   *                 type: object
+   *                 properties:
+   *                   newCaseLaw:
+   *                     type: string
+   *                     enum: [instant, daily, weekly, disabled]
+   *                   documentUpdates:
+   *                     type: string
+   *                     enum: [instant, daily, disabled]
+   *                   newsletter:
+   *                     type: string
+   *                     enum: [monthly, disabled]
    *     responses:
    *       200:
    *         description: Präferenzen erfolgreich aktualisiert
@@ -203,7 +304,11 @@ export class UserController {
     const preferencesData: UpdatePreferencesData = {
       notifications: req.body.notifications,
       privacy: req.body.privacy,
-      language: req.body.language
+      language: req.body.language,
+      accessibility: req.body.accessibility,
+      legalTopics: req.body.legalTopics,
+      frequentDocuments: req.body.frequentDocuments,
+      alerts: req.body.alerts
     }
 
     const updatedPreferences = await this.userService.updatePreferences(userId, preferencesData)

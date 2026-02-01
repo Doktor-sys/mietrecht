@@ -1,0 +1,28 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache git
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install --legacy-peer-deps
+
+# Install bcryptjs
+RUN npm install bcryptjs @types/bcryptjs
+
+# Copy source code
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Run as root for development
+# USER nextjs
+
+EXPOSE 3001
+
+CMD ["npm", "run", "dev"]

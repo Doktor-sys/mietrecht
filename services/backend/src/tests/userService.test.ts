@@ -1,11 +1,11 @@
 import { PrismaClient, UserType } from '@prisma/client'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { UserService, UpdateProfileData, UpdatePreferencesData } from '../services/UserService'
 import { redis } from '../config/redis'
-import { 
-  ValidationError, 
-  NotFoundError, 
-  AuthorizationError 
+import {
+  ValidationError,
+  NotFoundError,
+  AuthorizationError
 } from '../middleware/errorHandler'
 
 // Test-spezifische Prisma-Instanz
@@ -38,7 +38,7 @@ describe('UserService Unit Tests', () => {
     await testPrisma.userPreferences.deleteMany()
     await testPrisma.userProfile.deleteMany()
     await testPrisma.user.deleteMany()
-    
+
     // Redis cleanup
     const client = redis.getClient()
     if (client.isOpen) {
@@ -57,18 +57,17 @@ describe('UserService Unit Tests', () => {
           create: {
             firstName: 'Max',
             lastName: 'Mustermann',
-            location: 'Berlin',
+            city: 'Berlin',
             language: 'de'
           }
         },
         preferences: {
           create: {
             language: 'de',
-            notifications: {
-              email: true,
-              push: true,
-              sms: false
-            },
+            emailNotifications: true,
+            pushNotifications: true,
+            smsNotifications: false,
+
             privacy: {
               dataSharing: false,
               analytics: true,
@@ -190,6 +189,69 @@ describe('UserService Unit Tests', () => {
     })
   })
 
+  describe('getPreferences', () => {
+    it('should get preferences successfully', async () => {
+      // First update preferences
+      const updateData: UpdatePreferencesData = {
+        language: 'en',
+        notifications: {
+          email: false,
+          push: true
+        }
+      }
+
+      await userService.updatePreferences(testUserId, updateData)
+
+      // Then get preferences
+      const preferences = await userService.getPreferences(testUserId)
+
+      expect(preferences).toBeDefined()
+      expect(preferences?.language).toBe('en')
+      expect((preferences?.notifications as any).email).toBe(false)
+      expect((preferences?.notifications as any).push).toBe(true)
+    })
+
+    it('should return null if preferences do not exist', async () => {
+      // Delete existing preferences
+      await testPrisma.userPreferences.delete({
+        where: { userId: testUserId }
+      })
+
+      const preferences = await userService.getPreferences(testUserId)
+
+      expect(preferences).toBeNull()
+    })
+
+    it('should get enhanced profile preferences', async () => {
+      // First update preferences with enhanced profile data
+      const updateData: UpdatePreferencesData = {
+        accessibility: {
+          highContrast: true,
+          dyslexiaFriendly: false
+        },
+        legalTopics: ['tenant-protection'],
+        frequentDocuments: ['rental-contract'],
+        alerts: {
+          newCaseLaw: 'weekly',
+          documentUpdates: 'daily'
+        }
+      }
+
+      await userService.updatePreferences(testUserId, updateData)
+
+      // Then get preferences
+      const preferences = await userService.getPreferences(testUserId)
+
+      expect(preferences).toBeDefined()
+      expect((preferences as any)['accessibility']['highContrast']).toBe(true)
+      expect((preferences as any)['accessibility']['dyslexiaFriendly']).toBe(false)
+      expect((preferences as any)['legalTopics']).toEqual(['tenant-protection'])
+      expect((preferences as any)['frequentDocuments']).toEqual(['rental-contract'])
+      expect((preferences as any)['alerts']['newCaseLaw']).toBe('weekly')
+      expect((preferences as any)['alerts']['documentUpdates']).toBe('daily')
+    })
+  })
+
   describe('updatePreferences', () => {
     it('should update preferences successfully', async () => {
       const updateData: UpdatePreferencesData = {
@@ -250,6 +312,48 @@ describe('UserService Unit Tests', () => {
 
       await expect(userService.updatePreferences(testUserId, invalidData)).rejects.toThrow(ValidationError)
     })
+
+    it('should update enhanced profile preferences successfully', async () => {
+      const updateData: UpdatePreferencesData = {
+        accessibility: {
+          highContrast: true,
+          dyslexiaFriendly: true,
+          reducedMotion: false,
+          largerText: true,
+          screenReaderMode: false
+        },
+        legalTopics: ['tenant-protection', 'modernization'],
+        frequentDocuments: ['rental-contract', 'warning-letter'],
+        alerts: {
+          newCaseLaw: 'daily',
+          documentUpdates: 'instant',
+          newsletter: 'monthly'
+        }
+      }
+
+      const updatedPreferences = await userService.updatePreferences(testUserId, updateData)
+
+      // Access the new fields through bracket notation to avoid TypeScript errors
+      expect((updatedPreferences as any)['accessibility']['highContrast']).toBe(true)
+      expect((updatedPreferences as any)['accessibility']['dyslexiaFriendly']).toBe(true)
+      expect((updatedPreferences as any)['legalTopics']).toEqual(['tenant-protection', 'modernization'])
+      expect((updatedPreferences as any)['frequentDocuments']).toEqual(['rental-contract', 'warning-letter'])
+      expect((updatedPreferences as any)['alerts']['newCaseLaw']).toBe('daily')
+      expect((updatedPreferences as any)['alerts']['documentUpdates']).toBe('instant')
+      expect((updatedPreferences as any)['alerts']['newsletter']).toBe('monthly')
+    })
+
+    it('should validate enhanced profile preferences', async () => {
+      const invalidData: UpdatePreferencesData = {
+        alerts: {
+          newCaseLaw: 'invalid-value' as any,
+          documentUpdates: 'daily',
+          newsletter: 'monthly'
+        }
+      }
+
+      await expect(userService.updatePreferences(testUserId, invalidData)).rejects.toThrow(ValidationError)
+    })
   })
 
   describe('deactivateUser', () => {
@@ -269,7 +373,7 @@ describe('UserService Unit Tests', () => {
       await testPrisma.userSession.create({
         data: {
           userId: testUserId,
-          sessionToken,
+          token: sessionToken,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
         }
       })
@@ -367,7 +471,7 @@ describe('UserService Unit Tests', () => {
     beforeEach(async () => {
       // Erstelle zusätzliche Test-Benutzer
       const passwordHash = await bcrypt.hash('password123', 12)
-      
+
       await testPrisma.user.create({
         data: {
           email: 'landlord@example.com',
@@ -378,7 +482,7 @@ describe('UserService Unit Tests', () => {
             create: {
               firstName: 'Anna',
               lastName: 'Vermieter',
-              location: 'München',
+              city: 'München',
               language: 'de'
             }
           }
@@ -395,7 +499,7 @@ describe('UserService Unit Tests', () => {
             create: {
               firstName: 'Business',
               lastName: 'User',
-              location: 'Hamburg',
+              city: 'Hamburg',
               language: 'en'
             }
           }
@@ -464,7 +568,7 @@ describe('UserService Unit Tests', () => {
     beforeEach(async () => {
       // Erstelle zusätzliche Benutzer für Statistiken
       const passwordHash = await bcrypt.hash('password123', 12)
-      
+
       await testPrisma.user.create({
         data: {
           email: 'landlord@example.com',
@@ -474,7 +578,7 @@ describe('UserService Unit Tests', () => {
           isActive: false, // Inaktiv
           profile: {
             create: {
-              location: 'München',
+              city: 'München',
               language: 'de'
             }
           }
@@ -489,7 +593,7 @@ describe('UserService Unit Tests', () => {
           isVerified: false,
           profile: {
             create: {
-              location: 'Berlin',
+              city: 'Berlin',
               language: 'de'
             }
           }
@@ -519,10 +623,10 @@ describe('UserService Unit Tests', () => {
     it('should cache statistics', async () => {
       // Erster Aufruf
       const stats1 = await userService.getUserStats(UserType.BUSINESS)
-      
+
       // Zweiter Aufruf sollte aus Cache kommen
       const stats2 = await userService.getUserStats(UserType.BUSINESS)
-      
+
       expect(stats1).toEqual(stats2)
     })
   })
@@ -551,7 +655,7 @@ describe('UserService Unit Tests', () => {
       await testPrisma.userSession.create({
         data: {
           userId: testUserId,
-          sessionToken,
+          token: sessionToken,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
         }
       })

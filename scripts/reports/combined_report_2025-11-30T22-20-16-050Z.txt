@@ -1,0 +1,67 @@
+# Mietrecht-Agent: Kombinierter Analysebericht
+
+Erstellt am: 30.11.2025
+
+## Entscheidungsanalyse
+
+# Mietrecht-Agent: Entscheidungsanalysebericht
+
+Erstellt am: 30.11.2025
+
+## 1. Entscheidungstrends
+
+### Häufigste Themen:
+Keine Themen gefunden.
+
+### Verteilung nach Gerichten:
+Keine Gerichtsdaten gefunden.
+
+## 2. Anwaltspezialisierungen
+
+Gesamtanzahl der Anwälte: 0
+
+Keine Praxisbereichsdaten gefunden.
+
+## 3. Einflussfaktoren
+
+### Verteilung nach Wichtigkeit:
+
+Durchschnittliche Themen pro Entscheidung: 0.00
+Gesamtanzahl der Entscheidungen: 0
+
+## Leistungsanalyse
+
+# Mietrecht-Agent: Leistungsbericht
+
+Erstellt am: 30.11.2025
+
+## 1. Systemleistung
+
+Durchschnittliche Antwortzeit: 0.00 ms
+Durchschnittliche Cache-Trefferquote: 0.00%
+Maximale aktive Anfragen: 0
+
+## 2. Systemprotokollanalyse
+
+Gesamtanzahl der Protokolleinträge: 11
+Fehlerquote: 9.09%
+
+### Protokollstatistik:
+- error: 1 Einträge
+- info: 7 Einträge
+- warning: 3 Einträge
+
+## 3. Engpässe
+
+1. [MEDIUM] Low cache hit rate detected
+   Wert: 0, Schwellenwert: 0.5
+
+2. [HIGH] High error rate detected
+   Wert: 0.09090909090909091, Schwellenwert: 0.05
+
+## 4. Empfehlungen
+
+1. [MITTEL] Review caching strategy and increase cache size or adjust expiration policies
+
+2. [HOCH] Investigate frequent errors and implement better error handling
+

@@ -1,6 +1,6 @@
 import request from 'supertest'
 import { PrismaClient, UserType } from '@prisma/client'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import app from '../index'
 import { config } from '../config/config'

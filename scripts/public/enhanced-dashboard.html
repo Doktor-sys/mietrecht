@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrecht Agent - Erweitertes Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .monitoring-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .monitoring-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .monitoring-controls button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .monitoring-controls button.start {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .monitoring-controls button.stop {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metric-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        
+        .chart-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .log-entry {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .log-entry.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .log-entry.warning {
+            background-color: #fff8e1;
+            color: #ff8f00;
+        }
+        
+        .log-entry.info {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 0.2rem;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mietrecht Agent - Erweitertes Dashboard</h1>
+        <div class="header-controls">
+            <button id="refresh-btn">Daten aktualisieren</button>
+            <button id="check-alerts-btn">Alarme prüfen</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Status Section -->
+        <section class="status-section">
+            <h2>Agent Status</h2>
+            <div class="status-cards">
+                <div class="status-card">
+                    <h3>Aktueller Status</h3>
+                    <div class="status-indicator" id="agent-status">Gestoppt</div>
+                </div>
+                
+                <div class="status-card">
+                    <h3>Letzte Ausführung</h3>
+                    <div id="last-run">Nie</div>
+                </div>
+                
+                <div class="status-card">
+                    <h3>Nächste Ausführung</h3>
+                    <div id="next-run">Unbekannt</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Decision Statistics Section -->
+        <section class="statistics-section">
+            <h2>Entscheidungsstatistiken</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Gesamtverarbeitete Entscheidungen</h3>
+                    <div class="stat-value" id="total-decisions">0</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Erfolgreiche Durchläufe</h3>
+                    <div class="stat-value" id="successful-runs">0</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Fehlgeschlagene Durchläufe</h3>
+                    <div class="stat-value" id="failed-runs">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monitoring Controls Section -->
+        <section class="monitoring-section">
+            <h2>Überwachungskontrollen</h2>
+            <div class="monitoring-controls">
+                <button id="start-monitoring-btn" class="start">Überwachung starten</button>
+                <button id="stop-monitoring-btn" class="stop">Überwachung stoppen</button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="api">API-Aufrufe</div>
+                <div class="tab" data-tab="email">E-Mail-Versand</div>
+                <div class="tab" data-tab="execution">Ausführungszeiten</div>
+                <div class="tab" data-tab="memory">Speichernutzung</div>
+                <div class="tab" data-tab="errors">Fehler & Warnungen</div>
+            </div>
+            
+            <div class="tab-content active" id="api-tab">
+                <h3>API-Aufrufstatistiken</h3>
+                <div id="api-calls-content">Lade Daten...</div>
+            </div>
+            
+            <div class="tab-content" id="email-tab">
+                <h3>E-Mail-Versandstatistiken</h3>
+                <div id="email-stats-content">Lade Daten...</div>
+            </div>
+            
+            <div class="tab-content" id="execution-tab">
+                <h3>Funktionsausführungszeiten</h3>
+                <div id="execution-times-content">Lade Daten...</div>
+            </div>
+            
+            <div class="tab-content" id="memory-tab">
+                <h3>Speichernutzung</h3>
+                <div id="memory-usage-content">Lade Daten...</div>
+            </div>
+            
+            <div class="tab-content" id="errors-tab">
+                <h3>Fehler und Warnungen</h3>
+                <div id="errors-warnings-content">Lade Daten...</div>
+            </div>
+        </section>
+
+        <!-- Data Sources Section -->
+        <section class="sources-section">
+            <h2>Datenquellen</h2>
+            <div class="sources-grid" id="data-sources">
+                <!-- Data sources will be populated dynamically -->
+            </div>
+        </section>
+
+        <!-- Performance Section -->
+        <section class="performance-section">
+            <h2>Systemleistung</h2>
+            <div class="performance-metrics">
+                <div class="metric">
+                    <h3>Durchschnittliche Antwortzeit</h3>
+                    <div class="metric-value" id="avg-response-time">0 ms</div>
+                </div>
+                
+                <div class="metric">
+                    <h3>Cache-Trefferquote</h3>
+                    <div class="metric-value" id="cache-hit-rate">0%</div>
+                </div>
+                
+                <div class="metric">
+                    <h3>Aktive Anfragen</h3>
+                    <div class="metric-value" id="active-requests">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="analytics-section">
+            <h2>Analyseergebnisse</h2>
+            <div class="analytics-container">
+                <div class="chart-container" id="trend-chart">
+                    <h3>Entscheidungstrends</h3>
+                    <div id="trend-chart-content">Lade Daten...</div>
+                </div>
+                
+                <div class="chart-container" id="topic-distribution">
+                    <h3>Häufigste Themen</h3>
+                    <div id="topic-distribution-content">Lade Daten...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Metrics Section -->
+        <section class="performance-metrics-section">
+            <h2>Leistungskennzahlen</h2>
+            <div id="performance-metrics-content">Lade Daten...</div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section class="alerts-section">
+            <h2>Systemwarnungen</h2>
+            <div id="alerts-content">Keine Warnungen</div>
+        </section>
+
+        <!-- Notification Test Section -->
+        <section class="notification-test-section">
+            <h2>Benachrichtigungstest</h2>
+            <div class="notification-test-form">
+                <div class="form-group">
+                    <label for="test-channel">Kanal:</label>
+                    <select id="test-channel">
+                        <option value="email">E-Mail</option>
+                        <option value="stub">Stub (Test)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="test-recipient">Empfänger:</label>
+                    <input type="text" id="test-recipient" placeholder="Empfängeradresse">
+                </div>
+                
+                <div class="form-group">
+                    <label for="test-subject">Betreff:</label>
+                    <input type="text" id="test-subject" placeholder="Testbenachrichtigung">
+                </div>
+                
+                <div class="form-group">
+                    <label for="test-message">Nachricht:</label>
+                    <textarea id="test-message" placeholder="Testnachricht"></textarea>
+                </div>
+                
+                <button id="send-test-notification-btn">Testbenachrichtigung senden</button>
+                <div id="notification-test-result"></div>
+            </div>
+        </section>
+
+        <!-- Recent Decisions Section -->
+        <section class="decisions-section">
+            <h2>Neueste Entscheidungen</h2>
+            <div class="decisions-list" id="recent-decisions">
+                <!-- Recent decisions will be populated dynamically -->
+            </div>
+        </section>
+
+        <!-- System Logs Section -->
+        <section class="logs-section">
+            <h2>Systemprotokolle</h2>
+            <div class="logs-list" id="system-logs">
+                <!-- System logs will be populated dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <script src="enhanced-dashboard.js"></script>
+</body>
+</html>

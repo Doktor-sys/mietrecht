@@ -6,6 +6,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import ChatPage from '../pages/ChatPage';
 import chatReducer from '../store/slices/chatSlice';
 import authReducer from '../store/slices/authSlice';
+import documentReducer from '../store/slices/documentSlice';
+import lawyerReducer from '../store/slices/lawyerSlice';
 
 // Mock WebSocket
 class MockWebSocket {
@@ -56,6 +58,8 @@ const createTestStore = () => {
     reducer: {
       chat: chatReducer,
       auth: authReducer,
+      document: documentReducer,
+      lawyer: lawyerReducer,
     },
     preloadedState: {
       auth: {
@@ -69,6 +73,17 @@ const createTestStore = () => {
         messages: [],
         isTyping: false,
         conversationId: null,
+      },
+      document: {
+        documents: [],
+        selectedDocument: null,
+        uploading: false,
+      },
+      lawyer: {
+        lawyers: [],
+        selectedLawyer: null,
+        searchCriteria: {},
+        loading: false,
       },
     },
   });
@@ -85,7 +100,7 @@ describe('ChatPage', () => {
 
   it('rendert die Chat-Seite korrekt', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -99,7 +114,7 @@ describe('ChatPage', () => {
 
   it('zeigt Willkommensnachricht an, wenn keine Nachrichten vorhanden sind', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -113,7 +128,7 @@ describe('ChatPage', () => {
 
   it('ermöglicht das Eingeben und Senden einer Nachricht', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -135,7 +150,7 @@ describe('ChatPage', () => {
 
   it('zeigt Typing-Indikator an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -157,7 +172,7 @@ describe('ChatPage', () => {
 
   it('öffnet den Datei-Upload-Dialog', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>

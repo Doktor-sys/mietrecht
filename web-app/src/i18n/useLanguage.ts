@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SupportedLanguage } from './types';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from './types';
 
 export const useLanguage = () => {
   const { i18n } = useTranslation();
@@ -16,6 +16,6 @@ export const useLanguage = () => {
     currentLanguage,
     changeLanguage,
     isRTL,
-    supportedLanguages: ['de', 'tr', 'ar'] as SupportedLanguage[],
+    supportedLanguages: SUPPORTED_LANGUAGES,
   };
 };

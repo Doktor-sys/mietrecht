@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisMind SmartLaw Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+</head>
+
+<body class="text-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" style="display: none;">
+            <div class="spinner mb-4"></div>
+            <p id="loading-text" class="text-slate-600 font-bold">Verarbeite...</p>
+        </div>
+
+        <!-- PayPal Mock Modal -->
+        <div id="paypal-modal-backdrop" onclick="closePaypalModal()" style="display: none;"></div>
+        <div id="paypal-modal" class="fade-in" style="display: none;">
+            <div id="paypal-login-view">
+                <div class="paypal-header">
+                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal"
+                        class="h-8 mx-auto">
+                </div>
+                <div class="paypal-body">
+                    <h3 class="text-xl font-bold mb-6 text-center">Mit PayPal bezahlen</h3>
+                    <input type="email" class="paypal-input" placeholder="E-Mail oder Mobilnummer" id="paypal-email">
+                    <input type="password" class="paypal-input" placeholder="Passwort" id="paypal-pass">
+                    <button class="paypal-btn mb-4" onclick="handlePaypalLogin()">Einloggen</button>
+                    <div class="text-center">
+                        <a href="#" class="text-blue-600 text-xs font-semibold">Passwort vergessen?</a>
+                    </div>
+                </div>
+            </div>
+            <div id="paypal-checkout-view" class="hidden">
+                <div class="bg-[#ffc439] p-6 text-center">
+                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal"
+                        class="h-8 mx-auto mb-4">
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Zahlung überprüfen</h3>
+                    <div class="bg-white/50 rounded-xl p-4 mb-6">
+                        <p class="text-xs text-slate-600 uppercase font-bold tracking-widest mb-1">Betrag</p>
+                        <p class="text-3xl font-black text-slate-900" id="paypal-checkout-amount">0,00 €</p>
+                    </div>
+                    <p class="text-sm text-slate-700 mb-6">Zahlung an <strong>JurisMind GmbH</strong></p>
+                    <button
+                        class="w-full py-4 bg-slate-900 text-white rounded-full font-bold shadow-xl hover:bg-slate-800 transition-all mb-4"
+                        onclick="finalizePaypalPayment()">
+                        Jetzt bezahlen
+                    </button>
+                    <p class="text-[10px] text-slate-600 uppercase font-bold">Sicher und verschlüsselt</p>
+                </div>
+                <div class="p-4 text-center bg-white">
+                    <button class="text-sm text-slate-400 font-bold" onclick="closePaypalModal()">Abbrechen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOFORT Mock Modal -->
+        <div id="sofort-modal-backdrop" onclick="closeSofortModal()" style="display: none;"></div>
+        <div id="sofort-modal" class="fade-in" style="display: none;">
+            <div class="bg-[#f4f7f9] p-6 border-b border-slate-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">SOFORT</div>
+                        <span class="font-bold text-slate-800">Überweisung</span>
+                    </div>
+                    <img src="https://www.klarna.com/assets/sites/5/2020/04/27143923/klarna-logo-pink-rgb.png"
+                        alt="Klarna" class="h-4">
+                </div>
+            </div>
+            <div class="p-10 text-center bg-white">
+                <h3 class="text-2xl font-black text-slate-900 mb-4">Sicher bezahlen mit Ihrer Bank</h3>
+                <p class="text-slate-500 text-sm mb-8 leading-relaxed">Sie werden nun sicher zu Ihrem Online-Banking
+                    weitergeleitet, um die Zahlung für <strong>JurisMind GmbH</strong> zu autorisieren.</p>
+                <div class="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100 shadow-inner">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-400 uppercase font-black">Gesamtbetrag</span>
+                        <span class="text-2xl font-black text-primary" id="sofort-price">0,00 €</span>
+                    </div>
+                </div>
+                <button
+                    class="w-full py-5 bg-[#f5a9b8] hover:bg-[#ffb3c1] text-slate-900 rounded-2xl font-black transition-all shadow-xl hover:-translate-y-1 mb-6"
+                    onclick="handleSofortRedirect()">
+                    Weiter zur Bank
+                </button>
+                <button
+                    class="text-slate-400 text-sm font-black uppercase tracking-widest hover:text-slate-600 transition-colors"
+                    onclick="closeSofortModal()">Abbrechen</button>
+            </div>
+        </div>
+
+        <div class="py-12 px-4 sm:px-6 lg:px-8">
+            <!-- Header Section -->
+            <header class="text-center mb-16 max-w-4xl mx-auto">
+                <div
+                    class="inline-block px-4 py-1.5 mb-6 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100 animate-pulse">
+                    KI-Rechtsassistent 2.0
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
+                    JurisMind <span
+                        class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">SmartLaw
+                        Agent</span>
+                </h1>
+                <p class="text-xl text-slate-500 mb-8 font-medium leading-relaxed">
+                    Intelligente Konfliktlösung für Mieter und Vermieter. <br class="hidden md:block">
+                    KI-gestützt, rechtssicher und <span class="text-blue-600 font-bold">sofort einsatzbereit</span>.
+                </p>
+            </header>
+
+            <!-- Stepper Section (Polished) -->
+            <div class="max-w-6xl mx-auto mb-16 glass-card p-8 flex flex-wrap items-center justify-between">
+                <div class="flex flex-col mb-4 md:mb-0 pl-6 border-l-4 border-blue-600">
+                    <span
+                        class="font-black text-xs text-slate-400 uppercase tracking-widest leading-tight mb-1">Status</span>
+                    <span class="text-sm text-slate-900 font-black" id="step-info">Analyse wird vorbereitet...</span>
+                </div>
+
+                <div class="flex flex-1 justify-center space-x-2 md:space-x-4 lg:space-x-10 px-6">
+                    <div id="stepper-1" class="flex flex-col items-center transition-premium">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            1</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Start</span>
+                    </div>
+                    <div id="stepper-2" class="flex flex-col items-center transition-premium opacity-30">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            2</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Analyse</span>
+                    </div>
+                    <div id="stepper-3" class="flex flex-col items-center transition-premium opacity-30">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            3</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Matching</span>
+                    </div>
+                    <div id="stepper-4" class="flex flex-col items-center transition-premium opacity-30">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            4</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Anwalt</span>
+                    </div>
+                    <div id="stepper-5" class="flex flex-col items-center transition-premium opacity-30">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            5</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Termin</span>
+                    </div>
+                    <div id="stepper-6" class="flex flex-col items-center transition-premium opacity-30">
+                        <p
+                            class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm border-2 border-slate-200 text-slate-300 bg-white mb-2 shadow-sm">
+                            6</p>
+                        <span
+                            class="hidden md:block text-[10px] uppercase font-black tracking-widest text-slate-400">Erfolg</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:block w-32 text-right">
+                    <span id="progress-text" class="text-lg font-black text-blue-600">17%</span>
+                    <div class="w-full bg-slate-100 h-1 rounded-full mt-2 relative overflow-hidden">
+                        <div id="progress-bar" class="absolute left-0 top-0 h-full bg-blue-600 transition-premium"
+                            style="width: 17%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Quick Actions & Search -->
+            <div id="view-step-1" class="space-y-12">
+                <div class="max-w-4xl mx-auto">
+                    <div class="glass-card p-10 shadow-2xl relative overflow-hidden">
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl"></div>
+                        <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center">
+                            <i class="fas fa-search-plus mr-4 text-blue-600"></i>
+                            Beschreiben Sie Ihren Fall
+                        </h2>
+                        <textarea id="question" rows="4"
+                            class="w-full p-8 bg-slate-50 border-2 border-transparent rounded-[32px] text-lg font-medium focus:bg-white focus:border-blue-600 focus:outline-none transition-premium mb-8 shadow-inner"
+                            placeholder="z.B. Mein Vermieter hat mir wegen Eigenbedarf gekündigt, ist das rechtens?"></textarea>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center space-x-6">
+                                <label class="cursor-pointer group">
+                                    <input type="file" class="hidden" onchange="handleFileUpload(this)">
+                                    <div
+                                        class="flex items-center space-x-3 text-slate-400 group-hover:text-blue-600 transition-premium">
+                                        <div
+                                            class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-premium border border-slate-100">
+                                            <i class="fas fa-file-pdf text-xl"></i>
+                                        </div>
+                                        <span class="font-black text-[10px] uppercase tracking-widest">Dokument
+                                            prüfen</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <button onclick="askQuestion()"
+                                class="w-full sm:w-auto px-12 py-5 bg-blue-600 text-white rounded-[28px] font-black uppercase tracking-widest shadow-2xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-1 transition-premium active:scale-95 flex items-center justify-center space-x-3">
+                                <i class="fas fa-bolt"></i>
+                                <span>KI-Check starten</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-6xl mx-auto">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-8 text-center">Häufige
+                        Themen</h3>
+                    <div id="topics-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Analysis Results -->
+            <div id="view-step-2" class="step-hidden fade-in">
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-12">
+                        <div
+                            class="inline-block px-4 py-1.5 mb-4 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100">
+                            Phase 2: Experten-Auswertung
+                        </div>
+                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Ihre rechtliche Einschätzung</h2>
+                    </div>
+
+                    <div id="results-content" class="glass-card p-12 shadow-2xl bg-white/40">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <div class="mt-12 text-center">
+                        <button onclick="goToStep(1)"
+                            class="text-slate-400 hover:text-blue-600 text-xs font-black uppercase tracking-widest flex items-center justify-center space-x-2 mx-auto transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                            <span>Zurück zur Übersicht</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Contact Form -->
+            <div id="view-step-3" class="step-hidden fade-in">
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-8 pr-12">
+                            <div
+                                class="w-20 h-20 bg-blue-600 text-white rounded-[32px] flex items-center justify-center text-3xl shadow-2xl shadow-blue-500/20">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <h2 class="text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                                Werden Sie <br><span
+                                    class="text-blue-600 underline decoration-blue-100 underline-offset-8">aktiv</span>.
+                            </h2>
+                            <p class="text-slate-500 text-lg font-medium leading-relaxed">
+                                Um den passenden Experten für Sie zu finden, benötigen wir einige Basis-Informationen.
+                                Ihre Daten sind bei uns nach <span class="text-slate-900 font-bold">DSGVO
+                                    verschlüsselt</span>.
+                            </p>
+                            <div class="flex items-center space-x-6 pt-4">
+                                <div class="flex -space-x-3">
+                                    <img src="https://i.pravatar.cc/150?u=1"
+                                        class="w-12 h-12 rounded-2xl border-4 border-white shadow-lg">
+                                    <img src="https://i.pravatar.cc/150?u=2"
+                                        class="w-12 h-12 rounded-2xl border-4 border-white shadow-lg">
+                                    <img src="https://i.pravatar.cc/150?u=3"
+                                        class="w-12 h-12 rounded-2xl border-4 border-white shadow-lg">
+                                </div>
+                                <span class="text-sm font-black text-slate-400">Bereits 4.500+ Mandanten</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-12 shadow-2xl bg-white/60">
+                            <div class="space-y-8">
+                                <h3 class="flex items-center space-x-3 mb-4">
+                                    <div
+                                        class="w-8 h-8 bg-slate-900 text-white rounded-xl flex items-center justify-center text-xs shadow-lg">
+                                        <i class="fas fa-address-card"></i>
+                                    </div>
+                                    <span class="text-xl font-black text-slate-900">Ihre Daten</span>
+                                </h3>
+                                <div class="space-y-6">
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div>
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Vorname</label>
+                                            <input type="text" id="user-vorname"
+                                                class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Nachname</label>
+                                            <input type="text" id="user-nachname"
+                                                class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div>
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">E-Mail
+                                                Adresse</label>
+                                            <input type="email" id="user-email"
+                                                class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium"
+                                                placeholder="name@beispiel.de">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Telefonnummer</label>
+                                            <input type="tel" id="user-phone"
+                                                class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium"
+                                                placeholder="+49 ...">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Straße
+                                            & Hausnummer</label>
+                                        <input type="text" id="user-strasse"
+                                            class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium">
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-6">
+                                        <div class="col-span-1">
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">PLZ</label>
+                                            <input type="text" id="user-plz"
+                                                class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium">
+                                        </div>
+                                        <div class="col-span-2">
+                                            <label
+                                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Ort</label>
+                                            <div class="relative">
+                                                <input type="text" id="user-ort"
+                                                    class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner pr-12 outline-none transition-premium">
+                                                <i
+                                                    class="fas fa-location-dot absolute right-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex items-start space-x-4">
+                                        <input type="checkbox" id="user-agb"
+                                            class="mt-1 w-5 h-5 rounded-lg text-blue-600 border-slate-300 focus:ring-blue-600 cursor-pointer">
+                                        <label for="user-agb"
+                                            class="text-xs text-slate-500 font-medium leading-relaxed select-none">
+                                            Ich akzeptiere die <a href="#"
+                                                class="text-blue-600 font-bold hover:underline">Datenschutzerklärung</a>
+                                            und willige in die Verarbeitung meiner Daten zur Expertenvermittlung ein.
+                                        </label>
+                                    </div>
+
+                                    <button onclick="performExpertMatching()"
+                                        class="w-full py-5 bg-blue-600 text-white rounded-[28px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-premium flex items-center justify-center space-x-3">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>Experten finden</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Expert Choice -->
+            <div id="view-step-4" class="step-hidden fade-in">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-16">
+                        <div
+                            class="inline-block px-4 py-1.5 mb-6 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100">
+                            Phase 4: Experten-Auswahl
+                        </div>
+                        <h2 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Ihre gefundenen Spezialisten
+                        </h2>
+                        <p class="text-slate-500 font-medium text-lg">Basierend auf Ihrer Postleitzahl haben wir
+                            passende Anwaltskanzleien reserviert.</p>
+                    </div>
+
+                    <div id="lawyer-list" class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <div class="mt-16 text-center">
+                        <button onclick="goToStep(3)"
+                            class="text-slate-400 hover:text-blue-600 text-xs font-black uppercase tracking-widest flex items-center justify-center space-x-2 mx-auto transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                            <span>Kontaktdaten ändern</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Booking & Summary -->
+            <div id="view-step-5" class="step-hidden fade-in">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Konfiguration abschließen
+                        </h2>
+                        <p class="text-slate-500 font-medium text-lg leading-relaxed">Wählen Sie Ihr gewünschtes
+                            Beratungspaket und einen Termin.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Phone -->
+                        <div onclick="selectConsultation('Telefonische Beratung', 89)"
+                            class="glass-card p-10 rounded-[44px] border-2 border-transparent hover:border-blue-600 transition-premium cursor-pointer group flex flex-col items-center text-center shadow-xl hover:-translate-y-2 relative overflow-hidden bg-white/50">
+                            <div
+                                class="w-20 h-20 bg-slate-50 text-blue-600 rounded-[30px] flex items-center justify-center text-3xl mb-8 group-hover:bg-blue-600 group-hover:text-white transition-premium shadow-inner">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Telefonat</h3>
+                            <p class="text-slate-500 font-medium text-xs leading-relaxed mb-8 flex-1">Persönliches
+                                Telefongespräch zu Ihrem Termin.</p>
+                            <div class="text-4xl font-black text-slate-900 mb-8 tracking-tighter">89<span
+                                    class="text-lg">,00 €</span></div>
+                            <button
+                                class="w-full py-4 bg-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition-premium">Wählen</button>
+                        </div>
+
+                        <!-- Video -->
+                        <div onclick="selectConsultation('Video-Beratung', 99)"
+                            class="glass-card p-10 rounded-[44px] border-2 border-blue-600/30 transition-premium cursor-pointer group flex flex-col items-center text-center shadow-2xl hover:-translate-y-2 relative overflow-hidden bg-white ring-8 ring-blue-600/5">
+                            <div
+                                class="absolute top-6 right-6 bg-amber-400 text-slate-900 text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg animate-bounce">
+                                Beliebt</div>
+                            <div
+                                class="w-20 h-20 bg-blue-600 text-white rounded-[30px] flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-premium shadow-xl shadow-blue-600/20">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Video-Call</h3>
+                            <p class="text-slate-500 font-medium text-xs leading-relaxed mb-8 flex-1">Face-to-Face
+                                Expertise bequem von Zuhause aus.</p>
+                            <div class="text-4xl font-black text-blue-600 mb-8 tracking-tighter">99<span
+                                    class="text-lg">,00 €</span></div>
+                            <button
+                                class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest transition-premium shadow-lg shadow-blue-600/20">Wählen</button>
+                        </div>
+
+                        <!-- Chat -->
+                        <div onclick="selectConsultation('Chat-Beratung', 69)"
+                            class="glass-card p-10 rounded-[44px] border-2 border-transparent hover:border-blue-600 transition-premium cursor-pointer group flex flex-col items-center text-center shadow-xl hover:-translate-y-2 relative overflow-hidden bg-white/50">
+                            <div
+                                class="w-20 h-20 bg-slate-50 text-blue-600 rounded-[30px] flex items-center justify-center text-3xl mb-8 group-hover:bg-blue-600 group-hover:text-white transition-premium shadow-inner">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">V-Chat</h3>
+                            <p class="text-slate-500 font-medium text-xs leading-relaxed mb-8 flex-1">Schnelle Klärung
+                                per Text-Chat in Echtzeit.</p>
+                            <div class="text-4xl font-black text-slate-900 mb-8 tracking-tighter">69<span
+                                    class="text-lg">,00 €</span></div>
+                            <button
+                                class="w-full py-4 bg-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition-premium">Wählen</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        <!-- Left: Calendar -->
+                        <div class="glass-card p-12 shadow-2xl relative overflow-hidden bg-white/40">
+                            <h3 class="text-2xl font-black text-slate-900 mb-10 flex items-center">
+                                <i class="fas fa-calendar-day mr-4 text-blue-600"></i>
+                                Beratungstermin wählen
+                            </h3>
+
+                            <div class="space-y-10">
+                                <div id="calendar-grid" class="grid grid-cols-7 gap-4 text-center items-center">
+                                    <!-- Populated via JS -->
+                                </div>
+
+                                <div class="pt-8 border-t border-slate-100">
+                                    <h4
+                                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 px-1">
+                                        Verfügbare Uhrzeiten</h4>
+                                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-4" id="time-slots">
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">09:00</button>
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">10:30</button>
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">13:00</button>
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">14:30</button>
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">16:00</button>
+                                        <button onclick="selectTime(this)"
+                                            class="time-slot p-4 bg-slate-50/50 text-slate-700 rounded-2xl border-2 border-transparent text-sm font-black hover:border-blue-400 transition-premium">17:30</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Summary Sidebar -->
+                        <div class="space-y-8">
+                            <div
+                                class="glass-card p-10 bg-slate-900 text-white shadow-2xl relative overflow-hidden group">
+                                <div
+                                    class="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-premium">
+                                </div>
+                                <h3 class="text-xl font-black mb-8 flex items-center">
+                                    <i class="fas fa-receipt mr-4 text-blue-400"></i>
+                                    Buchungsübersicht
+                                </h3>
+
+                                <div class="space-y-6 relative z-10">
+                                    <div class="flex justify-between items-start pb-6 border-b border-white/10">
+                                        <div class="text-left">
+                                            <p
+                                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                                Berater</p>
+                                            <p class="font-bold text-lg" id="sidebar-lawyer-name">Rechtsanwalt</p>
+                                            <p class="text-xs text-blue-300 font-bold" id="step5-lawyer-title">
+                                                Expertenteam</p>
+                                            <p class="text-[10px] text-slate-400 mt-2"
+                                                id="step5-lawyer-address-sidebar"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center pb-6 border-b border-white/10">
+                                        <div class="text-left">
+                                            <p
+                                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                                Paket</p>
+                                            <p class="font-bold" id="summary-type">Nicht gewählt</p>
+                                        </div>
+                                        <p class="text-2xl font-black tracking-tighter" id="final-summary-price">0,00 €
+                                        </p>
+                                    </div>
+
+                                    <div class="flex justify-between items-center pb-8">
+                                        <div class="text-left">
+                                            <p
+                                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                                Ihr Termin</p>
+                                            <p class="font-bold text-blue-400" id="booking-time-display">Noch nicht
+                                                gewählt</p>
+                                        </div>
+                                        <i class="fas fa-clock text-blue-400/50"></i>
+                                    </div>
+
+                                    <div class="bg-white/5 p-6 rounded-2xl space-y-3 mb-8">
+                                        <div class="flex items-center text-xs text-slate-300">
+                                            <i class="fas fa-user mr-3 w-4"></i>
+                                            <span id="display-user-name"></span>
+                                        </div>
+                                        <div class="flex items-center text-xs text-slate-300">
+                                            <i class="fas fa-location-dot mr-3 w-4"></i>
+                                            <span id="display-user-address"></span>
+                                        </div>
+                                        <div class="flex items-center text-xs text-slate-300">
+                                            <i class="fas fa-phone mr-3 w-4"></i>
+                                            <span id="display-user-phone"></span>
+                                        </div>
+                                    </div>
+
+                                    <button onclick="goToStep(6)"
+                                        class="w-full py-6 bg-blue-600 hover:bg-blue-500 rounded-3xl font-black uppercase tracking-widest text-sm transition-premium shadow-2xl shadow-blue-900/40 hover:-translate-y-1 active:scale-95 relative z-10">
+                                        Weiter zur Zahlung
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 text-center">
+                        <button onclick="goToStep(4)"
+                            class="text-slate-400 hover:text-blue-600 text-xs font-black uppercase tracking-widest flex items-center justify-center space-x-2 mx-auto transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                            <span>Beratungsart ändern</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: Final Payment -->
+            <div id="view-step-6" class="step-hidden fade-in">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-16">
+                        <div
+                            class="inline-block px-4 py-1.5 mb-6 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100">
+                            Phase 6: Abschluss
+                        </div>
+                        <h2 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Zahlungsprüfung</h2>
+                        <p class="text-slate-500 font-medium text-lg leading-relaxed">Wählen Sie eine sichere
+                            Zahlungsmethode für Ihre Beratung.</p>
+                    </div>
+
+                    <div class="glass-card p-12 rounded-[50px] shadow-2xl max-w-2xl mx-auto border-slate-200/50">
+                        <div
+                            class="bg-blue-900 text-white p-6 mb-10 rounded-[30px] flex items-center justify-between shadow-xl">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-blue-400 text-xl">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <span class="font-black text-sm uppercase tracking-widest">Gesamtbetrag</span>
+                            </div>
+                            <span class="text-3xl font-black text-white tracking-tighter" id="final-price">0,00 €</span>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 px-1">
+                                    Zahlungsmethode wählen</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div onclick="selectPayment(this, 'PayPal')"
+                                        class="payment-opt flex items-center space-x-5 p-6 bg-slate-50/50 rounded-3xl border-2 border-transparent cursor-pointer hover:border-blue-600 hover:bg-white transition-premium group shadow-sm">
+                                        <div
+                                            class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center group-hover:scale-110 transition-premium">
+                                            <i class="fab fa-paypal text-blue-600 text-2xl"></i>
+                                        </div>
+                                        <span class="font-black text-slate-700 text-sm tracking-tight">PayPal</span>
+                                    </div>
+                                    <div onclick="selectPayment(this, 'Kreditkarte')"
+                                        class="payment-opt flex items-center space-x-5 p-6 bg-slate-50/50 rounded-3xl border-2 border-transparent cursor-pointer hover:border-blue-600 hover:bg-white transition-premium group shadow-sm">
+                                        <div
+                                            class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center group-hover:scale-110 transition-premium">
+                                            <i class="fas fa-credit-card text-slate-600 text-2xl"></i>
+                                        </div>
+                                        <span
+                                            class="font-black text-slate-700 text-sm tracking-tight">Kreditkarte</span>
+                                    </div>
+                                    <div onclick="selectPayment(this, 'SEPA')"
+                                        class="payment-opt flex items-center space-x-5 p-6 bg-slate-50/50 rounded-3xl border-2 border-transparent cursor-pointer hover:border-blue-600 hover:bg-white transition-premium group shadow-sm">
+                                        <div
+                                            class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center group-hover:scale-110 transition-premium">
+                                            <i class="fas fa-university text-slate-600 text-2xl"></i>
+                                        </div>
+                                        <span class="font-black text-slate-700 text-sm tracking-tight">SEPA</span>
+                                    </div>
+                                    <div onclick="selectPayment(this, 'SOFORT')"
+                                        class="payment-opt flex items-center space-x-5 p-6 bg-slate-50/50 rounded-3xl border-2 border-transparent cursor-pointer hover:border-blue-600 hover:bg-white transition-premium group shadow-sm">
+                                        <div
+                                            class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center group-hover:scale-110 transition-premium">
+                                            <div
+                                                class="bg-blue-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded">
+                                                SOFORT</div>
+                                        </div>
+                                        <span
+                                            class="font-black text-slate-700 text-sm tracking-tight">Überweisung</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Formular für Kreditkarte -->
+                            <div id="cc-form"
+                                class="hidden space-y-6 bg-slate-50/80 p-8 rounded-[35px] border-2 border-slate-100/50 shadow-inner scale-up">
+                                <div>
+                                    <label
+                                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Kartennummer</label>
+                                    <input type="text"
+                                        class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black focus:border-blue-600 focus:outline-none"
+                                        placeholder="xxxx xxxx xxxx xxxx">
+                                </div>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <label
+                                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Gültig
+                                            bis</label>
+                                        <input type="text"
+                                            class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black focus:border-blue-600 focus:outline-none"
+                                            placeholder="MM/JJ">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">CVV</label>
+                                        <input type="text"
+                                            class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black focus:border-blue-600 focus:outline-none"
+                                            placeholder="123">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Formular für SEPA -->
+                            <div id="sepa-form"
+                                class="hidden space-y-6 bg-slate-50/80 p-8 rounded-[35px] border-2 border-slate-100/50 shadow-inner scale-up">
+                                <div>
+                                    <label
+                                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">IBAN</label>
+                                    <input type="text"
+                                        class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black focus:border-blue-600 focus:outline-none"
+                                        placeholder="DE12 3456 ...">
+                                </div>
+                                <div>
+                                    <label
+                                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Kontoinhaber</label>
+                                    <input type="text"
+                                        class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black focus:border-blue-600 focus:outline-none"
+                                        placeholder="Max Mustermann">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="confirmBooking()"
+                            class="w-full mt-12 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[32px] font-black uppercase tracking-[0.2em] text-xs transition-premium shadow-2xl shadow-blue-900/40 flex items-center justify-center space-x-4 hover:-translate-y-1 active:scale-95">
+                            <i class="fas fa-shield-check"></i>
+                            <span>Zahlungspflichtig buchen</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-12 text-center">
+                        <button onclick="goToStep(5)"
+                            class="text-slate-400 hover:text-blue-600 text-xs font-black uppercase tracking-widest flex items-center justify-center space-x-2 mx-auto transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                            <span>Zusammenfassung ansehen</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const status = "{{ payment_status }}";
+            if (status === 'success') {
+                // Hier könnte man den Nutzer direkt zu Schritt 6 springen lassen
+                // oder eine Erfolgsmeldung einblenden
+                setTimeout(() => {
+                    goToStep(6);
+                    // Den Inhalt von Step 6 für den Erfolg füllen
+                    const view6 = document.getElementById('view-step-6');
+                    view6.innerHTML = `
+                        <div class="max-w-3xl mx-auto text-center py-12 fade-in">
+                            <div class="w-24 h-24 bg-green-50 text-green-500 rounded-[32px] flex items-center justify-center text-5xl mx-auto mb-8 shadow-premium floating border border-green-100">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h2 class="text-5xl font-black text-slate-900 mb-4 tracking-tight">Zahlung erfolgreich!</h2>
+                            <p class="text-slate-500 mb-10 text-lg font-medium">Vielen Dank für Ihren Auftrag. <br>Ihr Termin ist nun fest gebucht.</p>
+                            <button onclick="location.href='/'" class="py-4 px-8 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-blue-600 transition-all">Zurück zur Übersicht</button>
+                        </div>
+                    `;
+                }, 500);
+            } else if (status === 'cancel') {
+                alert('Zahlungsvorgang wurde abgebrochen.');
+            }
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

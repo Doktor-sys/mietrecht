@@ -31,11 +31,9 @@ const renderWithProviders = (
   const store = createMockStore(initialState);
   return render(
     <Provider store={store}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          {component}
-        </ThemeProvider>
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        {component}
+      </ThemeProvider>
     </Provider>
   );
 };

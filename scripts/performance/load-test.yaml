@@ -1,0 +1,54 @@
+config:
+  target: "http://localhost:3001"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp up load"
+    - duration: 180
+      arrivalRate: 50
+      name: "Sustained max load"
+  variables:
+    userIds:
+      - "user1"
+      - "user2"
+      - "user3"
+    documentIds:
+      - "doc1"
+      - "doc2"
+      - "doc3"
+
+scenarios:
+  - name: "User Authentication Flow"
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            username: "{{ userIds }}"
+            password: "testpassword"
+          capture:
+            json: "$.token"
+            as: "authToken"
+      - get:
+          url: "/api/user/profile"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+  - name: "Document Processing Flow"
+    flow:
+      - post:
+          url: "/api/documents/process"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            documentId: "{{ documentIds }}"
+          capture:
+            json: "$.jobId"
+            as: "jobId"
+      - get:
+          url: "/api/documents/status/{{ jobId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"

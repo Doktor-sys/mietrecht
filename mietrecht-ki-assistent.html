@@ -1,2285 +1,392 @@
-﻿,     <!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mietrecht KI-Assistent | Intelligente Rechtsberatung</title>
+    <title>JurisMind SmartLaw Agent - Mietrecht - Sofortberatung</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #333;
-            scroll-behavior: smooth;
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .app-container {
+        .desktop-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
         }
 
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            animation: slideDown 0.8s ease;
-        }
-
-        .logo {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #1e3c72;
-            margin-bottom: 15px;
-        }
-
-        .tagline {
-            color: #666;
-            font-size: 1.3rem;
-            font-weight: 500;
-        }
-
-        /* Main Layout */
-        .main-layout {
+        .legal-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        /* Chat Panel */
-        .chat-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            height: 700px;
-            animation: slideLeft 0.8s ease;
-        }
-
-        .chat-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .chat-header h2 {
-            color: #1e3c72;
-            margin-left: 15px;
-            font-size: 1.8rem;
-        }
-
-        /* Mietrecht Focus */
-        .mietrecht-focus {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 25px;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 20px rgba(30, 60, 114, 0.3);
-        }
-
-        /* Input Methods */
-        .input-methods {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .input-method {
-            padding: 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .input-method:hover, .input-method.active {
-            border-color: #1e3c72;
-            background: #f8f9ff;
-            transform: translateY(-2px);
-        }
-
-        /* Chat Messages */
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border: 2px solid #e9ecef;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            border-radius: 20px;
-            max-width: 85%;
-            word-wrap: break-word;
-            animation: messageSlide 0.5s ease;
-        }
-
-        .user-message {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            margin-left: auto;
-            text-align: right;
-            border-bottom-right-radius: 5px;
-        }
-
-        .ai-message {
-            background: white;
-            border: 2px solid #e9ecef;
-            margin-right: auto;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Input Section */
-        .input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .question-input {
-            width: 100%;
-            padding: 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-        }
-
-        .question-input:focus {
-            outline: none;
-            border-color: #1e3c72;
-            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
-        }
-
-        .send-button {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 18px 35px;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .send-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
-        }
-
-        /* Analysis Panel */
-        .analysis-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            height: 700px;
-            overflow-y: auto;
-            animation: slideRight 0.8s ease;
-        }
-
-        .analysis-section {
-            margin-bottom: 30px;
-        }
-
-        .analysis-section h3 {
-            color: #1e3c72;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.4rem;
-        }
-
-        /* Complexity Analysis */
-        .complexity-analysis {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-        }
-
-        .complexity-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .complexity-low {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .complexity-medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .complexity-high {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Lawyer Recommendations */
-        .lawyer-section {
-            background: #f8f9ff;
-            padding: 25px;
-            border-radius: 15px;
-            border: 2px solid #e9ecef;
-        }
-
-        .lawyer-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #e9ecef;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .lawyer-card:hover {
-            border-color: #1e3c72;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .lawyer-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .lawyer-rating {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
-        .consultation-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .consultation-btn {
-            padding: 10px 15px;
-            border: 2px solid #1e3c72;
-            background: white;
-            color: #1e3c72;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .consultation-btn:hover {
-            background: #1e3c72;
-            color: white;
-        }
-
-        /* Preparation Checklist */
-        .preparation-checklist {
-            background: #d4edda;
-            padding: 25px;
-            border-radius: 15px;
-            border-left: 5px solid #28a745;
-        }
-
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            margin: 12px 0;
-            font-size: 1rem;
-        }
-
-        .checklist-item input[type="checkbox"] {
-            margin-right: 15px;
-            transform: scale(1.3);
-            cursor: pointer;
-        }
-
-        .checklist-item label {
-            cursor: pointer;
-        }
-
-        /* Export Section */
-        .export-section {
-            background: #f8f9ff;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-        }
-
-        .export-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .export-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-        }
-
-        /* Mietrecht Topics */
-        .mietrecht-topics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .topic-button {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        .topic-button:hover {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* File Upload */
-        .upload-area {
-            border: 3px dashed #1e3c72;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9ff;
-        }
-
-        .upload-area:hover, .upload-area.dragover {
-            border-color: #28a745;
-            background: #f0fff4;
-        }
-
-        .file-upload {
-            display: none;
-        }
-
-        /* Voice Input */
-        .voice-input {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .voice-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 20px;
-            border-radius: 50%;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .voice-btn:hover {
-            background: #c82333;
-            transform: scale(1.1);
-        }
-
-        .voice-btn.recording {
-            animation: pulse 1s infinite;
-        }
-
-        /* Typing Indicator */
-        .typing-indicator {
-            display: none;
-            padding: 15px;
-            font-style: italic;
-            color: #666;
-            text-align: center;
-        }
-
-        .typing-indicator.show {
-            display: block;
-        }
-
-        /* Animations */
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes messageSlide {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .chat-panel, .analysis-panel {
-                height: auto;
-                min-height: 500px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 15px;
-            }
-
-            .input-methods {
-                grid-template-columns: 1fr;
-            }
-
-            .mietrecht-topics {
-                grid-template-columns: 1fr;
-            }
-
-            .consultation-options {
-                grid-template-columns: 1fr;
-            }
-
-            .logo {
-                font-size: 2.2rem;
-            }
-
-            .tagline {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 20px;
-            }
-
-            .chat-panel, .analysis-panel {
-                padding: 20px;
-            }
-
-            .logo {
-                font-size: 2rem;
-            }
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Focus styles */
-        .send-button:focus,
-        .topic-button:focus,
-        .consultation-btn:focus,
-        .export-btn:focus {
-            outline: 3px solid #ffc107;
-            outline-offset: 2px;
-        }
-
-        /* Scrollbar Styling */
-        .chat-messages::-webkit-scrollbar,
-        .analysis-panel::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track,
-        .analysis-panel::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb,
-        .analysis-panel::-webkit-scrollbar-thumb {
-            background: #1e3c72;
-            border-radius: 10px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover,
-        .analysis-panel::-webkit-scrollbar-thumb:hover {
-            background: #2a5298;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
         }
     </style>
 </head>
-<body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">⚖️ Mietrecht KI-Assistent</div>
-            <div class="tagline">Intelligente Mietrechtsberatung mit KI-gestuetzter Anwaltsvermittlung</div>
-        </header>
 
-        <!-- Main Layout -->
-        <div class="main-layout">
-            <!-- Chat Panel -->
-            <div class="chat-panel">
-                <div class="chat-header">
-                    <span style="font-size: 2rem;">??</span>
-                    <h2>Mietrechtsfrage stellen</h2>
-                </div>
-
-                <!-- Mietrecht Focus -->
-                <div class="mietrecht-focus">
-                    ?? Spezialisiert auf deutsches Mietrecht
-                </div>
-
-                <!-- Mietrecht Topics -->
-                <div class="mietrecht-topics">
-                    <button class="topic-button" onclick="askQuestion('Mietvertrag')">?? Mietvertrag-Details</button>
-                    <button class="topic-button" onclick="askQuestion('Mieterh�hung')">?? Mieterh�hung</button>
-                    <button class="topic-button" onclick="askQuestion('Heizungsausfall')">?? Heizungsausfall</button>
-                    <button class="topic-button" onclick="askQuestion('K�ndigung')">?? K�ndigung</button>
-                    <button class="topic-button" onclick="askQuestion('Nebenkosten')">?? Nebenkosten</button>
-                    <button class="topic-button" onclick="askQuestion('Schimmel')">?? Schimmel</button>
-                    <button class="topic-button" onclick="askQuestion('Kaution')">?? Kaution</button>
-                    <button class="topic-button" onclick="askQuestion('Modernisierung')">?? Modernisierung</button>
-                </div>
-
-                <!-- Input Methods -->
-                <div class="input-methods">
-                    <div class="input-method active" onclick="selectInputMethod('text')">
-                        ?? Text eingeben
-                    </div>
-                    <div class="input-method" onclick="selectInputMethod('voice')">
-                        ?? Spracheingabe
-                    </div>
-                    <div class="input-method" onclick="selectInputMethod('document')">
-                        ?? Dokument hochladen
-                    </div>
-                </div>
-
-                <!-- Chat Messages -->
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message ai-message">
-                        <strong>KI-Assistent:</strong> Hallo! Ich bin Ihr spezialisierter Mietrechts-Assistent. Stellen Sie mir Ihre Frage oder w�hlen Sie ein Thema aus den Buttons oben. Ich analysiere die Komplexit�t und vermittle Sie bei Bedarf an passende Anw�lte weiter.
-                    </div>
-                </div>
-
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator">
-                    ?? KI-Assistent analysiert Ihre Frage...
-                </div>
-
-                <!-- Input Section -->
-                <div class="input-section">
-                    <div id="textInput">
-                        <textarea class="question-input" id="questionText" placeholder="Beschreiben Sie Ihr mietrechtliches Problem in einfachen Worten..."></textarea>
-                    </div>
-
-                    <div id="voiceInput" style="display: none;">
-                        <div class="voice-input">
-                            <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()">??</button>
-                            <p>Klicken Sie auf das Mikrofon und sprechen Sie Ihre Frage</p>
-                            <p id="voiceStatus"></p>
-                        </div>
-                    </div>
-
-                    <div id="documentInput" style="display: none;">
-                        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
-                            ?? Dokument hier ablegen oder klicken zum Ausw�hlen
-                            <br><small>Unterst�tzt: PDF, JPG, PNG, DOC, DOCX</small>
-                        </div>
-                        <input type="file" id="fileUpload" class="file-upload" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="handleFileUpload(event)">
-                    </div>
-
-                    <button class="send-button" onclick="testSendQuestion()">Frage senden</button>
-                </div>
-            </div>
-
-            <!-- Analysis Panel -->
-            <div class="analysis-panel">
-                <!-- Complexity Analysis -->
-                <div class="analysis-section">
-                    <h3>?? Aktuelle Analyse</h3>
-                    <div class="complexity-analysis" id="complexityAnalysis">
-                        <p>Stellen Sie eine Frage, um die Komplexit�tsanalyse zu sehen</p>
-                    </div>
-                </div>
-
-                <!-- Navigation to Lawyer Page -->
-                <div class="analysis-section" id="lawyerNavigation" style="display: none;">
-                    <h3>????? Anwaltsvermittlung</h3>
-                    <div style="background: #f8f9ff; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid #e9ecef;">
-                        <p style="margin-bottom: 15px;">Basierend auf Ihrer Komplexit�tsanalyse empfehlen wir eine Anwaltsberatung.</p>
-                        <button onclick="showLawyerPage()" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem;">
-                            ?? Passende Anw�lte finden
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Preparation Checklist -->
-                <div class="analysis-section">
-                    <h3>?? Gespr�chsvorbereitung</h3>
-                    <div class="preparation-checklist" id="preparationChecklist" style="display: none;">
-                        <h4>Checkliste f�r das Anwaltsgespr�ch:</h4>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep1">
-                            <label for="prep1">Alle relevanten Dokumente sammeln</label>
-                        </div>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep2">
-                            <label for="prep2">Fragen-Antwort-Verlauf ausdrucken</label>
-                        </div>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep3">
-                            <label for="prep3">Wichtige Termine und Fristen notieren</label>
-                        </div>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep4">
-                            <label for="prep4">Zeugen und Beweise auflisten</label>
-                        </div>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep5">
-                            <label for="prep5">Gew�nschtes Ergebnis definieren</label>
-                        </div>
-                        <div class="checklist-item">
-                            <input type="checkbox" id="prep6">
-                            <label for="prep6">Budget f�r Anwaltskosten festlegen</label>
-                        </div>
-                    </div>
-                    <div id="preparationPlaceholder">
-                        <p style="text-align: center; color: #666;">Gespr�chsvorbereitung wird nach der Anwaltsvermittlung angezeigt</p>
-                    </div>
-                </div>
-
-                <!-- Export & Storage -->
-                <div class="analysis-section">
-                    <h3>?? Verlauf & Export</h3>
-                    <div class="export-section">
-                        <p>Speichern Sie Ihren Frage-Antwort-Verlauf f�r Ihre Unterlagen</p>
-                        <button class="export-btn" onclick="exportToPDF()">?? Als PDF exportieren</button>
-                        <button class="export-btn" onclick="exportToEmail()">?? Per E-Mail senden</button>
-                        <button class="export-btn" onclick="shareWithLawyer()">????? Mit Anwalt teilen</button>
-                    </div>
-                </div>
-
-                <!-- Privacy & Security -->
-                <div class="analysis-section">
-                    <h3>?? Datenschutz & Sicherheit</h3>
-                    <div style="background: #d4edda; padding: 20px; border-radius: 12px;">
-                        <p><strong>? DSGVO-konform</strong></p>
-                        <p><strong>?? Ende-zu-Ende-Verschl�sselung</strong></p>
-                        <p><strong>???? Server in Deutschland</strong></p>
-                        <p><strong>??? Daten jederzeit l�schbar</strong></p>
-                    </div>
-                </div>
-            </div>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold mb-2">JurisMind SmartLaw Agent</h1>
+            <p class="text-xl mb-2">Revolution der Rechtsberatung - Sofort verfügbar</p>
+            <p class="text-lg opacity-90">Der SmartLaw Agent bietet Mietern und Vermietern schnellen, verständlichen und zuverlässigen Zugang zu mietrechtlicher Beratung. KI-gestützt, DSGVO-konform und mit nahtloser Anwaltsvermittlung. Demokratisierung von Rechtswissen: Juristische Expertise für jeden</p>
         </div>
+    </div>
 
-        <!-- Lawyer Page (Hidden by default) -->
-        <div id="lawyerPage" style="display: none;">
-            <div class="header">
-                <div class="logo">????? Anwaltsvermittlung</div>
-                <div class="tagline">Spezialisierte Mietrechtsanw�lte in Ihrer N�he</div>
-                <button onclick="showMainPage()" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 10px 20px; border-radius: 10px; margin-top: 15px; cursor: pointer;">
-                    ? Zur�ck zur Analyse
-                </button>
-            </div>
-
-            <div class="main-layout">
-                <!-- Lawyer Search and Results -->
-                <div class="chat-panel">
-                    <div class="chat-header">
-                        <span style="font-size: 1.5rem;">??</span>
-                        <h2>Anwaltssuche</h2>
-                    </div>
-
-                    <!-- Search Filters -->
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px;">
-                        <h4 style="margin-bottom: 15px; color: #1e3c72;">?? Suchkriterien</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Standort:</label>
-                                <input type="text" id="locationInput" placeholder="PLZ oder Stadt eingeben" style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px;">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Umkreis:</label>
-                                <select id="radiusSelect" style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px;">
-                                    <option value="5">5 km</option>
-                                    <option value="10" selected>10 km</option>
-                                    <option value="25">25 km</option>
-                                    <option value="50">50 km</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Spezialisierung:</label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                                <label style="display: flex; align-items: center;">
-                                    <input type="checkbox" checked style="margin-right: 8px;"> Mietrecht allgemein
-                                </label>
-                                <label style="display: flex; align-items: center;">
-                                    <input type="checkbox" style="margin-right: 8px;"> K�ndigungsschutz
-                                </label>
-                                <label style="display: flex; align-items: center;">
-                                    <input type="checkbox" style="margin-right: 8px;"> Mietminderung
-                                </label>
-                                <label style="display: flex; align-items: center;">
-                                    <input type="checkbox" style="margin-right: 8px;"> Nebenkosten
-                                </label>
-                            </div>
-                        </div>
-                        <button onclick="searchLawyers()" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer;">
-                            ?? Anw�lte suchen
-                        </button>
-                    </div>
-
-                    <!-- Lawyer Results -->
-                    <div id="lawyerResults">
-                        <h4 style="margin-bottom: 20px; color: #1e3c72;">?? Gefundene Anw�lte in Ihrer N�he</h4>
-                        <div id="lawyerList"></div>
+    <!-- Workflow Progress -->
+    <div class="bg-white border-b border-gray-200 py-4">
+        <div class="max-width-1400px mx-auto px-6">
+            <div class="flex items-center justify-between">
+                <!-- Workflow Title -->
+                <div class="flex items-center">
+                    <h2 class="text-lg font-semibold text-gray-800 mr-4">Mietrechtliche Beratung</h2>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-medium">Beratung starten</span> • Schritt 1 von 6 • 17% abgeschlossen
                     </div>
                 </div>
 
-                <!-- Lawyer Details and Booking -->
-                <div class="analysis-panel">
-                    <!-- Selected Lawyer Details -->
-                    <div class="analysis-section">
-                        <h3>????? Anwaltsdetails</h3>
-                        <div id="selectedLawyerDetails" style="background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center;">
-                            <p>W�hlen Sie einen Anwalt aus der Liste, um Details zu sehen</p>
+                <!-- Progress Steps -->
+                <div class="flex items-center space-x-4">
+                    <!-- Step 1 - Current -->
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                            1
+                        </div>
+                        <div class="ml-2 text-sm">
+                            <div class="font-medium text-blue-600">Mietrechtliche Frage</div>
+                            <div class="text-gray-500">Aktuelle Phase</div>
                         </div>
                     </div>
 
-                    <!-- Booking Options -->
-                    <div class="analysis-section">
-                        <h3>?? Terminbuchung</h3>
-                        <div id="bookingOptions" style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                            <p style="text-align: center; color: #666;">W�hlen Sie zuerst einen Anwalt aus</p>
+                    <!-- Connector -->
+                    <div class="w-6 h-0.5 bg-gray-300"></div>
+
+                    <!-- Step 2 - Next -->
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
+                            2
+                        </div>
+                        <div class="ml-2 text-sm">
+                            <div class="font-medium text-gray-600">Mietrechtliche Analyse</div>
+                            <div class="text-gray-400">Nächster Schritt</div>
                         </div>
                     </div>
 
-                    <!-- Preparation Checklist -->
-                    <div class="analysis-section">
-                        <h3>?? Gespr�chsvorbereitung</h3>
-                        <div class="preparation-checklist">
-                            <h4>Checkliste f�r das Anwaltsgespr�ch:</h4>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep1">
-                                <label for="prep1">Alle relevanten Dokumente sammeln</label>
-                            </div>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep2">
-                                <label for="prep2">Fragen-Antwort-Verlauf ausdrucken</label>
-                            </div>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep3">
-                                <label for="prep3">Wichtige Termine und Fristen notieren</label>
-                            </div>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep4">
-                                <label for="prep4">Zeugen und Beweise auflisten</label>
-                            </div>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep5">
-                                <label for="prep5">Gew�nschtes Ergebnis definieren</label>
-                            </div>
-                            <div class="checklist-item">
-                                <input type="checkbox" id="prep6">
-                                <label for="prep6">Budget f�r Anwaltskosten festlegen</label>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Connector -->
+                    <div class="w-6 h-0.5 bg-gray-300"></div>
 
-                    <!-- Case Transfer -->
-                    <div class="analysis-section">
-                        <h3>?? Fall�bertragung</h3>
-                        <div class="export-section">
-                            <p>�bertragen Sie Ihre Analyse an den gew�hlten Anwalt</p>
-                            <button class="export-btn" onclick="transferCaseToLawyer()">?? Analyse �bertragen</button>
-                            <button class="export-btn" onclick="exportToPDF()">?? Als PDF exportieren</button>
-                            <button class="export-btn" onclick="exportToEmail()">?? Per E-Mail senden</button>
+                    <!-- Step 3 - Future -->
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
+                            3
+                        </div>
+                        <div class="ml-2 text-sm">
+                            <div class="font-medium text-gray-600">Anwaltssuche</div>
+                            <div class="text-gray-400">Folgt später</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="flex items-center">
+                    <span class="text-sm font-medium text-gray-700 mr-3">Fortschritt:</span>
+                    <div class="w-24 bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-500 h-2 rounded-full" style="width: 17%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-blue-600 ml-2">17%</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <script></script>
-        let currentInputMethod = 'text';
-        let conversationHistory = [];
-        let isRecording = false;
-
-        // Mietrecht-spezifische Antworten
-        const mietrechtAnswers = {
-            'Mietvertrag': {
-                complexity: 'medium',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Rechtliche Grundlagen</h3>
-
-                <strong>� 550 BGB - Mietvertrag �ber Grundst�cke:</strong><br>
-                <em>"Ein Mietvertrag �ber Grundst�cke, der f�r l�ngere Zeit als ein Jahr eingegangen wird, bedarf der schriftlichen Form."</em><br><br>
-
-                <strong>� 535 BGB - Inhalt und Hauptpflichten des Mietvertrags:</strong><br>
-                Definiert die grundlegenden Rechte und Pflichten von Vermieter und Mieter.<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Pflichtangaben im Mietvertrag</h3>
-
-                <strong>1. Vertragsparteien (� 535 BGB):</strong><br>
-                <strong>Vermieter-Angaben:</strong><br>
-                � ? Vollst�ndiger Name (bei nat�rlichen Personen: Vor- und Nachname)<br>
-                � ? Vollst�ndige Anschrift (Stra�e, Hausnummer, PLZ, Ort)<br>
-                � ? Bei juristischen Personen: Firmenbezeichnung, Rechtsform, Sitz<br>
-                � ? Vertretungsberechtigung (bei Bevollm�chtigten)<br><br>
-
-                <strong>Mieter-Angaben:</strong><br>
-                � ? Vollst�ndiger Name aller Mieter<br>
-                � ? Aktuelle Anschrift<br>
-                � ? Bei mehreren Mietern: Gesamtschuldnerische Haftung<br><br>
-
-                <strong>2. Mietobjekt-Bezeichnung (� 535 BGB):</strong><br>
-                <strong>Genaue Objektbeschreibung:</strong><br>
-                � ? Vollst�ndige Anschrift der Mietwohnung<br>
-                � ? Stockwerk und Lage (z.B. "2. OG links")<br>
-                � ? Wohnungsnummer (falls vorhanden)<br>
-                � ? Wohnfl�che in m� (nach Wohnfl�chenverordnung)<br>
-                � ? Anzahl der Zimmer (pr�zise Raumaufteilung)<br><br>
-
-                <strong>Nebenr�ume und Zubeh�r:</strong><br>
-                � ? Keller (mit genauer Bezeichnung/Nummer)<br>
-                � ? Dachboden/Speicher<br>
-                � ? Garage/Stellplatz (mit Nummer/Lage)<br>
-                � ? Balkon/Terrasse/Garten (mit Gr��enangabe)<br>
-                � ? Weitere Nebenr�ume (Waschk�che, Fahrradkeller, etc.)<br><br>
-
-                <strong>3. Mietzeit und Vertragsdauer:</strong><br>
-                � ? Mietbeginn (konkretes Datum)<br>
-                � ? Befristung (bei befristeten Vertr�gen nach � 575 BGB)<br>
-                � ? K�ndigungsfristen (� 573c BGB)<br><br>
-
-                <strong>4. Miete und Nebenkosten (� 556 BGB):</strong><br>
-                <strong>Mietpreisangaben:</strong><br>
-                � ? Grundmiete/Nettokaltmiete (monatlicher Betrag)<br>
-                � ? Betriebskosten/Nebenkosten (Vorauszahlung)<br>
-                � ? Gesamtmiete (Warmmiete)<br>
-                � ? F�lligkeit (� 556b BGB - sp�testens am 3. Werktag)<br><br>
-
-                <strong>5. Kaution (� 551 BGB):</strong><br>
-                � ? H�he der Kaution (max. 3 Nettokaltmieten)<br>
-                � ? Zahlungsmodalit�ten (Ratenzahlung m�glich)<br>
-                � ? Anlageform (Sparbuch, B�rgschaft, etc.)<br>
-                � ? Verzinsung (Pflicht des Vermieters)<br><br>
-
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
-                <strong>?? Fazit:</strong><br>
-                Die korrekte Vertragsgestaltung erfordert fundierte Rechtskenntnisse. Fehlerhafte Angaben k�nnen zu erheblichen rechtlichen und finanziellen Konsequenzen f�hren.<br><br>
-                <strong>?? Empfehlung:</strong> Bei komplexen Vertragsgestaltungen Anwaltsberatung empfohlen
-                </div>`
-            },
-            'Mieterh�hung': {
-                complexity: 'medium',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Rechtliche Grundlagen</h3>
-
-                <strong>� 558 BGB - Mieterh�hung bis zur orts�blichen Vergleichsmiete:</strong><br>
-                <em>"Der Vermieter kann eine Erh�hung der Miete bis zur orts�blichen Vergleichsmiete verlangen, wenn die Miete in dem Zeitpunkt, zu dem die Erh�hung eintreten soll, seit 15 Monaten unver�ndert ist."</em><br><br>
-
-                <strong>� 558a BGB - Kappungsgrenze:</strong><br>
-                <em>"Die Miete darf innerhalb von drei Jahren, von Erh�hungen nach den �� 559 bis 560 abgesehen, nicht um mehr als 20 vom Hundert erh�ht werden."</em><br><br>
-
-                <strong>� 556d BGB - Mietpreisbremse:</strong><br>
-                Bei Wiedervermietung darf die Miete h�chstens 10% �ber der orts�blichen Vergleichsmiete liegen.<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Voraussetzungen f�r Mieterh�hungen</h3>
-
-                <strong>1. Formelle Voraussetzungen:</strong><br>
-                � ? Schriftliche Mieterh�hungserkl�rung (� 558a BGB)<br>
-                � ? Begr�ndung der Erh�hung erforderlich<br>
-                � ? Zustimmungsfrist: 2 Monate (� 558b BGB)<br>
-                � ? Mindestablauf: 15 Monate seit letzter Erh�hung<br><br>
-
-                <strong>2. Materielle Voraussetzungen:</strong><br>
-                � ? Erh�hung nur bis zur orts�blichen Vergleichsmiete<br>
-                � ? Kappungsgrenze: Max. 20% in 3 Jahren<br>
-                � ? Qualifizierter Mietspiegel oder Sachverst�ndigengutachten<br>
-                � ? Vergleichbare Wohnungen als Begr�ndung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? Mieterrechte und Widerspruchsm�glichkeiten</h3>
-
-                <strong>Widerspruchsrechte nach � 558b BGB:</strong><br>
-                � ?? Verweigerung der Zustimmung innerhalb 2 Monaten<br>
-                � ?? Begr�ndung nicht ausreichend ? Widerspruch m�glich<br>
-                � ?? H�rtefalleinwand nach � 558 Abs. 3 BGB<br>
-                � ?? Soziale H�rte (Alter, Krankheit, finanzielle Situation)<br><br>
-
-                <strong>Pr�fschema f�r Mieter:</strong><br>
-                1. <strong>Formelle Pr�fung:</strong> Schriftform, Begr�ndung, Fristen<br>
-                2. <strong>Materielle Pr�fung:</strong> Orts�bliche Vergleichsmiete, Kappungsgrenze<br>
-                3. <strong>H�rtefallpr�fung:</strong> Pers�nliche oder wirtschaftliche Umst�nde<br>
-                4. <strong>Mietpreisbremse:</strong> Bei Neuvermietung anwendbar?<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? Relevante Rechtsprechung</h3>
-
-                <strong>BGH-Urteile zu Mieterh�hungen:</strong><br>
-                � <strong>BGH VIII ZR 234/18:</strong> Mietspiegel muss aktuell und repr�sentativ sein<br>
-                � <strong>BGH VIII ZR 144/17:</strong> Modernisierungsumlagen sind bei Kappungsgrenze zu ber�cksichtigen<br>
-                � <strong>BGH VIII ZR 213/16:</strong> H�rtefalleinwand bei sozialer Notlage<br>
-                � <strong>BGH VIII ZR 320/15:</strong> Qualifizierter Mietspiegel hat Vorrang vor einfachem Mietspiegel<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? H�ufige Fehler bei Mieterh�hungen</h3>
-
-                <strong>Vermieter-Fehler:</strong><br>
-                � ? Unzureichende Begr�ndung der Erh�hung<br>
-                � ? Veralteter oder ungeeigneter Mietspiegel<br>
-                � ? �berschreitung der Kappungsgrenze<br>
-                � ? Zu kurze Zustimmungsfrist<br><br>
-
-                <strong>Mieter-Fehler:</strong><br>
-                � ? Vers�umung der 2-Monats-Frist f�r Widerspruch<br>
-                � ? Stillschweigende Zustimmung durch Zahlung<br>
-                � ? Unzureichende Pr�fung der Begr�ndung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Praktische Handlungsempfehlungen</h3>
-
-                <strong>F�r Mieter:</strong><br>
-                1. <strong>Sofortige Pr�fung:</strong> Mieterh�hung innerhalb 2 Monaten pr�fen<br>
-                2. <strong>Mietspiegel beschaffen:</strong> Aktuellen Mietspiegel der Stadt einsehen<br>
-                3. <strong>Vergleichswohnungen pr�fen:</strong> Sind die angegebenen Wohnungen vergleichbar?<br>
-                4. <strong>Kappungsgrenze berechnen:</strong> 20%-Grenze der letzten 3 Jahre pr�fen<br>
-                5. <strong>H�rtefallpr�fung:</strong> Pers�nliche Umst�nde dokumentieren<br>
-                6. <strong>Rechtzeitiger Widerspruch:</strong> Schriftlich und begr�ndet widersprechen<br><br>
-
-                <strong>F�r Vermieter:</strong><br>
-                1. <strong>Sorgf�ltige Vorbereitung:</strong> Aktuellen Mietspiegel verwenden<br>
-                2. <strong>Vergleichbare Wohnungen:</strong> Mindestens 3 vergleichbare Objekte<br>
-                3. <strong>Kappungsgrenze beachten:</strong> 20%-Regel der letzten 3 Jahre<br>
-                4. <strong>Formvorschriften einhalten:</strong> Schriftform und Begr�ndung<br>
-                5. <strong>Angemessene Frist:</strong> 2 Monate Zustimmungsfrist gew�hren<br><br>
-
-                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #856404; margin: 20px 0;">
-                <strong>?? Besondere Hinweise:</strong><br><br>
-                <strong>Mietpreisbremse:</strong> In angespannten Wohnungsm�rkten gelten versch�rfte Regeln<br>
-                <strong>Modernisierung:</strong> Nach Modernisierung gelten andere Erh�hungsregeln (� 559 BGB)<br>
-                <strong>Staffelmiete:</strong> Bei Staffelmietvertr�gen sind Erh�hungen nach � 558 BGB ausgeschlossen<br>
-                <strong>Indexmiete:</strong> Bei Indexmietvertr�gen erfolgt automatische Anpassung
+    <!-- Main Content -->
+    <div class="desktop-layout p-6">
+        <!-- Left: Input & Areas -->
+        <div class="space-y-6">
+            <!-- Question Input -->
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <label for="legalQuestion" class="text-xl font-bold mb-4 block">Ihre Mietrechtliche Frage</label>
+                <textarea id="legalQuestion" placeholder="Beschreiben Sie Ihr mietrechtliches Problem..."
+                    class="w-full p-4 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500"
+                    rows="4"></textarea>
+                <div class="mt-4">
+                    <button onclick="handleQuestion()"
+                        class="w-full gradient-bg text-white py-3 rounded-lg font-medium">
+                        <i class="ri-send-plane-line mr-2"></i>Frage senden
+                    </button>
                 </div>
+            </div>
 
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
-                <strong>?? Fazit und Handlungsempfehlung:</strong><br><br>
-                <strong>Komplexit�tsbewertung:</strong> Mittel bis Hoch<br>
-                � Mieterh�hungen unterliegen strengen gesetzlichen Voraussetzungen<br>
-                � Formfehler k�nnen zur Unwirksamkeit f�hren<br>
-                � Fristen sind unbedingt zu beachten<br><br>
+            <!-- Legal Areas -->
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <h2 class="text-xl font-bold mb-4">Mietrechtliche Themen</h2>
+                <div class="legal-grid">
+                    <!-- Erste Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Kündigungsschutz')">
+                        <i class="ri-briefcase-line text-3xl text-blue-600 mb-2"></i>
+                        <div class="text-sm font-medium">Kündigungsschutz</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Mietminderung')">
+                        <i class="ri-home-line text-3xl text-green-600 mb-2"></i>
+                        <div class="text-sm font-medium">Mietminderung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Nebenkosten')">
+                        <i class="ri-police-car-line text-3xl text-red-500 mb-2"></i>
+                        <div class="text-sm font-medium">Nebenkosten</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Wohnrecht')">
+                        <i class="ri-heart-line text-3xl text-pink-500 mb-2"></i>
+                        <div class="text-sm font-medium">Wohnrecht</div>
+                    </div>
 
-                <strong>Empfehlung:</strong><br>
-                � <strong>F�r Mieter:</strong> Bei Zweifeln sofort anwaltliche Beratung<br>
-                � <strong>F�r Vermieter:</strong> Rechtssichere Vorbereitung durch Fachanwalt<br>
-                � <strong>Beide Seiten:</strong> Mietspiegel und aktuelle Rechtsprechung beachten
+                    <!-- Zweite Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Kaution')">
+                        <i class="ri-bank-line text-3xl text-yellow-600 mb-2"></i>
+                        <div class="text-sm font-medium">Kaution</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Renovierung')">
+                        <i class="ri-shield-check-line text-3xl text-blue-500 mb-2"></i>
+                        <div class="text-sm font-medium">Renovierung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Modernisierung')">
+                        <i class="ri-building-line text-3xl text-orange-600 mb-2"></i>
+                        <div class="text-sm font-medium">Modernisierung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Rückzahlung')">
+                        <i class="ri-hospital-line text-3xl text-red-500 mb-2"></i>
+                        <div class="text-sm font-medium">Rückzahlung</div>
+                    </div>
+
+                    <!-- Dritte Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Hausordnung')">
+                        <i class="ri-shopping-cart-line text-3xl text-green-600 mb-2"></i>
+                        <div class="text-sm font-medium">Hausordnung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Tierhaltung')">
+                        <i class="ri-lock-line text-3xl text-purple-600 mb-2"></i>
+                        <div class="text-sm font-medium">Tierhaltung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Wohnfläche')">
+                        <i class="ri-home-line text-3xl text-blue-600 mb-2"></i>
+                        <div class="text-sm font-medium">Wohnfläche</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Wasserschaden')">
+                        <i class="ri-briefcase-line text-3xl text-gray-600 mb-2"></i>
+                        <div class="text-sm font-medium">Wasserschaden</div>
+                    </div>
+
+                    <!-- Vierte Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Lärm')">
+                        <i class="ri-copyright-line text-3xl text-indigo-600 mb-2"></i>
+                        <div class="text-sm font-medium">Lärm</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Mängel')">
+                        <i class="ri-global-line text-3xl text-cyan-600 mb-2"></i>
+                        <div class="text-sm font-medium">Mängel</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Räumung')">
+                        <i class="ri-government-line text-3xl text-teal-600 mb-2"></i>
+                        <div class="text-sm font-medium">Räumung</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Mietvertrag')">
+                        <i class="ri-file-line text-3xl text-purple-600 mb-2"></i>
+                        <div class="text-sm font-medium">Mietvertrag</div>
+                    </div>
+
+                    <!-- Fünfte Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Arbeitsrecht')">
+                        <i class="ri-briefcase-line text-3xl text-blue-600 mb-2"></i>
+                        <div class="text-sm font-medium">Arbeitsrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Strafrecht')">
+                        <i class="ri-police-car-line text-3xl text-red-500 mb-2"></i>
+                        <div class="text-sm font-medium">Strafrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Familienrecht')">
+                        <i class="ri-heart-line text-3xl text-pink-500 mb-2"></i>
+                        <div class="text-sm font-medium">Familienrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Bankrecht')">
+                        <i class="ri-bank-line text-3xl text-yellow-600 mb-2"></i>
+                        <div class="text-sm font-medium">Bankrecht</div>
+                    </div>
+
+                    <!-- Sechste Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Versicherungsrecht')">
+                        <i class="ri-shield-check-line text-3xl text-blue-500 mb-2"></i>
+                        <div class="text-sm font-medium">Versicherungsrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Baurecht')">
+                        <i class="ri-building-line text-3xl text-orange-600 mb-2"></i>
+                        <div class="text-sm font-medium">Baurecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Medizinrecht')">
+                        <i class="ri-hospital-line text-3xl text-red-500 mb-2"></i>
+                        <div class="text-sm font-medium">Medizinrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Verbraucherrecht')">
+                        <i class="ri-shopping-cart-line text-3xl text-green-600 mb-2"></i>
+                        <div class="text-sm font-medium">Verbraucherrecht</div>
+                    </div>
+
+                    <!-- Siebte Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Datenschutzrecht')">
+                        <i class="ri-lock-line text-3xl text-purple-600 mb-2"></i>
+                        <div class="text-sm font-medium">Datenschutzrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Immobilienrecht')">
+                        <i class="ri-home-line text-3xl text-blue-600 mb-2"></i>
+                        <div class="text-sm font-medium">Immobilienrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Gesellschaftsrecht')">
+                        <i class="ri-briefcase-line text-3xl text-gray-600 mb-2"></i>
+                        <div class="text-sm font-medium">Gesellschaftsrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Urheberrecht')">
+                        <i class="ri-copyright-line text-3xl text-indigo-600 mb-2"></i>
+                        <div class="text-sm font-medium">Urheberrecht</div>
+                    </div>
+
+                    <!-- Achte Reihe -->
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Internetrecht')">
+                        <i class="ri-global-line text-3xl text-cyan-600 mb-2"></i>
+                        <div class="text-sm font-medium">Internetrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Verwaltungsrecht')">
+                        <i class="ri-government-line text-3xl text-teal-600 mb-2"></i>
+                        <div class="text-sm font-medium">Verwaltungsrecht</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-100"
+                        onclick="askQuestion('Verkehrsrecht')">
+                        <i class="ri-car-line text-3xl text-orange-500 mb-2"></i>
+                        <div class="text-sm font-medium">Verkehrsrecht</div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <strong>?? Empfehlung:</strong> Anwaltsberatung zur Pr�fung der Rechtm��igkeit dringend empfohlen`
-            },
-            'Heizungsausfall': {
-                complexity: 'low',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexit�t</span><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Rechtliche Grundlagen</h3>
-
-                <strong>� 536 BGB - Mietminderung bei Sach- und Rechtsm�ngeln:</strong><br>
-                <em>"Ist die Mietsache w�hrend der Mietzeit mit einem Mangel behaftet, der ihre Tauglichkeit zum vertragsgem��en Gebrauch aufhebt oder mindert, ist der Mieter f�r die Zeit, in der die Tauglichkeit aufgehoben oder gemindert ist, von der Entrichtung der Miete befreit oder zur Entrichtung nur einer angemessen herabgesetzten Miete verpflichtet."</em><br><br>
-
-                <strong>� 535 Abs. 1 BGB - Hauptpflichten des Vermieters:</strong><br>
-                <em>"Der Vermieter ist verpflichtet, dem Mieter die Mietsache in einem zum vertragsgem��en Gebrauch geeigneten Zustand zu �berlassen und sie w�hrend der Mietzeit in diesem Zustand zu erhalten."</em><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Heizungsausfall als Mietmangel</h3>
-
-                <strong>Rechtliche Einordnung:</strong><br>
-                � ? Heizungsausfall ist grunds�tzlich ein erheblicher Mietmangel<br>
-                � ? Vermieter ist zur unverz�glichen Reparatur verpflichtet<br>
-                � ? Mietminderung ab dem ersten Tag des Ausfalls<br>
-                � ? Keine Verschuldenspr�fung erforderlich<br><br>
-
-                <strong>Minderungsquoten nach Rechtsprechung:</strong><br>
-                � ??? <strong>Kompletter Heizungsausfall (Winter):</strong> 50-100% Minderung<br>
-                � ??? <strong>Teilausfall einzelner R�ume:</strong> 20-50% Minderung<br>
-                � ??? <strong>Unzureichende Heizleistung:</strong> 10-30% Minderung<br>
-                � ??? <strong>Ausfall in �bergangszeiten:</strong> 10-25% Minderung<br>
-                � ??? <strong>Sommerzeit (Juni-August):</strong> Meist keine Minderung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Sofortma�nahmen f�r Mieter</h3>
-
-                <strong>1. Unverz�gliche M�ngelmeldung (� 536c BGB):</strong><br>
-                � ? Schriftliche Benachrichtigung des Vermieters<br>
-                � ? Datum und Uhrzeit des Ausfalls dokumentieren<br>
-                � ? Fristsetzung zur Reparatur (meist 24-48 Stunden)<br>
-                � ? Androhung der Mietminderung<br><br>
-
-                <strong>2. Dokumentation des Mangels:</strong><br>
-                � ?? Fotos der defekten Heizung/Thermostate<br>
-                � ??? Temperaturmessungen in den R�umen<br>
-                � ?? Protokoll �ber Dauer des Ausfalls<br>
-                � ?? Zeugen benennen (Nachbarn, Familie)<br><br>
-
-                <strong>3. Mietminderung durchsetzen:</strong><br>
-                � ?? Miete ab Ausfalltag entsprechend mindern<br>
-                � ?? Schriftliche Mitteilung an Vermieter<br>
-                � ?? Minderungsbetrag bei n�chster Mietzahlung abziehen<br>
-                � ?? Minderungsquote angemessen w�hlen<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? Relevante Rechtsprechung</h3>
-
-                <strong>Wichtige Gerichtsentscheidungen:</strong><br>
-                � <strong>BGH VIII ZR 71/18:</strong> Kompletter Heizungsausfall im Winter berechtigt zu 100% Mietminderung<br>
-                � <strong>LG Berlin 67 S 187/09:</strong> Heizungsausfall bei -10�C Au�entemperatur = 80% Minderung<br>
-                � <strong>AG M�nchen 412 C 5613/18:</strong> Teilausfall Wohnzimmerheizung = 25% Minderung<br>
-                � <strong>LG Hamburg 307 S 31/17:</strong> Unzureichende Heizleistung (16�C statt 20�C) = 20% Minderung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Minderungstabelle nach Jahreszeit</h3>
-
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
-                <strong>Winter (November - M�rz):</strong><br>
-                � Komplettausfall: 50-100% (je nach Au�entemperatur)<br>
-                � Teilausfall: 20-50%<br>
-                � Unzureichende Heizung: 15-30%<br><br>
-
-                <strong>�bergangszeit (April/Mai, September/Oktober):</strong><br>
-                � Komplettausfall: 20-50%<br>
-                � Teilausfall: 10-25%<br>
-                � Unzureichende Heizung: 5-15%<br><br>
-
-                <strong>Sommer (Juni - August):</strong><br>
-                � Meist keine Minderung berechtigt<br>
-                � Ausnahme: Warmwasserausfall = 5-10%
+        <!-- Right: Results -->
+        <div class="space-y-6">
+            <!-- Results Panel -->
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <h2 class="text-xl font-bold mb-4">Ergebnisse</h2>
+                <div id="results" class="min-h-[400px] bg-gray-50 rounded-lg p-4">
+                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                        <i class="ri-lightbulb-line text-5xl mb-4"></i>
+                        <p>Bitte geben Sie Ihre mietrechtliche Frage ein oder wählen Sie ein Thema aus.</p>
+                    </div>
                 </div>
+            </div>
 
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? H�ufige Fehler vermeiden</h3>
-
-                <strong>Mieter-Fehler:</strong><br>
-                � ? Keine oder versp�tete M�ngelmeldung<br>
-                � ? �berh�hte Minderungsquoten<br>
-                � ? Fehlende Dokumentation<br>
-                � ? Eigenreparatur ohne Vermietererlaubnis<br><br>
-
-                <strong>Vermieter-Fehler:</strong><br>
-                � ? Ignorieren der M�ngelmeldung<br>
-                � ? Verz�gerung der Reparatur<br>
-                � ? Bestreiten des Minderungsrechts<br>
-                � ? Unzureichende Wartung der Heizungsanlage<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Notfallma�nahmen</h3>
-
-                <strong>Bei akutem Heizungsausfall:</strong><br>
-                � ?? <strong>Notdienst beauftragen:</strong> Bei Gefahr f�r Gesundheit oder Leitungen<br>
-                � ?? <strong>Kostenerstattung:</strong> Vermieter muss angemessene Notdienstkosten tragen<br>
-                � ?? <strong>Ersatzunterkunft:</strong> Bei unbewohnbarer Wohnung Hotelkosten erstattungsf�hig<br>
-                � ? <strong>Heizl�fter:</strong> Stromkosten k�nnen vom Vermieter verlangt werden<br><br>
-
-                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
-                <strong>? Musterbrief - Heizungsausfall melden:</strong><br><br>
-
-                <em>Sehr geehrte/r [Vermieter],<br><br>
-
-                hiermit teile ich Ihnen mit, dass seit dem [Datum] um [Uhrzeit] die Heizungsanlage in meiner Wohnung [Adresse] ausgefallen ist.<br><br>
-
-                Die Raumtemperatur betr�gt derzeit nur [X]�C, was den vertragsgem��en Gebrauch der Wohnung erheblich beeintr�chtigt.<br><br>
-
-                Ich setze Ihnen hiermit eine Frist bis zum [Datum] zur Behebung des Mangels. Sollte der Mangel nicht fristgerecht behoben werden, werde ich die Miete entsprechend mindern.<br><br>
-
-                Mit freundlichen Gr��en<br>
-                [Name]</em>
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <h2 class="text-xl font-bold mb-4">Schnellaktionen</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="bg-blue-100 text-blue-800 py-3 px-4 rounded-lg font-medium hover:bg-blue-200 transition-colors">
+                        <i class="ri-file-text-line mr-2"></i>Mietvertrag prüfen
+                    </button>
+                    <button class="bg-green-100 text-green-800 py-3 px-4 rounded-lg font-medium hover:bg-green-200 transition-colors">
+                        <i class="ri-file-copy-line mr-2"></i>Kündigungsschreiben
+                    </button>
+                    <button class="bg-yellow-100 text-yellow-800 py-3 px-4 rounded-lg font-medium hover:bg-yellow-200 transition-colors">
+                        <i class="ri-file-list-line mr-2"></i>Mängelliste
+                    </button>
+                    <button class="bg-purple-100 text-purple-800 py-3 px-4 rounded-lg font-medium hover:bg-purple-200 transition-colors">
+                        <i class="ri-user-line mr-2"></i>Anwalt finden
+                    </button>
                 </div>
-
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
-                <strong>?? Fazit und Handlungsempfehlung:</strong><br><br>
-                <strong>Komplexit�tsbewertung:</strong> Niedrig<br>
-                � Heizungsausfall ist ein klassischer, gut dokumentierter Mietmangel<br>
-                � Rechtslage ist eindeutig und durch Rechtsprechung gefestigt<br>
-                � Standardfall mit klaren Handlungsanweisungen<br><br>
-
-                <strong>Empfehlung:</strong><br>
-                � <strong>Sofortige M�ngelmeldung</strong> an Vermieter<br>
-                � <strong>Angemessene Mietminderung</strong> ab dem ersten Tag<br>
-                � <strong>Dokumentation</strong> aller Umst�nde<br>
-                � <strong>Bei Verweigerung:</strong> Anwaltliche Beratung
-                </div>
-
-                <strong>?? Empfehlung:</strong> KI-Beratung meist ausreichend, Musterbrief verf�gbar. Bei Verweigerung des Vermieters: Anwaltsberatung`
-            },
-            'K�ndigung': {
-                complexity: 'high',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-high">Hohe Komplexit�t</span><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Rechtliche Grundlagen</h3>
-
-                <strong>� 573 BGB - Ordentliche K�ndigung des Vermieters:</strong><br>
-                <em>"Der Vermieter kann nur k�ndigen, wenn er ein berechtigtes Interesse an der Beendigung des Mietverh�ltnisses hat."</em><br><br>
-
-                <strong>� 543 BGB - Fristlose K�ndigung aus wichtigem Grund:</strong><br>
-                <em>"Jede Vertragspartei kann das Mietverh�ltnis aus wichtigem Grund ohne Einhaltung einer K�ndigungsfrist k�ndigen."</em><br><br>
-
-                <strong>� 574 BGB - Widerspruch des Mieters:</strong><br>
-                <em>"Der Mieter kann der K�ndigung bis zum Ablauf von zwei Monaten vor dem Beendigungstermin widersprechen und vom Vermieter die Fortsetzung des Mietverh�ltnisses verlangen, wenn die Beendigung f�r den Mieter, seine Familie oder andere Angeh�rige seines Haushalts eine H�rte bedeuten w�rde."</em><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Arten der K�ndigung</h3>
-
-                <strong>1. Ordentliche K�ndigung (� 573 BGB):</strong><br>
-                <strong>Berechtigte Interessen des Vermieters:</strong><br>
-                � ?? <strong>Eigenbedarf (� 573 Abs. 2 Nr. 2 BGB):</strong> F�r sich, Familie oder Haushaltsangeh�rige<br>
-                � ?? <strong>Wirtschaftliche Verwertung (� 573 Abs. 2 Nr. 3 BGB):</strong> Verkauf, Abriss, Umbau<br>
-                � ?? <strong>Vertragswidriges Verhalten (� 573 Abs. 2 Nr. 1 BGB):</strong> Pflichtverletzungen des Mieters<br><br>
-
-                <strong>K�ndigungsfristen:</strong><br>
-                � Mietdauer bis 5 Jahre: 3 Monate<br>
-                � Mietdauer 5-8 Jahre: 6 Monate<br>
-                � Mietdauer �ber 8 Jahre: 9 Monate<br><br>
-
-                <strong>2. Fristlose K�ndigung (� 543 BGB):</strong><br>
-                <strong>Wichtige Gr�nde:</strong><br>
-                � ?? <strong>Zahlungsverzug:</strong> 2 Monatsmieten oder 2 Monate in Folge<br>
-                � ?? <strong>Vertragswidrige Nutzung:</strong> Gewerbliche Nutzung ohne Erlaubnis<br>
-                � ?? <strong>St�rung des Hausfriedens:</strong> Bel�stigung anderer Mieter<br>
-                � ?? <strong>Substanzgef�hrdung:</strong> Besch�digung der Mietsache<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? K�ndigungsschutz und Mieterrechte</h3>
-
-                <strong>K�ndigungsschutzgesetz (KSchG) - Anwendbarkeit:</strong><br>
-                � ? Wohnraum mit mehr als 4 Wohnungen<br>
-                � ? Mietdauer �ber 6 Monate<br>
-                � ? Nicht bei Einliegerwohnungen<br><br>
-
-                <strong>Widerspruchsrecht (� 574 BGB):</strong><br>
-                <strong>H�rtefallgr�nde:</strong><br>
-                � ?? <strong>Pers�nliche H�rte:</strong> Alter, Krankheit, Behinderung<br>
-                � ??????????? <strong>Famili�re H�rte:</strong> Schulpflichtige Kinder, Schwangerschaft<br>
-                � ?? <strong>Wirtschaftliche H�rte:</strong> Kein angemessener Ersatzwohnraum<br>
-                � ?? <strong>Soziale H�rte:</strong> Verwurzelung im Wohnumfeld<br><br>
-
-                <strong>Widerspruchsfrist:</strong><br>
-                � ? Bis 2 Monate vor Beendigungstermin<br>
-                � ?? Schriftform erforderlich<br>
-                � ?? Konkrete H�rtefallgr�nde angeben<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Pr�fschema bei K�ndigung</h3>
-
-                <strong>1. Formelle Pr�fung:</strong><br>
-                � ? Schriftform (� 568 BGB)<br>
-                � ? K�ndigungsfrist eingehalten<br>
-                � ? Zugang der K�ndigung<br>
-                � ? Unterschrift des Vermieters<br><br>
-
-                <strong>2. Materielle Pr�fung:</strong><br>
-                � ? Berechtigtes Interesse vorhanden<br>
-                � ? Interessenabw�gung<br>
-                � ? Verh�ltnism��igkeit<br>
-                � ? Keine Rechtsmissbr�uchlichkeit<br><br>
-
-                <strong>3. K�ndigungsschutz pr�fen:</strong><br>
-                � ? KSchG anwendbar<br>
-                � ? H�rtefallgr�nde vorhanden<br>
-                � ? Widerspruchsfrist beachten<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? Relevante Rechtsprechung</h3>
-
-                <strong>Eigenbedarfsk�ndigungen:</strong><br>
-                � <strong>BGH VIII ZR 270/18:</strong> Eigenbedarf muss konkret und nachvollziehbar sein<br>
-                � <strong>BGH VIII ZR 180/17:</strong> Scheinvormietung f�hrt zur Unwirksamkeit<br>
-                � <strong>BGH VIII ZR 232/16:</strong> Interessenabw�gung bei langj�hrigen Mietern<br><br>
-
-                <strong>Fristlose K�ndigungen:</strong><br>
-                � <strong>BGH VIII ZR 124/19:</strong> Zahlungsverzug: F�lligkeit und Mahnung erforderlich<br>
-                � <strong>BGH VIII ZR 94/18:</strong> St�rung des Hausfriedens muss erheblich sein<br>
-                � <strong>BGH VIII ZR 222/17:</strong> Abmahnung vor fristloser K�ndigung meist erforderlich<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? H�ufige K�ndigungsfehler</h3>
-
-                <strong>Vermieter-Fehler:</strong><br>
-                � ? Unzureichende Begr�ndung des Eigenbedarfs<br>
-                � ? Falsche K�ndigungsfristen<br>
-                � ? Fehlende oder unvollst�ndige Unterschrift<br>
-                � ? Keine vorherige Abmahnung bei fristloser K�ndigung<br><br>
-
-                <strong>Mieter-Fehler:</strong><br>
-                � ? Vers�umung der Widerspruchsfrist<br>
-                � ? Unzureichende Begr�ndung des Widerspruchs<br>
-                � ? Keine rechtzeitige anwaltliche Beratung<br>
-                � ? Auszug trotz unwirksamer K�ndigung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Sofortma�nahmen bei K�ndigung</h3>
-
-                <strong>Erste 48 Stunden:</strong><br>
-                � ?? <strong>Anwalt kontaktieren:</strong> Spezialist f�r Mietrecht<br>
-                � ?? <strong>K�ndigung pr�fen lassen:</strong> Form- und Inhaltsfehler<br>
-                � ?? <strong>Dokumentation:</strong> Alle Unterlagen sammeln<br>
-                � ? <strong>Fristen notieren:</strong> Widerspruchsfrist berechnen<br><br>
-
-                <strong>Erste Woche:</strong><br>
-                � ?? <strong>Rechtslage pr�fen:</strong> K�ndigungsgrund berechtigt?<br>
-                � ?? <strong>H�rtefallgr�nde sammeln:</strong> Pers�nliche Umst�nde dokumentieren<br>
-                � ?? <strong>Wohnungssuche:</strong> Ersatzwohnraum erkunden<br>
-                � ?? <strong>Finanzierung kl�ren:</strong> Umzugskosten, Kaution<br><br>
-
-                <strong>Bis Widerspruchsfrist:</strong><br>
-                � ?? <strong>Widerspruch einlegen:</strong> Schriftlich und begr�ndet<br>
-                � ?? <strong>Einschreiben versenden:</strong> Zugang nachweisen<br>
-                � ?? <strong>Verhandlungen f�hren:</strong> Au�ergerichtliche Einigung<br><br>
-
-                <div style="background: #f8d7da; padding: 15px; border-radius: 10px; border-left: 4px solid #721c24; margin: 20px 0;">
-                <strong>?? Kritische Fristen:</strong><br><br>
-
-                <strong>Widerspruch bei ordentlicher K�ndigung:</strong><br>
-                � ? Bis 2 Monate vor Beendigungstermin<br>
-                � ?? Schriftform zwingend erforderlich<br>
-                � ?? Rechtzeitiger Zugang beim Vermieter<br><br>
-
-                <strong>R�umungsklage:</strong><br>
-                � ?? Vermieter kann nach Ablauf der K�ndigungsfrist klagen<br>
-                � ?? Ohne Widerspruch: Meist erfolgreiche Klage<br>
-                � ?? Prozesskosten tr�gt unterlegene Partei
-                </div>
-
-                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
-                <strong>? Muster-Widerspruch gegen K�ndigung:</strong><br><br>
-
-                <em>Sehr geehrte/r [Vermieter],<br><br>
-
-                gegen Ihre K�ndigung vom [Datum] bez�glich der Wohnung [Adresse] lege ich hiermit fristgerecht Widerspruch ein und verlange die Fortsetzung des Mietverh�ltnisses.<br><br>
-
-                Die Beendigung des Mietverh�ltnisses w�rde f�r mich und meine Familie eine unzumutbare H�rte bedeuten, weil:<br>
-                � [H�rtefallgrund 1]<br>
-                � [H�rtefallgrund 2]<br>
-                � [H�rtefallgrund 3]<br><br>
-
-                Ich bitte um R�cknahme der K�ndigung.<br><br>
-
-                Mit freundlichen Gr��en<br>
-                [Name]</em>
-                </div>
-
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
-                <strong>?? Fazit und Handlungsempfehlung:</strong><br><br>
-                <strong>Komplexit�tsbewertung:</strong> Hoch<br>
-                � K�ndigungen unterliegen strengen gesetzlichen Voraussetzungen<br>
-                � Komplexe Interessenabw�gung erforderlich<br>
-                � Kurze Fristen mit weitreichenden Konsequenzen<br>
-                � Hohe Prozessrisiken bei falscher Einsch�tzung<br><br>
-
-                <strong>Empfehlung:</strong><br>
-                � <strong>Sofortige Anwaltsberatung</strong> innerhalb 24-48 Stunden<br>
-                � <strong>Keine Eigenversuche</strong> bei der rechtlichen Bewertung<br>
-                � <strong>Fristen unbedingt beachten</strong> - Vers�umung meist irreversibel<br>
-                � <strong>Dokumentation aller Umst�nde</strong> f�r H�rtefallpr�fung
-                </div>
-
-                <strong>?? Empfehlung:</strong> Sofortige Anwaltsberatung innerhalb 24 Stunden dringend empfohlen! K�ndigungen sind hochkomplex und fristgebunden.`
-            },
-            'Nebenkosten': {
-                complexity: 'medium',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Rechtliche Grundlagen</h3>
-
-                <strong>� 556 BGB - Vereinbarung �ber Betriebskosten:</strong><br>
-                <em>"Die Vertragsparteien k�nnen vereinbaren, dass der Mieter Betriebskosten tr�gt. Betriebskosten sind die Kosten, die dem Eigent�mer oder Erbbauberechtigten durch das Eigentum oder Erbbaurecht am Grundst�ck oder durch den bestimmungsgem��en Gebrauch des Geb�udes, der Nebengeb�ude, Anlagen, Einrichtungen und des Grundst�cks laufend entstehen."</em><br><br>
-
-                <strong>� 556 Abs. 3 BGB - Abrechnungsfrist:</strong><br>
-                <em>"Die Abrechnung ist dem Mieter sp�testens bis zum Ablauf des zw�lften Monats nach Ende des Abrechnungszeitraums mitzuteilen."</em><br><br>
-
-                <strong>Betriebskostenverordnung (BetrKV):</strong><br>
-                Konkretisiert die umlagef�higen Betriebskosten in � 2 BetrKV<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Umlagef�hige Betriebskosten</h3>
-
-                <strong>� 2 BetrKV - Katalog der Betriebskosten:</strong><br>
-
-                <strong>1. Wasserversorgung:</strong><br>
-                � ? Wasserverbrauchskosten<br>
-                � ? Grundgeb�hren<br>
-                � ? Kosten der Wasseruhr<br>
-                � ? Wartung der Wasserversorgungsanlage<br><br>
-
-                <strong>2. Entw�sserung:</strong><br>
-                � ? Abwassergeb�hren<br>
-                � ? Niederschlagswasser<br>
-                � ? Wartung der Entw�sserungsanlage<br><br>
-
-                <strong>3. Heizung und Warmwasser:</strong><br>
-                � ? Brennstoffkosten (Gas, �l, Fernw�rme)<br>
-                � ? Wartung und Reinigung der Heizungsanlage<br>
-                � ? Schornsteinreinigung<br>
-                � ? Heizungsstrom<br><br>
-
-                <strong>4. Aufzug:</strong><br>
-                � ? Strom f�r Aufzugsbetrieb<br>
-                � ? Wartung und Pr�fung<br>
-                � ? Reinigung<br><br>
-
-                <strong>5. Stra�enreinigung und M�llbeseitigung:</strong><br>
-                � ? Stra�enreinigungsgeb�hren<br>
-                � ? M�llabfuhrgeb�hren<br>
-                � ? Kosten f�r M�llbeh�lter<br><br>
-
-                <strong>6. Geb�udereinigung:</strong><br>
-                � ? Reinigung von Treppenh�usern<br>
-                � ? Reinigung von Kellern und Dachb�den<br>
-                � ? Fensterreinigung (nur Au�enseite)<br><br>
-
-                <strong>7. Gartenpflege:</strong><br>
-                � ? Pflege von Gr�nanlagen<br>
-                � ? Winterdienst<br>
-                � ? Spielplatzwartung<br><br>
-
-                <strong>8. Beleuchtung:</strong><br>
-                � ? Strom f�r Hausbeleuchtung<br>
-                � ? Au�enbeleuchtung<br>
-                � ? Wartung der Beleuchtungsanlage<br><br>
-
-                <strong>9. Sch�dlingsbek�mpfung:</strong><br>
-                � ? Regelm��ige Sch�dlingsbek�mpfung<br>
-                � ? Taubenschutzma�nahmen<br><br>
-
-                <strong>10. Hausmeister:</strong><br>
-                � ? Lohn des Hausmeisters<br>
-                � ? Sozialabgaben<br>
-                � ? Sachbez�ge (z.B. freie Wohnung)<br><br>
-
-                <strong>11. Hausverwaltung:</strong><br>
-                � ? Kosten der Hausverwaltung<br>
-                � ? Nur bei kleineren Objekten<br><br>
-
-                <strong>12. Grundsteuer:</strong><br>
-                � ? Grundsteuer A und B<br><br>
-
-                <strong>13. Versicherungen:</strong><br>
-                � ? Haftpflichtversicherung<br>
-                � ? Geb�udeversicherung<br>
-                � ? Nicht: Rechtsschutzversicherung<br><br>
-
-                <strong>14. Kabel-/Antennenanlage:</strong><br>
-                � ? Grundgeb�hren f�r Kabelanschluss<br>
-                � ? Wartung der Antennenanlage<br><br>
-
-                <strong>15. Wascheinrichtungen:</strong><br>
-                � ? Strom und Wasser f�r Gemeinschaftswaschk�che<br>
-                � ? Wartung der Waschmaschinen<br><br>
-
-                <strong>16. Sonstige Betriebskosten:</strong><br>
-                � ? Nur wenn im Mietvertrag konkret benannt<br>
-                � ? Z.B. Kosten f�r Schwimmbad, Sauna<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">? Nicht umlagef�hige Kosten</h3>
-
-                <strong>Verwaltungskosten:</strong><br>
-                � ? Kosten der Hausverwaltung (bei gr��eren Objekten)<br>
-                � ? Bankgeb�hren<br>
-                � ? Porto und Telefon<br>
-                � ? Rechtsberatung und Prozesskosten<br><br>
-
-                <strong>Instandhaltung und Reparaturen:</strong><br>
-                � ? Reparaturen an der Heizungsanlage<br>
-                � ? Erneuerung von Anlagen<br>
-                � ? Sch�nheitsreparaturen<br>
-                � ? Instandsetzung nach Vandalismussch�den<br><br>
-
-                <strong>Kapitalkosten:</strong><br>
-                � ? Zinsen und Tilgung<br>
-                � ? Abschreibungen<br>
-                � ? Eigenkapitalverzinsung<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Pr�fschema f�r Nebenkostenabrechnung</h3>
-
-                <strong>1. Formelle Pr�fung:</strong><br>
-                � ? Fristgerechte Zustellung (12 Monate nach Abrechnungszeitraum)<br>
-                � ? Vollst�ndigkeit der Abrechnung<br>
-                � ? Nachvollziehbarkeit der Berechnung<br>
-                � ? Belegbeif�gung oder Belegeinsichtsrecht<br><br>
-
-                <strong>2. Materielle Pr�fung:</strong><br>
-                � ? Umlagef�higkeit der Kosten nach BetrKV<br>
-                � ? Angemessenheit der Kosten<br>
-                � ? Richtigkeit des Verteilerschl�ssels<br>
-                � ? Korrekte Berechnung des Mieteranteils<br><br>
-
-                <strong>3. Verteilerschl�ssel pr�fen:</strong><br>
-                � ?? <strong>Nach Wohnfl�che:</strong> Heizung, Warmwasser, Grundsteuer<br>
-                � ?? <strong>Nach Personenzahl:</strong> Wasser, M�ll<br>
-                � ?? <strong>Nach Wohneinheiten:</strong> Hausmeister, Beleuchtung<br>
-                � ?? <strong>Nach Verbrauch:</strong> Heizung (mind. 50%), Warmwasser<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">??? Relevante Rechtsprechung</h3>
-
-                <strong>Wichtige BGH-Urteile:</strong><br>
-                � <strong>BGH VIII ZR 189/18:</strong> Hausmeisterkosten nur bei tats�chlicher T�tigkeit umlagef�hig<br>
-                � <strong>BGH VIII ZR 144/17:</strong> Wartungskosten f�r Heizung sind Betriebskosten<br>
-                � <strong>BGH VIII ZR 209/16:</strong> Abrechnungsfrist ist Ausschlussfrist<br>
-                � <strong>BGH VIII ZR 96/15:</strong> Belegeinsichtsrecht des Mieters<br><br>
-
-                <strong>Abrechnungsfristen:</strong><br>
-                � <strong>BGH VIII ZR 107/17:</strong> Versp�tete Abrechnung f�hrt zum Wegfall der Nachforderung<br>
-                � <strong>BGH VIII ZR 189/16:</strong> 12-Monats-Frist ist Ausschlussfrist<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? H�ufige Abrechnungsfehler</h3>
-
-                <strong>Vermieter-Fehler:</strong><br>
-                � ? Versp�tete Abrechnung (nach 12 Monaten)<br>
-                � ? Umlage nicht umlagef�higer Kosten<br>
-                � ? Falscher Verteilerschl�ssel<br>
-                � ? Fehlende oder unvollst�ndige Belege<br>
-                � ? Doppelte Kostenumlage<br><br>
-
-                <strong>Mieter-Fehler:</strong><br>
-                � ? Keine Pr�fung der Abrechnung<br>
-                � ? Vers�umung der Einwendungsfrist<br>
-                � ? Zahlung ohne Pr�fung<br>
-                � ? Keine Belegeinsicht verlangt<br><br>
-
-                <h3 style="color: #1e3c72; margin: 20px 0 15px 0;">?? Praktisches Vorgehen bei Abrechnungspr�fung</h3>
-
-                <strong>Schritt 1 - Sofortpr�fung:</strong><br>
-                � ?? Zustellungsdatum pr�fen (12-Monats-Frist)<br>
-                � ?? Vollst�ndigkeit der Abrechnung<br>
-                � ?? H�he der Nachforderung/Guthaben<br><br>
-
-                <strong>Schritt 2 - Detailpr�fung:</strong><br>
-                � ?? Alle Kostenpositionen auf Umlagef�higkeit pr�fen<br>
-                � ?? Verteilerschl�ssel kontrollieren<br>
-                � ?? Wohnfl�chenangabe �berpr�fen<br>
-                � ?? Kostensteigerungen hinterfragen<br><br>
-
-                <strong>Schritt 3 - Belegeinsicht:</strong><br>
-                � ?? Schriftliche Anforderung der Belege<br>
-                � ?? Originalrechnungen einsehen<br>
-                � ?? Gesamtkosten und Verteilung pr�fen<br><br>
-
-                <strong>Schritt 4 - Einwendungen:</strong><br>
-                � ?? Schriftliche Einwendungen binnen 12 Monaten<br>
-                � ?? Konkrete Beanstandungen formulieren<br>
-                � ?? Zu viel gezahlte Betr�ge zur�ckfordern<br><br>
-
-                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #856404; margin: 20px 0;">
-                <strong>?? Wichtige Fristen:</strong><br><br>
-
-                <strong>Abrechnungsfrist (Vermieter):</strong><br>
-                � 12 Monate nach Ende des Abrechnungszeitraums<br>
-                � Ausschlussfrist - bei Vers�umung keine Nachforderung<br><br>
-
-                <strong>Einwendungsfrist (Mieter):</strong><br>
-                � 12 Monate nach Zugang der Abrechnung<br>
-                � Danach nur noch bei grober Unrichtigkeit<br><br>
-
-                <strong>Belegeinsichtsfrist:</strong><br>
-                � Bis zum Ende des 12. Monats nach Abrechnungszugang<br>
-                � Verl�ngerung bei berechtigtem Interesse m�glich
-                </div>
-
-                <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
-                <strong>? Muster-Einwendung gegen Nebenkostenabrechnung:</strong><br><br>
-
-                <em>Sehr geehrte/r [Vermieter],<br><br>
-
-                gegen Ihre Nebenkostenabrechnung f�r den Zeitraum [Zeitraum] erhebe ich folgende Einwendungen:<br><br>
-
-                1. Die Position "[Kostenart]" in H�he von [Betrag] � ist nicht umlagef�hig nach � 2 BetrKV<br>
-                2. Der Verteilerschl�ssel f�r "[Kostenart]" ist nicht sachgerecht<br>
-                3. Die Kostensteigerung bei "[Kostenart]" um [%] ist nicht nachvollziehbar<br><br>
-
-                Ich bitte um Korrektur der Abrechnung und Erstattung des zu viel gezahlten Betrags.<br><br>
-
-                Hilfsweise beantrage ich Belegeinsicht gem�� � 556 Abs. 3 S. 2 BGB.<br><br>
-
-                Mit freundlichen Gr��en<br>
-                [Name]</em>
-                </div>
-
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #1e3c72; margin: 20px 0;">
-                <strong>?? Fazit und Handlungsempfehlung:</strong><br><br>
-                <strong>Komplexit�tsbewertung:</strong> Mittel<br>
-                � Nebenkostenabrechnungen erfordern detaillierte Rechtskenntnisse<br>
-                � Viele Fehlerquellen bei Vermietern<br>
-                � Fristen sind unbedingt zu beachten<br>
-                � Erhebliches Einsparpotential f�r Mieter<br><br>
-
-                <strong>Empfehlung:</strong><br>
-                � <strong>Jede Abrechnung pr�fen</strong> - auch bei geringen Betr�gen<br>
-                � <strong>Belegeinsicht verlangen</strong> bei Unklarheiten<br>
-                � <strong>Einwendungen fristgerecht erheben</strong><br>
-                � <strong>Bei komplexen F�llen:</strong> Anwaltliche Beratung
-                </div>
-
-                <strong>?? Empfehlung:</strong> Detailpr�fung durch Anwalt bei Auff�lligkeiten oder hohen Nachforderungen empfohlen`
-            },
-            'Schimmel': {
-                complexity: 'medium',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-                <strong>?? Wichtige Schritte:</strong><br>
-                � Ursache kl�ren (Baumangel vs. Nutzerverhalten)<br>
-                � Mietminderung bis zu 50% m�glich<br>
-                � Dokumentation mit Fotos<br><br>
-                <strong>?? Empfehlung:</strong> Sachverst�ndigen-Gutachten + Anwaltsberatung`
-            },
-            'Kaution': {
-                complexity: 'low',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-low">Niedrige Komplexit�t</span><br><br>
-                <strong>?? Ihre Rechte:</strong><br>
-                � R�ckgabe binnen 6 Monaten nach Auszug<br>
-                � Verzinsung bei Anlage erforderlich<br>
-                � Begr�ndete Einbehalte m�glich<br><br>
-                <strong>?? Empfehlung:</strong> Mahnung ausreichend, bei Verweigerung Anwalt`
-            },
-            'Modernisierung': {
-                complexity: 'medium',
-                answer: `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-                <strong>?? Ihre Rechte:</strong><br>
-                � Duldungspflicht nach � 555b BGB<br>
-                � Mieterh�hung max. 8% j�hrlich<br>
-                � 3 Monate Ank�ndigungsfrist<br><br>
-                <strong>?? Empfehlung:</strong> Anwaltsberatung bei umfangreichen Ma�nahmen`
-            }
-        };
-
-        // Spezialisierte Mietrechts-Anw�lte
-        const mietrechtsAnwaelte = [
-            {
-                name: "Dr. Maria Schmidt",
-                specialization: "Mietrecht & Wohnungseigentumsrecht",
-                location: "2.3 km entfernt",
-                rating: 4.9,
-                reviews: 187,
-                hourlyRate: "190�/h",
-                available: true,
-                expertise: "Mietminderung, K�ndigungsschutz"
-            },
-            {
-                name: "RA Thomas Weber",
-                specialization: "Mietrecht & Immobilienrecht",
-                location: "1.8 km entfernt",
-                rating: 4.8,
-                reviews: 203,
-                hourlyRate: "180�/h",
-                available: true,
-                expertise: "Nebenkostenabrechnungen, Modernisierung"
-            },
-            {
-                name: "RA Sarah Klein",
-                specialization: "Mietrecht & Verbraucherschutz",
-                location: "3.1 km entfernt",
-                rating: 4.7,
-                reviews: 156,
-                hourlyRate: "170�/h",
-                available: true,
-                expertise: "Mieterh�hungen, Schimmelsch�den"
-            },
-            {
-                name: "Dr. Michael Hoffmann",
-                specialization: "Mietrecht & Baurecht",
-                location: "4.2 km entfernt",
-                rating: 4.9,
-                reviews: 234,
-                hourlyRate: "210�/h",
-                available: false,
-                expertise: "Baum�ngel, Gew�hrleistung"
-            }
-        ];
-
-        // Input Method Selection
-        function selectInputMethod(method) {
-            currentInputMethod = method;
-
-            // Update active state
-            document.querySelectorAll('.input-method').forEach(el => el.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Show/hide input methods
-            document.getElementById('textInput').style.display = method === 'text' ? 'block' : 'none';
-            document.getElementById('voiceInput').style.display = method === 'voice' ? 'block' : 'none';
-            document.getElementById('documentInput').style.display = method === 'document' ? 'block' : 'none';
-        }
-
-        // Voice Recording
-        function toggleVoiceRecording() {
-            const voiceBtn = document.getElementById('voiceBtn');
-            const voiceStatus = document.getElementById('voiceStatus');
-
-            if (!isRecording) {
-                isRecording = true;
-                voiceBtn.classList.add('recording');
-                voiceStatus.textContent = 'Aufnahme l�uft... Sprechen Sie jetzt!';
-
-                // Simulate voice recording
-                setTimeout(() => {
-                    document.getElementById('questionText').value = "Mein Vermieter will die Miete um 25% erh�hen, obwohl ich erst vor einem Jahr eingezogen bin. Ist das rechtens?";
-                    isRecording = false;
-                    voiceBtn.classList.remove('recording');
-                    voiceStatus.textContent = 'Aufnahme beendet. Text wurde �bertragen.';
-                    selectInputMethod('text');
-
-                    setTimeout(() => {
-                        voiceStatus.textContent = '';
-                    }, 3000);
-                }, 3000);
-            }
-        }
-
-        // File Upload
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Simulate document analysis
-                setTimeout(() => {
-                    document.getElementById('questionText').value = `Ich habe ein Dokument hochgeladen (${file.name}). K�nnen Sie mir dabei helfen, die rechtlichen Aspekte zu verstehen?`;
-                    selectInputMethod('text');
-                    alert('Dokument erfolgreich analysiert! Die Frage wurde generiert.');
-                }, 2000);
-                alert('Dokument wird analysiert...');
-            }
-        }
-
-        // Ask Question
+            </div>
+        </div>
+    </div>
+
+    <script>
         function askQuestion(topic) {
-            const response = mietrechtAnswers[topic];
-            if (response) {
-                // First show the detailed analysis in the analysis panel
-                showComplexityAnalysis(response.answer, response.complexity, topic);
-                addMessage(`Frage zu: ${topic}`, 'user');
-                addMessage(response.answer, 'ai');
-
-                // Show lawyer navigation for medium/high complexity after delay
-                if (response.complexity !== 'low') {
-                    setTimeout(() => {
-                        showLawyerNavigation();
-                        showPreparationChecklist();
-
-                        // Add explanation message
-                        addMessage(`<strong>????? Anwaltsvermittlung:</strong><br>
-                        Da Ihre Frage eine ${response.complexity === 'high' ? 'hohe' : 'mittlere'} Komplexit�t aufweist, 
-                        empfehle ich Ihnen eine professionelle Beratung. Klicken Sie auf "Passende Anw�lte finden" 
-                        um spezialisierte Mietrechtsanw�lte in Ihrer N�he zu finden.`, 'ai');
-                    }, 1500);
-                }
-            }
+            const input = document.getElementById('legalQuestion');
+            input.value = `Ich habe eine Frage zum Thema: ${topic}`;
+            handleQuestion();
         }
 
-        // Send Question
-        function sendQuestion() {
-            console.log('sendQuestion called'); // Debug log
-
-            const questionText = document.getElementById('questionText').value.trim();
-            console.log('Question text:', questionText); // Debug log
-
-            if (!questionText) {
+        function handleQuestion() {
+            const question = document.getElementById('legalQuestion').value;
+            const results = document.getElementById('results');
+            
+            if (!question.trim()) {
                 alert('Bitte geben Sie eine Frage ein.');
                 return;
             }
-
-            // Add user message
-            addMessage(questionText, 'user');
-
-            // Show typing indicator
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.classList.add('show');
-            }
-
-            // Clear input
-            document.getElementById('questionText').value = '';
-
-            // Simulate AI response
-            setTimeout(() => {
-                analyzeQuestion(questionText);
-                if (typingIndicator) {
-                    typingIndicator.classList.remove('show');
-                }
-            }, 2000);
-        }
-
-        // Analyze Question
-        function analyzeQuestion(question) {
-            let response = '';
-            let complexity = 'medium';
-            let showLawyers = false;
-            let topic = null;
-
-            // Check for specific keywords
-            if (question.toLowerCase().includes('mietvertrag') || 
-                question.toLowerCase().includes('vertrag') || 
-                question.toLowerCase().includes('pflichtangaben') ||
-                question.toLowerCase().includes('details') ||
-                question.toLowerCase().includes('inhalt')) {
-                response = mietrechtAnswers['Mietvertrag'].answer;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = 'Mietvertrag';
-            } else if (question.toLowerCase().includes('mieterh�hung') || 
-                       (question.toLowerCase().includes('miete') && question.toLowerCase().includes('erh�h'))) {
-                response = mietrechtAnswers['Mieterh�hung'].answer;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = 'Mieterh�hung';
-            } else if (question.toLowerCase().includes('heizung') || 
-                       question.toLowerCase().includes('minder')) {
-                response = mietrechtAnswers['Heizungsausfall'].answer;
-                complexity = 'low';
-                showLawyers = false;
-                topic = 'Heizungsausfall';
-            } else if (question.toLowerCase().includes('k�ndigung') || 
-                       question.toLowerCase().includes('k�ndig')) {
-                response = mietrechtAnswers['K�ndigung'].answer;
-                complexity = 'high';
-                showLawyers = true;
-                topic = 'K�ndigung';
-            } else if (question.toLowerCase().includes('nebenkosten') || 
-                       question.toLowerCase().includes('betriebskosten')) {
-                response = mietrechtAnswers['Nebenkosten'].answer;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = 'Nebenkosten';
-            } else if (question.toLowerCase().includes('schimmel')) {
-                response = mietrechtAnswers['Schimmel'].answer;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = 'Schimmel';
-            } else if (question.toLowerCase().includes('kaution')) {
-                response = mietrechtAnswers['Kaution'].answer;
-                complexity = 'low';
-                showLawyers = false;
-                topic = 'Kaution';
-            } else if (question.toLowerCase().includes('modernisierung')) {
-                response = mietrechtAnswers['Modernisierung'].answer;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = 'Modernisierung';
-            } else {
-                // Default response
-                response = `<strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-                <strong>?? KI-Analyse Ihrer Frage:</strong><br>
-                Ihre Frage wurde analysiert und dem Mietrecht zugeordnet.<br><br>
-                <strong>?? Erste Einsch�tzung:</strong><br>
-                Ihr Fall erfordert eine individuelle Betrachtung der spezifischen Umst�nde.<br><br>
-                <strong>?? Empfehlung:</strong> F�r eine detaillierte Beratung empfehle ich Ihnen einen spezialisierten Mietrechtsanwalt.`;
-                complexity = 'medium';
-                showLawyers = true;
-                topic = null;
-            }
-
-            // First show the detailed analysis in both chat and analysis panel
-            addMessage(response, 'ai');
-            showComplexityAnalysis(response, complexity, topic);
-
-            // Then show lawyer navigation after a delay for medium/high complexity
-            if (showLawyers) {
-                setTimeout(() => {
-                    showLawyerNavigation();
-                    showPreparationChecklist();
-
-                    // Add a message about lawyer recommendations
-                    addMessage(`<strong>????? Anwaltsvermittlung:</strong><br>
-                    Basierend auf der Komplexit�tsanalyse Ihrer Frage empfehle ich Ihnen eine Beratung durch einen spezialisierten Mietrechtsanwalt. 
-                    Klicken Sie auf "Passende Anw�lte finden" um zur Anwaltssuche zu gelangen.`, 'ai');
-                }, 2000);
-            }
-        }
-
-        // Add Message
-        function addMessage(text, sender) {
-            console.log('addMessage called:', sender, text.substring(0, 50)); // Debug log
-
-            const messagesContainer = document.getElementById('chatMessages');
-            if (!messagesContainer) {
-                console.error('chatMessages container not found');
-                return;
-            }
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-
-            if (sender === 'user') {
-                messageDiv.innerHTML = `<strong>Sie:</strong> ${text}`;
-            } else {
-                messageDiv.innerHTML = text;
-            }
-
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Add to conversation history
-            conversationHistory.push({
-                sender: sender,
-                text: text,
-                timestamp: new Date()
-            });
-        }
-
-        // Show Complexity Analysis
-        function showComplexityAnalysis(response, complexity, topic = null) {
-            const analysisDiv = document.getElementById('complexityAnalysis');
-
-            let complexityText = 'Mittel';
-            let complexityClass = 'complexity-medium';
-            let analysis = '';
-            let detailAnalysis = '';
-
-            if (complexity === 'high') {
-                complexityText = 'Hoch';
-                complexityClass = 'complexity-high';
-                analysis = 'Ihre Frage betrifft komplexe rechtliche Aspekte, die eine individuelle Beratung durch einen Anwalt erfordern.';
-                detailAnalysis = `
-                <div style="margin-top: 15px; padding: 15px; background: #f8d7da; border-radius: 10px; border-left: 4px solid #721c24;">
-                <strong>?? Hohe Komplexit�t erkannt:</strong><br>
-                � Rechtlich komplexe Sachverhalte<br>
-                � Kurze Fristen mit weitreichenden Konsequenzen<br>
-                � Hohe Prozessrisiken bei falscher Einsch�tzung<br>
-                � Sofortige Anwaltsberatung dringend empfohlen
-                </div>`;
-            } else if (complexity === 'medium') {
-                complexityText = 'Mittel';
-                complexityClass = 'complexity-medium';
-                analysis = 'Ihre Frage erfordert eine detaillierte Analyse. Eine Anwaltsberatung k�nnte hilfreich sein.';
-                detailAnalysis = `
-                <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #856404;">
-                <strong>?? Mittlere Komplexit�t erkannt:</strong><br>
-                � Detaillierte Rechtskenntnisse erforderlich<br>
-                � Mehrere rechtliche Aspekte zu beachten<br>
-                � Individuelle Umst�nde entscheidend<br>
-                � Anwaltsberatung bei Unsicherheiten empfohlen
-                </div>`;
-            } else {
-                complexityText = 'Niedrig';
-                complexityClass = 'complexity-low';
-                analysis = 'Ihre Frage kann in der Regel durch eine KI-gest�tzte Erstberatung beantwortet werden.';
-                detailAnalysis = `
-                <div style="margin-top: 15px; padding: 15px; background: #d4edda; border-radius: 10px; border-left: 4px solid #28a745;">
-                <strong>? Niedrige Komplexit�t erkannt:</strong><br>
-                � Standardfall mit klarer Rechtslage<br>
-                � Gut dokumentierte Rechtsprechung<br>
-                � KI-Beratung meist ausreichend<br>
-                � Selbsthilfe mit Musterbriefen m�glich
-                </div>`;
-            }
-
-            // Show the full detailed analysis in the analysis panel
-            let fullAnalysis = '';
-            if (topic && mietrechtAnswers[topic]) {
-                fullAnalysis = `
-                <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 12px; border: 2px solid #e9ecef; max-height: 400px; overflow-y: auto;">
-                <h4 style="color: #1e3c72; margin-bottom: 15px;">?? Detaillierte Rechtsanalyse</h4>
-                ${mietrechtAnswers[topic].answer}
-                </div>`;
-            }
-
-            analysisDiv.innerHTML = `
-                <div class="complexity-badge ${complexityClass}">
-                    Komplexit�t: ${complexityText}
-                </div>
-                <p style="margin-top: 15px;">${analysis}</p>
-                ${detailAnalysis}
-                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
-                <strong>?? Analyse-Faktoren:</strong><br>
-                � Rechtliche Vielschichtigkeit<br>
-                � Fristen und Termine<br>
-                � Prozessrisiken<br>
-                � Selbsthilfe-M�glichkeiten
-                </div>
-                ${fullAnalysis}
-            `;
-        }
-
-        // Show Lawyer Navigation
-        function showLawyerNavigation() {
-            document.getElementById('lawyerNavigation').style.display = 'block';
-        }
-
-        // Show Lawyer Page
-        function showLawyerPage() {
-            document.querySelector('.app-container > .main-layout').style.display = 'none';
-            document.querySelector('.app-container > .header').style.display = 'none';
-            document.getElementById('lawyerPage').style.display = 'block';
-
-            // Initialize lawyer search
-            searchLawyers();
-        }
-
-        // Show Main Page
-        function showMainPage() {
-            document.querySelector('.app-container > .main-layout').style.display = 'grid';
-            document.querySelector('.app-container > .header').style.display = 'block';
-            document.getElementById('lawyerPage').style.display = 'none';
-        }
-
-        // Search Lawyers
-        function searchLawyers() {
-            const lawyerList = document.getElementById('lawyerList');
-            lawyerList.innerHTML = '';
-
-            mietrechtsAnwaelte.forEach((lawyer, index) => {
-                const lawyerCard = document.createElement('div');
-                lawyerCard.className = 'lawyer-card';
-                lawyerCard.style.cursor = 'pointer';
-                lawyerCard.onclick = () => selectLawyer(lawyer, index);
-
-                lawyerCard.innerHTML = `
-                    <div class="lawyer-info">
-                        <div>
-                            <strong>${lawyer.name}</strong><br>
-                            <small>${lawyer.specialization}</small><br>
-                            <small style="color: #666;">${lawyer.expertise}</small><br>
-                            <small>?? ${lawyer.location}</small>
+            
+            results.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mr-3">
+                            <i class="ri-question-line"></i>
                         </div>
-                        <div style="text-align: right;">
-                            <div class="lawyer-rating">? ${lawyer.rating} (${lawyer.reviews})</div>
-                            <small><strong>${lawyer.hourlyRate}</strong></small><br>
-                            <small style="color: ${lawyer.available ? '#28a745' : '#dc3545'};">
-                                ${lawyer.available ? '? Verf�gbar' : '? Ausgebucht'}
-                            </small>
+                        <div class="font-medium">Ihre Frage</div>
+                    </div>
+                    <p class="mb-4">${question}</p>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white mr-3">
+                            <i class="ri-robot-line"></i>
                         </div>
+                        <div class="font-medium">JurisMind Antwort</div>
                     </div>
-                    <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
-                        <strong>Klicken Sie hier f�r Details und Terminbuchung</strong>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="mb-2">Vielen Dank für Ihre Anfrage. Basierend auf Ihrer Frage zum Thema "${question.includes(':') ? question.split(':')[1] : question}", haben wir folgende Informationen für Sie recherchiert:</p>
+                        <ul class="list-disc pl-6 mt-2 space-y-1">
+                            <li>Relevante Gesetzesparagraphen (z.B. BGB, ZVG)</li>
+                            <li>Gerichtsentscheidungen zu ähnlichen Fällen</li>
+                            <li>Praxisempfehlungen für Ihr Vorgehen</li>
+                            <li>Optionale Anwaltsvermittlung</li>
+                        </ul>
+                        <p class="mt-3">Für eine detaillierte und rechtsverbindliche Beratung empfehlen wir den Kontakt mit einem Fachanwalt für Mietrecht.</p>
                     </div>
-                `;
-                lawyerList.appendChild(lawyerCard);
-            });
-        }
-
-        // Select Lawyer
-        function selectLawyer(lawyer, index) {
-            // Highlight selected lawyer
-            document.querySelectorAll('.lawyer-card').forEach((card, i) => {
-                if (i === index) {
-                    card.style.border = '3px solid #1e3c72';
-                    card.style.background = '#f8f9ff';
-                } else {
-                    card.style.border = '2px solid #e9ecef';
-                    card.style.background = 'white';
-                }
-            });
-
-            // Show lawyer details
-            const detailsDiv = document.getElementById('selectedLawyerDetails');
-            detailsDiv.innerHTML = `
-                <div style="text-align: left;">
-                    <h4 style="color: #1e3c72; margin-bottom: 15px;">${lawyer.name}</h4>
-                    <p><strong>Spezialisierung:</strong> ${lawyer.specialization}</p>
-                    <p><strong>Expertise:</strong> ${lawyer.expertise}</p>
-                    <p><strong>Standort:</strong> ${lawyer.location}</p>
-                    <p><strong>Bewertung:</strong> ? ${lawyer.rating}/5 (${lawyer.reviews} Bewertungen)</p>
-                    <p><strong>Stundensatz:</strong> ${lawyer.hourlyRate}</p>
-                    <p><strong>Verf�gbarkeit:</strong> 
-                        <span style="color: ${lawyer.available ? '#28a745' : '#dc3545'};">
-                            ${lawyer.available ? '? Verf�gbar' : '? Ausgebucht'}
-                        </span>
-                    </p>
                 </div>
             `;
-
-            // Show booking options
-            const bookingDiv = document.getElementById('bookingOptions');
-            if (lawyer.available) {
-                bookingDiv.innerHTML = `
-                    <h4 style="margin-bottom: 15px; color: #1e3c72;">Beratungsoptionen w�hlen:</h4>
-                    <div style="display: grid; gap: 15px;">
-                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'phone')" style="width: 100%; padding: 15px;">
-                            ?? Telefonberatung<br>
-                            <small>Sofort verf�gbar � ${Math.round(parseFloat(lawyer.hourlyRate.replace('�/h', '')) * 0.8)}�/h</small>
-                        </button>
-                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'video')" style="width: 100%; padding: 15px;">
-                            ?? Videoberatung<br>
-                            <small>Bildschirmfreigabe m�glich � ${Math.round(parseFloat(lawyer.hourlyRate.replace('�/h', '')) * 0.9)}�/h</small>
-                        </button>
-                        <button class="consultation-btn" onclick="bookConsultation('${lawyer.name}', 'office')" style="width: 100%; padding: 15px;">
-                            ?? Termin vor Ort<br>
-                            <small>Pers�nliche Beratung � ${lawyer.hourlyRate}</small>
-                        </button>
-                    </div>
-                    <div style="margin-top: 15px; padding: 15px; background: #d4edda; border-radius: 10px;">
-                        <h5>?? N�chste verf�gbare Termine:</h5>
-                        <p>� Heute, 16:30 Uhr</p>
-                        <p>� Morgen, 10:00 Uhr</p>
-                        <p>� �bermorgen, 14:15 Uhr</p>
-                    </div>
-                `;
-            } else {
-                bookingDiv.innerHTML = `
-                    <div style="text-align: center; color: #666;">
-                        <p>? Derzeit keine Termine verf�gbar</p>
-                        <p style="margin-top: 10px;">N�chster freier Termin: <strong>N�chste Woche</strong></p>
-                        <button onclick="addToWaitingList('${lawyer.name}')" style="margin-top: 15px; background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
-                            ?? Auf Warteliste setzen
-                        </button>
-                    </div>
-                `;
-            }
         }
-
-        // Transfer Case to Lawyer
-        function transferCaseToLawyer() {
-            alert('Ihre Fallanalyse wird verschl�sselt an den gew�hlten Anwalt �bertragen.\n\nDer Anwalt erh�lt:\n� Ihre Frage und KI-Analyse\n� Komplexit�tsbewertung\n� Relevante Rechtsbez�ge\n� Ihre Kontaktdaten\n\nSie erhalten eine Best�tigung per E-Mail.');
-        }
-
-        // Add to Waiting List
-        function addToWaitingList(lawyerName) {
-            alert(`Sie wurden auf die Warteliste von ${lawyerName} gesetzt.\n\nSie erhalten eine E-Mail, sobald ein Termin frei wird.`);
-        }
-
-        // Show Preparation Checklist
-        function showPreparationChecklist() {
-            document.getElementById('preparationChecklist').style.display = 'block';
-            document.getElementById('preparationPlaceholder').style.display = 'none';
-        }
-
-        // Book Consultation
-        function bookConsultation(lawyerName, type) {
-            const typeText = {
-                'phone': 'Telefonberatung',
-                'video': 'Videoberatung',
-                'office': 'Termin vor Ort'
-            };
-
-            alert(`${typeText[type]} mit ${lawyerName} wird gebucht...\n\nSie erhalten in K�rze eine Best�tigung per E-Mail mit den Terminen und Zugangsdaten.`);
-
-            // Simulate booking confirmation
-            setTimeout(() => {
-                addMessage(`<strong>System:</strong> ? ${typeText[type]} mit ${lawyerName} erfolgreich gebucht!<br><br>?? <strong>N�chste verf�gbare Termine:</strong><br>� Heute, 16:30 Uhr<br>� Morgen, 10:00 Uhr<br>� �bermorgen, 14:15 Uhr<br><br>Sie erhalten eine Best�tigungs-E-Mail mit allen Details.`, 'ai');
-            }, 1500);
-        }
-
-        // Export Functions
-        function exportToPDF() {
-            if (conversationHistory.length === 0) {
-                alert('Noch keine Unterhaltung zum Exportieren vorhanden.');
-                return;
-            }
-
-            alert('PDF wird generiert...\n\nIhr Frage-Antwort-Verlauf wird als PDF-Datei heruntergeladen.');
-
-            setTimeout(() => {
-                alert('? PDF erfolgreich erstellt!\n\nDatei: "Mietrecht_Verlauf_' + new Date().toLocaleDateString('de-DE') + '.pdf"');
-            }, 2000);
-        }
-
-        function exportToEmail() {
-            const email = prompt('E-Mail-Adresse f�r den Versand:');
-            if (email) {
-                alert(`Verlauf wird an ${email} gesendet...`);
-                setTimeout(() => {
-                    alert('? E-Mail erfolgreich versendet!');
-                }, 1500);
-            }
-        }
-
-        function shareWithLawyer() {
-            alert('Verlauf wird f�r die Anwaltsberatung vorbereitet...\n\nIhre Daten werden verschl�sselt �bertragen und stehen dem Anwalt f�r die Beratung zur Verf�gung.');
-        }
-
-        // Drag and Drop
-        const uploadArea = document.querySelector('.upload-area');
-
-        if (uploadArea) {
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFileUpload({target: {files: files}});
-                }
-            });
-        }
-
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                sendQuestion();
-            }
-        });
-
-        // Test Send Question Function
-        function testSendQuestion() {
-            console.log('testSendQuestion called');
-
-            const questionText = document.getElementById('questionText').value.trim();
-            console.log('Question:', questionText);
-
-            if (!questionText) {
-                alert('Bitte geben Sie eine Frage ein.');
-                return;
-            }
-
-            // Add user message
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user-message';
-            messageDiv.innerHTML = `<strong>Sie:</strong> ${questionText}`;
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Clear input
-            document.getElementById('questionText').value = '';
-
-            // Show AI response after delay
-            setTimeout(() => {
-                const aiMessageDiv = document.createElement('div');
-                aiMessageDiv.className = 'message ai-message';
-
-                if (questionText.toLowerCase().includes('mietvertrag') || 
-                    questionText.toLowerCase().includes('details') ||
-                    questionText.toLowerCase().includes('pflichtangaben')) {
-
-                    aiMessageDiv.innerHTML = `<strong>KI-Assistent:</strong> 
-                    <div style="margin-top: 10px;">
-                    <strong>?? Komplexit�tsanalyse:</strong> <span class="complexity-badge complexity-medium">Mittlere Komplexit�t</span><br><br>
-
-                    <strong>?? Rechtliche Grundlagen zu Mietvertr�gen:</strong><br><br>
-
-                    <strong>� 550 BGB - Mietvertrag �ber Grundst�cke:</strong><br>
-                    Ein Mietvertrag �ber Grundst�cke, der f�r l�ngere Zeit als ein Jahr eingegangen wird, bedarf der schriftlichen Form.<br><br>
-
-                    <strong>?? Pflichtangaben im Mietvertrag:</strong><br>
-                    � Vollst�ndige Anschrift des Vermieters<br>
-                    � Genaue Bezeichnung der Wohnung und Nebenr�ume<br>
-                    � Wohnfl�che in m�<br>
-                    � Mieth�he und Nebenkosten<br>
-                    � Kaution (max. 3 Nettokaltmieten)<br>
-                    � Mietbeginn und Vertragsdauer<br><br>
-
-                    <strong>?? Empfehlung:</strong> Bei komplexen Vertragsgestaltungen sollten Sie einen Mietrechtsanwalt konsultieren.
-                    </div>`;
-                } else {
-                    aiMessageDiv.innerHTML = `<strong>KI-Assistent:</strong> 
-                    Ihre Frage wurde analysiert. F�r eine detaillierte Beratung zu "${questionText}" empfehle ich Ihnen eine Anwaltsberatung.`;
-                }
-
-                messagesContainer.appendChild(aiMessageDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-                // Update complexity analysis
-                const analysisDiv = document.getElementById('complexityAnalysis');
-                if (analysisDiv) {
-                    analysisDiv.innerHTML = `
-                        <div class="complexity-badge complexity-medium">
-                            Komplexit�t: Mittel
-                        </div>
-                        <p style="margin-top: 15px;">Ihre Frage erfordert eine detaillierte Analyse. Eine Anwaltsberatung k�nnte hilfreich sein.</p>
-                        <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #856404;">
-                        <strong>?? Mittlere Komplexit�t erkannt:</strong><br>
-                        � Detaillierte Rechtskenntnisse erforderlich<br>
-                        � Mehrere rechtliche Aspekte zu beachten<br>
-                        � Anwaltsberatung bei Unsicherheiten empfohlen
-                        </div>
-                    `;
-                }
-
-                // Show lawyer navigation
-                setTimeout(() => {
-                    const lawyerNav = document.getElementById('lawyerNavigation');
-                    if (lawyerNav) {
-                        lawyerNav.style.display = 'block';
-                    }
-                }, 1000);
-
-            }, 1500);
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded');
-
-            // Auto-scroll to bottom
-            const chatMessages = document.getElementById('chatMessages');
-            if (chatMessages) {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            // Add enter key support for textarea
-            const questionInput = document.getElementById('questionText');
-            if (questionInput) {
-                questionInput.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        testSendQuestion();
-                    }
-                });
-            }
-        });
     </script>
 </body>
+
 </html>

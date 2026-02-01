@@ -1,0 +1,266 @@
+version: '3.8'
+
+services:
+  # Service Registry
+  service-registry:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.registry
+    ports:
+      - "8500:8500"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    networks:
+      - microservices-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+      - JWT_SECRET=your-super-secret-jwt-key
+    depends_on:
+      - service-registry
+    networks:
+      - microservices-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.userservice
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-users:5432/users_db
+      - REDIS_URL=redis://redis-cache:6379
+      - SERVICE_NAME=user-service
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+    depends_on:
+      - postgres-users
+      - redis-cache
+      - service-registry
+    networks:
+      - microservices-network
+
+  # Case Service
+  case-service:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.caseservice
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-cases:5432/cases_db
+      - REDIS_URL=redis://redis-cache:6379
+      - SERVICE_NAME=case-service
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+    depends_on:
+      - postgres-cases
+      - redis-cache
+      - service-registry
+    networks:
+      - microservices-network
+
+  # Document Service
+  document-service:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.documentservice
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-docs:5432/docs_db
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - SERVICE_NAME=document-service
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+    depends_on:
+      - postgres-docs
+      - minio
+      - service-registry
+    networks:
+      - microservices-network
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.notificationservice
+    environment:
+      - SMTP_HOST=mailhog:1025
+      - SERVICE_NAME=notification-service
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+    depends_on:
+      - mailhog
+      - service-registry
+    networks:
+      - microservices-network
+
+  # Analytics Service
+  analytics-service:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.analyticsservice
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-analytics:5432/analytics_db
+      - SERVICE_NAME=analytics-service
+      - SERVICE_REGISTRY_URL=http://service-registry:8500
+    depends_on:
+      - postgres-analytics
+      - service-registry
+    networks:
+      - microservices-network
+
+  # PostgreSQL für User Service
+  postgres-users:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=users_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_users_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # PostgreSQL für Case Service
+  postgres-cases:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=cases_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_cases_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # PostgreSQL für Document Service
+  postgres-docs:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=docs_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_docs_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # PostgreSQL für Analytics Service
+  postgres-analytics:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=analytics_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_analytics_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # Redis Cache
+  redis-cache:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - microservices-network
+
+  # MinIO für Dokumentenspeicherung
+  minio:
+    image: minio/minio:RELEASE.2023-05-18T00-05-36Z
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - microservices-network
+
+  # MailHog für E-Mail-Testing
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - microservices-network
+
+  # Prometheus für Monitoring
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./services/backend/config/prometheus-microservices.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - microservices-network
+
+  # Grafana für Visualisierung
+  grafana:
+    image: grafana/grafana:9.1.0
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - microservices-network
+
+  # ELK Stack für Logging
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - microservices-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.3.3
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./services/backend/config/logstash-microservices.conf:/usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - microservices-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.3.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - microservices-network
+
+volumes:
+  postgres_users_data:
+  postgres_cases_data:
+  postgres_docs_data:
+  postgres_analytics_data:
+  redis_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:
+
+networks:
+  microservices-network:
+    driver: bridge

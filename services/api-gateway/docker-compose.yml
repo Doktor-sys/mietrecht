@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: .
+    container_name: api-gateway
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:3001
+      DOCUMENT_SERVICE_URL: http://document-service:3002
+      LEGAL_AI_SERVICE_URL: http://legal-ai-service:3003
+      BOOKING_SERVICE_URL: http://booking-service:3004
+      PAYMENT_SERVICE_URL: http://payment-service:3005
+      KNOWLEDGE_SERVICE_URL: http://knowledge-service:3006
+      COMMUNICATION_SERVICE_URL: http://communication-service:3007
+      ANALYTICS_SERVICE_URL: http://analytics-service:3008
+      COMPLIANCE_SERVICE_URL: http://compliance-service:3009
+      B2B_SERVICE_URL: http://b2b-service:3010
+      JWT_SECRET: your-jwt-secret
+      CORS_ORIGIN: "*"
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - auth-service
+      - document-service
+      - legal-ai-service
+
+  # Beispiel für andere Services (müssen separat definiert werden)
+  auth-service:
+    image: smartlaw/auth-service:latest
+    container_name: auth-service
+    environment:
+      DATABASE_URL: postgresql://auth_user:auth_password@auth-db:5432/auth_service
+      JWT_SECRET: your-jwt-secret
+      REFRESH_TOKEN_SECRET: your-refresh-token-secret
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+  document-service:
+    image: smartlaw/document-service:latest
+    container_name: document-service
+    environment:
+      DATABASE_URL: postgresql://doc_user:doc_password@doc-db:5432/doc_service
+      NODE_ENV: development
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
+
+  legal-ai-service:
+    image: smartlaw/legal-ai-service:latest
+    container_name: legal-ai-service
+    environment:
+      DATABASE_URL: postgresql://ai_user:ai_password@ai-db:5432/ai_service
+      NODE_ENV: development
+    ports:
+      - "3003:3003"
+    restart: unless-stopped
+
+volumes:
+  auth_db_data:
+  doc_db_data:
+  ai_db_data:

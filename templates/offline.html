@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - JurisMind</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        .container {
+            margin-top: 3rem;
+        }
+        h1 {
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+        }
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #6b7280;
+        }
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .features {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 0 1rem;
+        }
+        .feature-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .feature-icon {
+            margin-right: 1rem;
+            color: #2563eb;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon">📶</div>
+        <h1>Sie sind offline</h1>
+        <p>Es scheint, dass Sie keine Internetverbindung haben. Einige Funktionen sind möglicherweise nicht verfügbar.</p>
+        
+        <div class="features">
+            <div class="feature-item">
+                <span class="feature-icon">🔍</span>
+                <div>
+                    <h3>Zuletzt angesehene Inhalte</h3>
+                    <p>Zuvor besuchte Seiten sind möglicherweise weiterhin verfügbar.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📱</span>
+                <div>
+                    <h3>Offline-Nutzung</h3>
+                    <p>Einige Funktionen stehen auch ohne Internetverbindung zur Verfügung.</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="/" class="btn">Zur Startseite</a>
+        
+        <p style="margin-top: 2rem; color: #6b7280; font-size: 0.875rem;">
+            Bei fortgesetzten Problemen überprüfen Sie bitte Ihre Internetverbindung.
+        </p>
+    </div>
+
+    <script>
+        // Versuche, die Seite neu zu laden, wenn die Verbindung wiederhergestellt ist
+        window.addEventListener('online', function() {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>

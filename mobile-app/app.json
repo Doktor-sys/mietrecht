@@ -9,25 +9,67 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1e3c72"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.smartlaw.mietrecht"
+      "bundleIdentifier": "com.smartlaw.mietrecht",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Die App benötigt Zugriff auf die Kamera, um Dokumente zu scannen.",
+        "NSPhotoLibraryUsageDescription": "Die App benötigt Zugriff auf die Fotobibliothek, um Dokumente auszuwählen.",
+        "NSPhotoLibraryAddUsageDescription": "Die App benötigt Zugriff auf die Fotobibliothek, um gescannte Dokumente zu speichern."
+      },
+      "associatedDomains": [
+        "applinks:mietrecht.jurismind.app"
+      ]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1e3c72"
       },
       "package": "com.smartlaw.mietrecht",
+      "versionCode": 1,
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "mietrecht.jurismind.app",
+              "pathPrefix": "/smartlaw-agent"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "35-195-246-45.nip.io",
+              "pathPrefix": "/smartlaw-agent"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }        
       ]
     },
     "web": {
@@ -35,7 +77,25 @@
     },
     "plugins": [
       "expo-camera",
-      "expo-notifications"
-    ]
+      "expo-notifications",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.0"
+          },
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "minSdkVersion": 23
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
   }
 }

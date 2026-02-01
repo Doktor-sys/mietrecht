@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: jurismind-app
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - FLASK_APP=mietrecht_full.py
+      - FLASK_ENV=production
+    expose:
+      - "5000"
+    networks:
+      - jurismind-network
+
+  caddy:
+    image: caddy:latest
+    container_name: jurismind-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - jurismind-network
+
+networks:
+  jurismind-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

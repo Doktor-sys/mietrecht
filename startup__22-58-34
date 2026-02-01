@@ -1,0 +1,28 @@
+22.12.2025 22:58:34,86 - Starting SmartLaw Mietrecht  82.log
+======================================================== 82.log 
+  SmartLaw Mietrecht - Entwicklungsumgebung 82.log 
+======================================================== 82.log 
+ 82.log 
+[INFO] Checking system requirements... 82.log 
+[INFO] Checking Node.js installation... 82.log 
+C:\nodejs\node.exe
+INFORMATION: "82.log" wurde nicht gefunden.
+[INFO] Checking Docker installation... 82.log 
+Docker version 29.1.3, build f52814d
+[INFO] Checking required ports... 82.log 
+FINDSTR: 82.log kann nicht ge”ffnet werden.
+FINDSTR: 82.log kann nicht ge”ffnet werden.
+FINDSTR: 82.log kann nicht ge”ffnet werden.
+[INFO] Starting services... 82.log 
+[1] Start with Docker (recommended) 82.log 
+[2] Start without Docker 82.log 
+[3] Cancel 82.log 
+ 82.log 
+[INFO] Selected: Start without Docker 82.log 
+[INFO] Starting backend service... 82.log 
+[INFO] Starting web app... 82.log 
+ 82.log 
+======================================================== 82.log 
+  Development environment started 82.log 
+  Log file: startup__22-58-34 82.log 82.log 
+======================================================== 82.log 

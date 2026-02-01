@@ -1,0 +1,4 @@
+FROM python:3.9-slim 
+COPY prod_app.py . 
+RUN pip install flask 
+CMD ["python", "prod_app.py"] 

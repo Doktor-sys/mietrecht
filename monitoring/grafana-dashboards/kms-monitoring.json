@@ -1,0 +1,163 @@
+{
+  "dashboard": {
+    "title": "SmartLaw - KMS Monitoring",
+    "tags": [
+      "smartlaw",
+      "kms",
+      "security"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Key Operations Overview",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(kms_key_creations_total[5m])",
+            "legendFormat": "Key Creations"
+          },
+          {
+            "expr": "rate(kms_key_retrievals_total[5m])",
+            "legendFormat": "Key Retrievals"
+          },
+          {
+            "expr": "rate(kms_key_rotations_total[5m])",
+            "legendFormat": "Key Rotations"
+          },
+          {
+            "expr": "rate(kms_key_deletions_total[5m])",
+            "legendFormat": "Key Deletions"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 2,
+        "title": "Cache Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(kms_cache_hits_total[5m])",
+            "legendFormat": "Cache Hits"
+          },
+          {
+            "expr": "rate(kms_cache_misses_total[5m])",
+            "legendFormat": "Cache Misses"
+          },
+          {
+            "expr": "kms_cache_hit_rate",
+            "legendFormat": "Hit Rate %"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 3,
+        "title": "Key Status Distribution",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "kms_active_keys",
+            "legendFormat": "Active Keys"
+          },
+          {
+            "expr": "kms_expired_keys",
+            "legendFormat": "Expired Keys"
+          },
+          {
+            "expr": "kms_compromised_keys",
+            "legendFormat": "Compromised Keys"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Performance Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "kms_key_retrieval_duration_ms",
+            "legendFormat": "Retrieval Time (ms)"
+          },
+          {
+            "expr": "kms_key_creation_duration_ms",
+            "legendFormat": "Creation Time (ms)"
+          },
+          {
+            "expr": "kms_rotation_duration_ms",
+            "legendFormat": "Rotation Time (ms)"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Error and Security Events",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(kms_errors_total[5m])",
+            "legendFormat": "Errors"
+          },
+          {
+            "expr": "rate(kms_security_events_total[5m])",
+            "legendFormat": "Security Events"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Key Operations Summary",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "kms_key_creations_total",
+            "legendFormat": "Total Creations"
+          },
+          {
+            "expr": "kms_key_retrievals_total",
+            "legendFormat": "Total Retrievals"
+          },
+          {
+            "expr": "kms_key_rotations_total",
+            "legendFormat": "Total Rotations"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 16,
+          "w": 12,
+          "h": 8
+        }
+      }
+    ]
+  }
+}

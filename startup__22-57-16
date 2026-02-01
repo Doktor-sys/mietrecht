@@ -1,0 +1,24 @@
+22.12.2025 22:57:16,68 - Starting SmartLaw Mietrecht  65.log
+======================================================== 65.log 
+  SmartLaw Mietrecht - Entwicklungsumgebung 65.log 
+======================================================== 65.log 
+ 65.log 
+[INFO] Checking system requirements... 65.log 
+[INFO] Checking Node.js installation... 65.log 
+C:\nodejs\node.exe
+INFORMATION: "65.log" wurde nicht gefunden.
+[INFO] Checking Docker installation... 65.log 
+Docker version 29.1.3, build f52814d
+[INFO] Checking required ports... 65.log 
+FINDSTR: 65.log kann nicht ge”ffnet werden.
+FINDSTR: 65.log kann nicht ge”ffnet werden.
+FINDSTR: 65.log kann nicht ge”ffnet werden.
+[INFO] Starting services... 65.log 
+[1] Start with Docker (recommended) 65.log 
+[2] Start without Docker 65.log 
+[3] Cancel 65.log 
+ 65.log 
+[INFO] Selected: Start with Docker 65.log 
+[INFO] Starting Docker services... 65.log 
+no such service: 65.log
+[ERROR] Failed to start Docker services. Check the log file: startup__22-57-16 65.log 65.log 

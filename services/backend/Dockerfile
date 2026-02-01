@@ -13,7 +13,7 @@ COPY shared ./shared
 COPY services/backend/package*.json ./services/backend/
 
 # Install dependencies
-RUN npm ci
+RUN npm install --legacy-peer-deps || npm install --force
 
 # Copy service source code
 COPY services/backend ./services/backend
@@ -47,7 +47,7 @@ COPY shared ./shared
 COPY services/backend/package*.json ./services/backend/
 
 # Install only production dependencies
-RUN npm ci --only=production
+RUN npm install --production --legacy-peer-deps || npm install --production --force
 
 # Copy built artifacts from builder stage
 COPY --from=builder /app/services/backend/dist ./services/backend/dist

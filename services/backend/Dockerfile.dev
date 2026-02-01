@@ -2,9 +2,19 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Kopiere Root tsconfig.json (needed by ts-node)
+# Wenn wir aus dem Root bauen, ist es ../../tsconfig.json
+# Wenn wir aus dem Service-Ordner bauen, ist es ../../tsconfig.json (aber das geht nicht in Docker)
+# Am besten wir kopieren es im docker-compose oder setzen den Context richtig.
+# Für den Moment versuchen wir es ohne expliziten Copy im Dockerfile, da wir Volumes nutzen.
+
 # Installiere Dependencies
 COPY package*.json ./
 RUN npm install --legacy-peer-deps || npm install --force
+# Rebuild native modules for Alpine Linux
+RUN npm rebuild bcrypt --build-from-source
+# Installiere alle Abhängigkeiten inklusive Dev-Dependencies
+RUN npm install --legacy-peer-deps --include=dev || npm install --force --include=dev
 
 # Kopiere Source Code
 COPY . .

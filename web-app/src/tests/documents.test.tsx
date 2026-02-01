@@ -6,6 +6,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import DocumentsPage from '../pages/DocumentsPage';
 import documentReducer from '../store/slices/documentSlice';
 import authReducer from '../store/slices/authSlice';
+import chatReducer from '../store/slices/chatSlice';
+import lawyerReducer from '../store/slices/lawyerSlice';
 
 // Mock API
 jest.mock('../services/api', () => ({
@@ -65,6 +67,8 @@ const createTestStore = () => {
     reducer: {
       document: documentReducer,
       auth: authReducer,
+      chat: chatReducer,
+      lawyer: lawyerReducer,
     },
     preloadedState: {
       auth: {
@@ -78,6 +82,17 @@ const createTestStore = () => {
         documents: [],
         selectedDocument: null,
         uploading: false,
+      },
+      chat: {
+        messages: [],
+        isTyping: false,
+        conversationId: null,
+      },
+      lawyer: {
+        lawyers: [],
+        selectedLawyer: null,
+        searchCriteria: {},
+        loading: false,
       },
     },
   });
@@ -95,7 +110,7 @@ describe('DocumentsPage', () => {
 
   it('rendert die Dokumente-Seite korrekt', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -109,7 +124,7 @@ describe('DocumentsPage', () => {
 
   it('lädt Dokumente beim Mounten', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -125,7 +140,7 @@ describe('DocumentsPage', () => {
 
   it('öffnet den Upload-Dialog', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -142,7 +157,7 @@ describe('DocumentsPage', () => {
 
   it('zeigt Analyse-Ergebnisse an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -172,7 +187,7 @@ describe('DocumentsPage', () => {
     });
 
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -209,7 +224,7 @@ describe('DocumentsPage', () => {
     });
 
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -260,7 +275,7 @@ describe('DocumentAnalysisView', () => {
 
     const store = createTestStore();
     const DocumentAnalysisView = require('../components/DocumentAnalysisView').default;
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -291,7 +306,7 @@ describe('DocumentAnalysisView', () => {
 
     const store = createTestStore();
     const DocumentAnalysisView = require('../components/DocumentAnalysisView').default;
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>

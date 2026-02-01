@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Header from './Header';
@@ -31,11 +31,11 @@ const renderWithProviders = (
   const store = createMockStore(initialState);
   return render(
     <Provider store={store}>
-      <BrowserRouter>
+      <MemoryRouter>
         <ThemeProvider theme={theme}>
           {component}
         </ThemeProvider>
-      </BrowserRouter>
+      </MemoryRouter>
     </Provider>
   );
 };

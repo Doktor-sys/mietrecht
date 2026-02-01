@@ -1,0 +1,38 @@
+"{
+  \"monitoring\": {
+    \"interval\": 60000,
+    \"logPath\": \"./logs/performance.log\",
+    \"metrics\": {
+      \"cache\": true,
+      \"database\": true,
+      \"api\": true,
+      \"memory\": true,
+      \"cpu\": false
+    }
+  },
+  \"alerting\": {
+    \"cacheHitRateThreshold\": 0.7,
+    \"databaseQueryTimeThreshold\": 100,
+    \"apiResponseTimeThreshold\": 2000,
+    \"memoryUsageThreshold\": 0.8,
+    \"errorRateThreshold\": 0.05,
+    \"adminEmail\": \"admin@mietrecht-agent.de\",
+    \"alertCooldown\": 300000,
+    \"enableEmailAlerts\": true,
+    \"enableLogAlerts\": true
+  },
+  \"reporting\": {
+    \"defaultFormat\": \"json\",
+    \"reportPath\": \"./reports/\",
+    \"retentionDays\": 30
+  },
+  \"dashboard\": {
+    \"port\": 3001,
+    \"enable\": true,
+    \"auth\": {
+      \"enabled\": true,
+      \"username\": \"admin\",
+      \"password\": \"performance\"
+    }
+  }
+}"

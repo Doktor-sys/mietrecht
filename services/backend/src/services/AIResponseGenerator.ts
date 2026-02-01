@@ -52,7 +52,8 @@ export class AIResponseGenerator {
   async generateResponse(
     classification: ClassificationResult,
     userQuery: string,
-    conversationContext?: string
+    conversationContext?: string,
+    userProfile?: any
   ): Promise<AIResponse> {
     try {
       logger.info('Generating AI response', {
@@ -83,7 +84,8 @@ export class AIResponseGenerator {
         userQuery,
         legalReferences,
         actionRecommendations,
-        conversationContext
+        conversationContext,
+        userProfile
       );
 
       const response: AIResponse = {
@@ -110,6 +112,68 @@ export class AIResponseGenerator {
       logger.error('Error generating AI response', { error });
       throw error;
     }
+  }
+
+  /**
+   * Refine AI response based on user feedback
+   */
+  async refineResponse(
+    originalResponse: AIResponse,
+    feedback: string,
+    userQuery: string
+  ): Promise<AIResponse> {
+    try {
+      logger.info('Refining AI response based on user feedback', { feedback });
+
+      // Build refinement prompt
+      const refinementPrompt = this.buildRefinementPrompt(originalResponse, feedback, userQuery);
+
+      // Generate refined response
+      const refinedMessage = await this.callOpenAI({
+        model: 'gpt-4',
+        messages: [
+          { role: 'system', content: this.buildSystemPrompt() },
+          { role: 'user', content: refinementPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      });
+
+      // Return refined response with original metadata
+      return {
+        ...originalResponse,
+        message: refinedMessage
+      };
+    } catch (error) {
+      logger.error('Error refining AI response', { error });
+      // Return original response if refinement fails
+      return originalResponse;
+    }
+  }
+
+  /**
+   * Build refinement prompt for OpenAI
+   */
+  private buildRefinementPrompt(
+    originalResponse: AIResponse,
+    feedback: string,
+    userQuery: string
+  ): string {
+    return `Ursprüngliche Nutzeranfrage: ${userQuery}
+
+Ursprüngliche KI-Antwort:
+${originalResponse.message}
+
+Benutzerfeedback zur Antwort:
+${feedback}
+
+Bitte verfeinere die ursprüngliche Antwort basierend auf dem Benutzerfeedback. 
+Berücksichtige dabei:
+1. Die spezifischen Wünsche oder Unklarheiten des Benutzers
+2. Die ursprünglichen rechtlichen Grundlagen und Handlungsempfehlungen
+3. Die Notwendigkeit, weiterhin klare und verständliche Sprache zu verwenden
+
+Gib eine überarbeitete Antwort aus, die das Benutzerfeedback berücksichtigt.`;
   }
 
   /**
@@ -224,7 +288,8 @@ export class AIResponseGenerator {
     userQuery: string,
     legalReferences: LegalReference[],
     actionRecommendations: ActionRecommendation[],
-    conversationContext?: string
+    conversationContext?: string,
+    userProfile?: any
   ): Promise<string> {
     try {
       if (!this.openaiApiKey) {
@@ -237,7 +302,8 @@ export class AIResponseGenerator {
         userQuery,
         legalReferences,
         actionRecommendations,
-        conversationContext
+        conversationContext,
+        userProfile
       );
 
       const response = await this.callOpenAI({
@@ -288,9 +354,21 @@ Format:
     userQuery: string,
     legalReferences: LegalReference[],
     actionRecommendations: ActionRecommendation[],
-    conversationContext?: string
+    conversationContext?: string,
+    userProfile?: any
   ): string {
     let prompt = `Nutzeranfrage: ${userQuery}\n\n`;
+
+    if (userProfile) {
+      prompt += `Nutzerprofil:\n`;
+      if (userProfile.userType) {
+        prompt += `- Rolle: ${userProfile.userType === 'tenant' ? 'Mieter' : 'Vermieter'}\n`;
+      }
+      if (userProfile.profile?.firstName) {
+        prompt += `- Name: ${userProfile.profile.firstName}\n`;
+      }
+      prompt += '\n';
+    }
 
     if (conversationContext) {
       prompt += `Bisheriger Gesprächsverlauf:\n${conversationContext}\n\n`;
@@ -300,7 +378,8 @@ Format:
     prompt += `- Kategorie: ${classification.classification.category}\n`;
     prompt += `- Konfidenz: ${Math.round(classification.classification.confidence * 100)}%\n`;
     prompt += `- Risiko: ${classification.classification.riskLevel}\n`;
-    prompt += `- Komplexität: ${classification.classification.estimatedComplexity}\n\n`;
+    prompt += `- Komplexität: ${classification.classification.estimatedComplexity}\n`;
+    prompt += `- Dringlichkeit: ${classification.context.urgency}\n\n`;
 
     if (classification.context.facts.length > 0) {
       prompt += `Relevante Fakten:\n`;
@@ -312,20 +391,29 @@ Format:
 
     if (legalReferences.length > 0) {
       prompt += `Relevante Rechtsnormen:\n`;
-      legalReferences.slice(0, 5).forEach(ref => {
-        prompt += `- ${ref.reference}: ${ref.title}\n`;
+      legalReferences.slice(0, 5).forEach((ref, index) => {
+        prompt += `${index + 1}. ${ref.reference}: ${ref.title}\n`;
+        if (ref.excerpt) {
+          prompt += `  Auszug: ${ref.excerpt}\n`;
+        }
       });
       prompt += '\n';
     }
 
     if (actionRecommendations.length > 0) {
       prompt += `Empfohlene Maßnahmen:\n`;
-      actionRecommendations.forEach(action => {
-        prompt += `- ${action.action}`;
+      actionRecommendations.forEach((action, index) => {
+        prompt += `${index + 1}. ${action.action}`;
         if (action.deadline) {
           prompt += ` (Frist: ${action.deadline})`;
         }
+        if (action.legalBasis) {
+          prompt += ` [Rechtsgrundlage: ${action.legalBasis}]`;
+        }
         prompt += '\n';
+        if (action.details) {
+          prompt += `   Details: ${action.details}\n`;
+        }
       });
       prompt += '\n';
     }
@@ -335,7 +423,16 @@ Format:
       prompt += `Grund: ${classification.classification.escalationReason}\n\n`;
     }
 
-    prompt += `Erstelle eine verständliche, strukturierte Antwort für den Nutzer.`;
+    prompt += `Bitte erstelle eine verständliche, strukturierte Antwort für den Nutzer mit folgenden Anforderungen:
+1. Verwende eine klare, verständliche Sprache (kein Juristendeutsch)
+2. Beziehe dich auf konkrete Gesetzesparagraphen
+3. Gib praktische Handlungsempfehlungen mit klaren Schritten
+4. Weise auf Fristen und Deadlines hin
+5. Empfehle bei komplexen Fällen einen Fachanwalt
+6. Sei empathisch und unterstützend
+7. Strukturiere deine Antwort klar mit Absätzen
+8. Füge am Ende eine kurze Zusammenfassung der wichtigsten Punkte hinzu
+9. Berücksichtige die Rolle des Nutzers (Mieter/Vermieter) bei den Handlungsempfehlungen`;
 
     return prompt;
   }
@@ -371,38 +468,55 @@ Format:
   ): string {
     const categoryName = CATEGORY_NAMES[classification.classification.category] || 'Allgemeine Anfrage';
 
-    let response = `Ich habe Ihre Anfrage als "${categoryName}" eingestuft.\n\n`;
+    let response = `## Ihre Anfrage zum Thema "${categoryName}"\n\n`;
 
     // Add legal references
     if (legalReferences.length > 0) {
-      response += `**Rechtliche Grundlagen:**\n`;
-      legalReferences.slice(0, 3).forEach(ref => {
-        response += `- ${ref.reference}: ${ref.title}\n`;
+      response += `### Rechtliche Grundlagen\n`;
+      legalReferences.slice(0, 3).forEach((ref, index) => {
+        response += `${index + 1}. **${ref.reference}** - ${ref.title}\n`;
+        if (ref.url) {
+          response += `   Weitere Informationen: [Link zu ${ref.reference}](${ref.url})\n`;
+        }
+        if (ref.excerpt) {
+          response += `   Auszug: ${ref.excerpt}\n`;
+        }
       });
       response += '\n';
     }
 
     // Add action recommendations
     if (actionRecommendations.length > 0) {
-      response += `**Empfohlene Schritte:**\n`;
+      response += `### Empfohlene Schritte\n`;
       actionRecommendations.forEach((action, index) => {
-        response += `${index + 1}. ${action.action}`;
+        response += `${index + 1}. **${action.action}**\n`;
         if (action.deadline) {
-          response += ` (Frist: ${action.deadline})`;
+          response += `   ⏰ Frist: ${action.deadline}\n`;
+        }
+        if (action.legalBasis) {
+          response += `   📚 Rechtsgrundlage: ${action.legalBasis}\n`;
+        }
+        if (action.details) {
+          response += `   ℹ️ Details: ${action.details}\n`;
         }
         response += '\n';
-        if (action.details) {
-          response += `   ${action.details}\n`;
-        }
       });
-      response += '\n';
     }
 
     // Add escalation warning
     if (classification.classification.escalationRecommended) {
-      response += `⚠️ **Wichtiger Hinweis:**\n`;
+      response += `### ⚠️ Wichtiger Hinweis\n`;
       response += `Aufgrund der Komplexität Ihres Falls empfehle ich dringend die Konsultation eines Fachanwalts für Mietrecht.\n\n`;
+      response += `Grund: ${classification.classification.escalationReason}\n\n`;
     }
+
+    // Add summary
+    response += `### Zusammenfassung\n`;
+    response += `Basierend auf Ihrer Anfrage habe ich folgende Punkte identifiziert:\n`;
+    response += `- Kategorie: ${categoryName}\n`;
+    response += `- Risiko: ${classification.classification.riskLevel}\n`;
+    response += `- Komplexität: ${classification.classification.estimatedComplexity}\n`;
+    response += `- Dringlichkeit: ${classification.context.urgency}\n\n`;
 
     response += `Haben Sie weitere Fragen zu Ihrem Fall?`;
 

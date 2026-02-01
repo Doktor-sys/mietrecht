@@ -1,4 +1,19 @@
 @echo off
+::
+:: SmartLaw Mietrecht - Local Testing Environment 🧪
+:: ========================================================
+::
+:: Umgebungsvariablen:
+::   PGHOST          - PostgreSQL Host (Standard: localhost)
+::   PGPORT          - PostgreSQL Port (Standard: 5432)
+::   SKIP_PG_CHECK   - Überspringe PostgreSQL-Prüfung (Standard: nicht gesetzt)
+::                    Setze auf 1 um die Prüfung zu überspringen
+::   BACKEND_LOG     - Backend Logging aktivieren (Standard: 1)
+::                    Setze auf 0 um Logging zu deaktivieren
+::   BACKEND_LOGFILE - Backend Logdatei (Standard: backend.log)
+::
+:: Verwende lokale PostgreSQL-Instanz anstelle von Docker
+::
 echo ========================================================
 echo   SmartLaw Mietrecht - Local Testing Environment 🧪
 echo ========================================================
@@ -23,7 +38,7 @@ if exist "%LOGFILE%" (
                 set "ROTATED=%LOGFILE%.%TS%"
                 move /Y "%LOGFILE%" "%ROTATED%" >nul 2>&1
                 REM Aufräumen: behalte nur die neuesten 5 Backups
-                for /f "delims=" %%F in ('cmd /c "dir /b /o:-d "%~dp0start_local_test.log.*" 2>nul"') do (
+                for /f "delims=" %%F in ('cmd /c "dir /b /o:-d "%CD%\start_local_test.log.*" 2>nul"') do (
                         setlocal enabledelayedexpansion
                         set /a count+=1
                         if !count! GTR 5 del "%%~fF"
@@ -111,7 +126,7 @@ if "%PGHOST%"=="" set "PGHOST=localhost"
 if "%PGPORT%"=="" set "PGPORT=5432"
 echo [Info] Prüfe PostgreSQL auf %PGHOST%:%PGPORT%...
 echo [Info] Prüfe PostgreSQL auf %PGHOST%:%PGPORT%... >> "%LOGFILE%"
-powershell -Command "if (Test-NetConnection -ComputerName '%PGHOST%' -Port %PGPORT% -InformationLevel Quiet) { exit 0 } else { exit 2 }"
+powershell -NoProfile -Command "try { $tcp = New-Object System.Net.Sockets.TcpClient; $tcp.Connect('%PGHOST%', %PGPORT%); exit 0 } catch { exit 2 }"
 if errorlevel 1 (
                 if "%SKIP_PG_CHECK%"=="1" (
                         echo [Warn] PostgreSQL scheint nicht erreichbar auf %PGHOST%:%PGPORT%, aber SKIP_PG_CHECK=1 gesetzt — fahre fort.
@@ -152,7 +167,7 @@ if "%BACKEND_LOG%"=="1" (
                         if defined BLSIZE if %BLSIZE% GTR 5242880 (
                                 for /f "usebackq tokens=*" %%T in (`powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss"`) do set "BTS=%%T"
                                 move /Y "%BACKEND_LOGFILE%" "%BACKEND_LOGFILE%.%BTS%" >nul 2>&1
-                                for /f "delims=" %%F in ('cmd /c "dir /b /o:-d "%~dp0backend.log.*" 2>nul"') do (
+                                for /f "delims=" %%F in ('cmd /c "dir /b /o:-d "%CD%\backend.log.*" 2>nul"') do (
                                         setlocal enabledelayedexpansion
                                         set /a bcount+=1
                                         if !bcount! GTR 5 del "%%~fF"

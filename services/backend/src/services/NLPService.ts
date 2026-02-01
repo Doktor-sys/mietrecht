@@ -1,34 +1,10 @@
 import { logger } from '../utils/logger';
-
-export interface IntentRecognitionResult {
-  intent: string;
-  category: LegalCategory;
-  confidence: number;
-  entities: ExtractedEntity[];
-}
-
-export interface ExtractedEntity {
-  type: string;
-  value: string;
-  confidence: number;
-}
-
-export interface ContextExtractionResult {
-  facts: string[];
-  legalIssues: string[];
-  urgency: 'low' | 'medium' | 'high';
-  estimatedValue?: number;
-}
-
-export type LegalCategory = 
-  | 'rent_reduction'
-  | 'termination'
-  | 'utility_costs'
-  | 'rent_increase'
-  | 'defects'
-  | 'deposit'
-  | 'modernization'
-  | 'other';
+import {
+  LegalCategory,
+  ExtendedLegalCategory,
+  IntentRecognitionResult,
+  ContextExtractionResult
+} from '../types/legal';
 
 export class NLPService {
   private openaiApiKey: string;
@@ -37,7 +13,7 @@ export class NLPService {
   constructor() {
     this.openaiApiKey = process.env.OPENAI_API_KEY || '';
     this.openaiEndpoint = process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1';
-    
+
     if (!this.openaiApiKey) {
       logger.warn('OpenAI API key not configured. NLP features will be limited.');
     }
@@ -69,7 +45,7 @@ export class NLPService {
 
       const result = this.parseIntentResponse(response);
       logger.info('Intent recognized', { category: result.category, confidence: result.confidence });
-      
+
       return result;
     } catch (error) {
       logger.error('Error recognizing intent', { error });
@@ -103,7 +79,7 @@ export class NLPService {
 
       const context = this.parseContextResponse(response);
       logger.info('Context extracted', { factsCount: context.facts.length, urgency: context.urgency });
-      
+
       return context;
     } catch (error) {
       logger.error('Error extracting context', { error });
@@ -144,12 +120,13 @@ export class NLPService {
    * System prompt for intent recognition
    */
   private getIntentRecognitionSystemPrompt(): string {
-    return `Du bist ein Experte für deutsches Mietrecht. Analysiere die Nutzeranfrage und identifiziere:
+    return `Du bist ein Experte für deutsches Recht. Analysiere die Nutzeranfrage und identifiziere:
 1. Die Hauptabsicht (intent)
 2. Die rechtliche Kategorie
 3. Wichtige Entitäten (Beträge, Daten, Personen, etc.)
 
 Kategorien:
+Mietrecht:
 - rent_reduction: Mietminderung wegen Mängeln
 - termination: Kündigungen (fristlos oder ordentlich)
 - utility_costs: Nebenkostenabrechnung
@@ -157,7 +134,16 @@ Kategorien:
 - defects: Mängel und Reparaturen
 - deposit: Kaution
 - modernization: Modernisierung
-- other: Sonstige Anfragen
+- other: Sonstige Mietrechtsanfragen
+
+Arbeitsrecht:
+- employment_contract: Arbeitsvertrag
+- termination_protection: Kündigungsschutz
+- severance: Abfindung
+- vacation: Urlaub
+- wage_continuation: Lohnfortzahlung
+- discrimination: Diskriminierung
+- working_time: Arbeitszeit
 
 Antworte im JSON-Format:
 {
@@ -173,8 +159,11 @@ Antworte im JSON-Format:
   /**
    * System prompt for context extraction
    */
-  private getContextExtractionSystemPrompt(category: LegalCategory): string {
-    return `Du bist ein Experte für deutsches Mietrecht, speziell für ${category}.
+  private getContextExtractionSystemPrompt(category: ExtendedLegalCategory): string {
+    // Bestimme den Rechtsbereich basierend auf der Kategorie
+    const legalDomain = this.getLegalDomain(category);
+
+    return `Du bist ein Experte für deutsches ${legalDomain}, speziell für ${category}.
 Extrahiere aus der Nutzeranfrage:
 1. Relevante Fakten
 2. Rechtliche Probleme
@@ -191,8 +180,23 @@ Antworte im JSON-Format:
 
 Dringlichkeit:
 - high: Kündigungen, fristlose Maßnahmen, Gesundheitsgefahr
-- medium: Mietminderung, Nebenkostenstreit
+- medium: Mietminderung, Nebenkostenstreit, Arbeitsrechtliche Konflikte
 - low: Allgemeine Fragen, Informationsanfragen`;
+  }
+
+  /**
+   * Bestimmt den Rechtsbereich basierend auf der Kategorie
+   */
+  private getLegalDomain(category: ExtendedLegalCategory): string {
+    const employmentCategories: ExtendedLegalCategory[] = [
+      'employment_contract', 'termination_protection', 'severance',
+      'vacation', 'wage_continuation', 'discrimination', 'working_time'
+    ];
+
+    if (employmentCategories.includes(category)) {
+      return 'Arbeitsrecht';
+    }
+    return 'Mietrecht';
   }
 
   /**
@@ -245,12 +249,12 @@ Dringlichkeit:
    */
   private fallbackIntentRecognition(query: string): IntentRecognitionResult {
     const lowerQuery = query.toLowerCase();
-    
+
     // Mietminderung
-    if (lowerQuery.includes('mietminderung') || 
-        (lowerQuery.includes('heizung') && lowerQuery.includes('kaputt')) ||
-        lowerQuery.includes('schimmel') ||
-        lowerQuery.includes('mangel')) {
+    if (lowerQuery.includes('mietminderung') ||
+      (lowerQuery.includes('heizung') && lowerQuery.includes('kaputt')) ||
+      lowerQuery.includes('schimmel') ||
+      lowerQuery.includes('mangel')) {
       return {
         intent: 'Mietminderung wegen Mängeln',
         category: 'rent_reduction',
@@ -258,11 +262,13 @@ Dringlichkeit:
         entities: []
       };
     }
-    
-    // Kündigung
-    if (lowerQuery.includes('kündigung') || 
-        lowerQuery.includes('kündigen') ||
-        lowerQuery.includes('fristlos')) {
+
+    // Kündigung (Mietrecht)
+    if ((lowerQuery.includes('kündigung') ||
+      lowerQuery.includes('kündigen') ||
+      lowerQuery.includes('fristlos')) &&
+      !lowerQuery.includes('arbeit') &&
+      !lowerQuery.includes('beschäftig')) {
       return {
         intent: 'Kündigung',
         category: 'termination',
@@ -270,11 +276,11 @@ Dringlichkeit:
         entities: []
       };
     }
-    
+
     // Nebenkosten
-    if (lowerQuery.includes('nebenkosten') || 
-        lowerQuery.includes('betriebskosten') ||
-        lowerQuery.includes('nebenkostenabrechnung')) {
+    if (lowerQuery.includes('nebenkosten') ||
+      lowerQuery.includes('betriebskosten') ||
+      lowerQuery.includes('nebenkostenabrechnung')) {
       return {
         intent: 'Nebenkostenabrechnung',
         category: 'utility_costs',
@@ -282,10 +288,10 @@ Dringlichkeit:
         entities: []
       };
     }
-    
+
     // Mieterhöhung
-    if (lowerQuery.includes('mieterhöhung') || 
-        lowerQuery.includes('miete erhöhen')) {
+    if (lowerQuery.includes('mieterhöhung') ||
+      lowerQuery.includes('miete erhöhen')) {
       return {
         intent: 'Mieterhöhung',
         category: 'rent_increase',
@@ -293,7 +299,80 @@ Dringlichkeit:
         entities: []
       };
     }
-    
+
+    // Arbeitsvertrag
+    if (lowerQuery.includes('arbeitsvertrag') ||
+      (lowerQuery.includes('arbeit') && lowerQuery.includes('vertrag'))) {
+      return {
+        intent: 'Arbeitsvertrag',
+        category: 'employment_contract',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
+    // Kündigungsschutz (Arbeitsrecht)
+    if ((lowerQuery.includes('kündigung') ||
+      lowerQuery.includes('kündigen') ||
+      lowerQuery.includes('fristlos')) &&
+      (lowerQuery.includes('arbeit') ||
+        lowerQuery.includes('beschäftig'))) {
+      return {
+        intent: 'Kündigungsschutz',
+        category: 'termination_protection',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
+    // Urlaub
+    if (lowerQuery.includes('urlaub') ||
+      lowerQuery.includes('jahresurlaub') ||
+      lowerQuery.includes('resturlaub')) {
+      return {
+        intent: 'Urlaubsanspruch',
+        category: 'vacation',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
+    // Lohnfortzahlung
+    if (lowerQuery.includes('lohnfortzahlung') ||
+      (lowerQuery.includes('krank') && lowerQuery.includes('lohn')) ||
+      lowerQuery.includes('arbeitsunfähig')) {
+      return {
+        intent: 'Lohnfortzahlung',
+        category: 'wage_continuation',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
+    // Diskriminierung
+    if (lowerQuery.includes('diskriminier') ||
+      lowerQuery.includes('benachteilig') ||
+      lowerQuery.includes('ungleichbehandl')) {
+      return {
+        intent: 'Diskriminierung',
+        category: 'discrimination',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
+    // Arbeitszeit
+    if (lowerQuery.includes('arbeitszeit') ||
+      lowerQuery.includes('überstund') ||
+      lowerQuery.includes('ruhezeit')) {
+      return {
+        intent: 'Arbeitszeit',
+        category: 'working_time',
+        confidence: 0.7,
+        entities: []
+      };
+    }
+
     // Default
     return {
       intent: 'Allgemeine Anfrage',

@@ -1,0 +1,62 @@
+{
+  "dataSources": {
+    "bgh": {
+      "enabled": true,
+      "baseUrl": "https://juris.bundesgerichtshof.de",
+      "maxResults": 50
+    },
+    "landgerichte": {
+      "enabled": true,
+      "baseUrl": "https://www.landesrecht.de",
+      "maxResults": 50
+    },
+    "bverfg": {
+      "enabled": true,
+      "baseUrl": "https://www.bundesverfassungsgericht.de",
+      "maxResults": 50
+    },
+    "beckOnline": {
+      "enabled": false,
+      "baseUrl": "https://beck-online.beck.de",
+      "maxResults": 50
+    }
+  },
+  "nlp": {
+    "enableSummarization": true,
+    "enableTopicExtraction": true,
+    "enableEntityExtraction": true,
+    "enableImportanceClassification": true,
+    "enablePracticeImplications": true
+  },
+  "integrations": {
+    "asana": {
+      "enabled": false,
+      "projectId": "",
+      "workspaceId": ""
+    },
+    "github": {
+      "enabled": false,
+      "owner": "",
+      "repo": ""
+    }
+  },
+  "notifications": {
+    "email": {
+      "enabled": true,
+      "smtp": {
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "secure": false,
+        "user": "mietrecht.agent@example.com",
+        "pass": "sicheres-passwort-hier"
+      }
+    }
+  },
+  "performance": {
+    "cacheEnabled": true,
+    "cacheTtl": 30,
+    "rateLimit": 10,
+    "maxRetries": 3,
+    "retryDelay": 1000
+  }
+}

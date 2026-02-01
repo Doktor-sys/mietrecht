@@ -49,6 +49,7 @@ class SmartLawUser(HttpUser):
                 "Authorization": f"Bearer {self.token}"
             })
 
+
     @task(1)
     def chat_interaction(self):
         if self.token:
@@ -58,3 +59,20 @@ class SmartLawUser(HttpUser):
             }, headers={
                 "Authorization": f"Bearer {self.token}"
             })
+
+# SLA Verification
+from locust import events
+import logging
+
+logger = logging.getLogger(__name__)
+
+@events.quitting.add_listener
+def _(environment, **kw):
+    if environment.stats.total.fail_ratio > 0.001:
+        logging.error("Test failed: Failure ratio > 0.1%")
+        environment.process_exit_code = 1
+    elif environment.stats.total.get_response_time_percentile(0.95) > 500:
+        logging.error("Test failed: 95th percentile response time > 500 ms")
+        environment.process_exit_code = 1
+    else:
+        logging.info("SLA Checks Passed: Failure ratio < 0.1% and p95 latency < 500ms")

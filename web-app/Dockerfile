@@ -12,8 +12,8 @@ COPY shared ./shared
 # Copy web-app package files
 COPY web-app/package*.json ./web-app/
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (Force Rebuild - TS Downgrade)
+RUN npm install --legacy-peer-deps || npm install --force
 
 # Copy web-app source code
 COPY web-app ./web-app

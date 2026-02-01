@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Avatar, Chip, Surface } from 'react-native-paper';
+import { Text, Avatar, Chip, Surface, IconButton } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import textToSpeechService from '../services/textToSpeechService';
 
 interface LegalReference {
   reference: string;
@@ -24,6 +25,34 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const { t } = useTranslation();
   const isUser = message.role === 'user';
 
+  // Function to handle text-to-speech
+  const handleTextToSpeech = async () => {
+    try {
+      // Check if text-to-speech is available
+      const isAvailable = await textToSpeechService.isAvailable();
+      if (!isAvailable) {
+        console.warn('Text-to-speech is not available on this device');
+        return;
+      }
+
+      // Trigger text-to-speech for the message content
+      await textToSpeechService.speak(message.content, {
+        language: 'de-DE', // German as default for legal content
+        pitch: 1.0,
+        rate: 0.9, // Slightly slower for better comprehension
+        volume: 1.0,
+        onDone: () => {
+          console.log('Text-to-speech completed for message:', message.id);
+        },
+        onError: (error: any) => {
+          console.error('Text-to-speech error:', error);
+        }
+      });
+    } catch (error) {
+      console.error('Error triggering text-to-speech:', error);
+    }
+  };
+
   return (
     <View style={[styles.container, isUser ? styles.userContainer : styles.assistantContainer]}>
       <View style={[styles.messageWrapper, isUser && styles.userMessageWrapper]}>
@@ -36,9 +65,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
         {/* Message Content */}
         <Surface style={[styles.bubble, isUser ? styles.userBubble : styles.assistantBubble]}>
-          <Text style={[styles.messageText, isUser && styles.userMessageText]}>
-            {message.content}
-          </Text>
+          <View style={styles.messageHeader}>
+            <Text style={[styles.messageText, isUser && styles.userMessageText]}>
+              {message.content}
+            </Text>
+            {!isUser && (
+              <IconButton
+                icon="volume-high"
+                size={20}
+                onPress={handleTextToSpeech}
+                style={styles.ttsButton}
+              />
+            )}
+          </View>
 
           {/* Legal References */}
           {message.legalReferences && message.legalReferences.length > 0 && (
@@ -113,13 +152,24 @@ const styles = StyleSheet.create({
   assistantBubble: {
     backgroundColor: '#f5f5f5',
   },
+  messageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   messageText: {
     fontSize: 15,
     lineHeight: 20,
     color: '#000',
+    flex: 1,
+    paddingRight: 8,
   },
   userMessageText: {
     color: '#fff',
+  },
+  ttsButton: {
+    margin: 0,
+    alignSelf: 'flex-start',
   },
   referencesContainer: {
     marginTop: 12,

@@ -43,6 +43,7 @@ module.exports = {
   moduleNameMapper: {
     '^@smartlaw/types$': '<rootDir>/../../shared/types/src',
     '^@smartlaw/utils$': '<rootDir>/../../shared/utils/src',
+    '^@tensorflow/tfjs-node$': '<rootDir>/src/tests/mocks/tfjs-node.ts',
   },
   // Test environment specific settings
   testEnvironmentOptions: {

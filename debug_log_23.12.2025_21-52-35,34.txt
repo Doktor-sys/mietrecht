@@ -1,0 +1,12 @@
+Debug-Sitzung startet am 23.12.2025 21:52:35,34 
+======================================= 
+ 
+ 
+=== Systemumgebung ====================== 
+
+Microsoft Windows [Version 10.0.19045.6466]
+ 
+[OK] Node.js gefunden: 
+v24.11.1
+[OK] npm gefunden: 
+11.6.2

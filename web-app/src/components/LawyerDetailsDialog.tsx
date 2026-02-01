@@ -62,8 +62,15 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="md" 
+      fullWidth
+      aria-labelledby="lawyer-details-dialog-title"
+      aria-describedby="lawyer-details-dialog-description"
+    >
+      <DialogTitle id="lawyer-details-dialog-title">
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
             sx={{
@@ -72,13 +79,14 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
               bgcolor: 'primary.main',
               mr: 2,
             }}
+            aria-label={t('lawyers.details.avatar', { name: lawyer.name })}
           >
             {getInitials(lawyer.name)}
           </Avatar>
           <Box>
             <Typography variant="h5">{lawyer.name}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-              <Rating value={lawyer.rating} readOnly />
+              <Rating value={lawyer.rating} readOnly aria-label={t('lawyers.details.rating', { rating: lawyer.rating })} />
               <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                 ({lawyer.reviewCount} {t('lawyers.reviews')})
               </Typography>
@@ -87,9 +95,27 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
         </Box>
       </DialogTitle>
       <DialogContent>
+        <Typography 
+          id="lawyer-details-dialog-description" 
+          sx={{ 
+            mb: 2, 
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0
+          }}
+        >
+          {t('lawyers.details.description', { name: lawyer.name })}
+        </Typography>
+        
         {/* Kontaktinformationen */}
-        <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
-          <Typography variant="subtitle1" gutterBottom>
+        <Paper variant="outlined" sx={{ p: 2, mb: 3 }} role="region" aria-labelledby="contact-info-heading">
+          <Typography variant="subtitle1" gutterBottom id="contact-info-heading">
             {t('lawyers.details.contact')}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -113,27 +139,27 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
         </Paper>
 
         {/* Spezialisierungen */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" gutterBottom>
+        <Box sx={{ mb: 3 }} role="region" aria-labelledby="specializations-heading">
+          <Typography variant="subtitle1" gutterBottom id="specializations-heading">
             {t('lawyers.specializations.title')}
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {lawyer.specializations.map((spec: string, index: number) => (
-              <Chip key={index} label={spec} color="primary" variant="outlined" />
+              <Chip key={index} label={spec} color="primary" variant="outlined" aria-label={spec} />
             ))}
           </Box>
         </Box>
 
         {/* Sprachen */}
         {lawyer.languages && lawyer.languages.length > 0 && (
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" gutterBottom>
+          <Box sx={{ mb: 3 }} role="region" aria-labelledby="languages-heading">
+            <Typography variant="subtitle1" gutterBottom id="languages-heading">
               <span style={{ marginRight: '8px' }}>🌐</span>
               {t('lawyers.details.languages')}
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {lawyer.languages.map((lang: string, index: number) => (
-                <Chip key={index} label={lang} size="small" />
+                <Chip key={index} label={lang} size="small" aria-label={lang} />
               ))}
             </Box>
           </Box>
@@ -143,8 +169,8 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
 
         {/* Beschreibung */}
         {lawyer.description && (
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" gutterBottom>
+          <Box sx={{ mb: 3 }} role="region" aria-labelledby="about-heading">
+            <Typography variant="subtitle1" gutterBottom id="about-heading">
               {t('lawyers.details.about')}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -155,8 +181,8 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
 
         {/* Preise */}
         {lawyer.hourlyRate && (
-          <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
-            <Typography variant="subtitle1" gutterBottom>
+          <Paper variant="outlined" sx={{ p: 2, mb: 3 }} role="region" aria-labelledby="pricing-heading">
+            <Typography variant="subtitle1" gutterBottom id="pricing-heading">
               {t('lawyers.details.pricing')}
             </Typography>
             <Typography variant="h6" color="primary.main">
@@ -169,17 +195,18 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
         )}
 
         {/* Bewertungen */}
-        <Box>
+        <Box role="region" aria-labelledby="reviews-heading">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="subtitle1">
-              {t('lawyers.details.reviews')}
+            <Typography variant="subtitle1" id="reviews-heading">
+              {t('lawyers.reviews')}
             </Typography>
             <Button
               size="small"
               startIcon={<StarIcon />}
               onClick={() => setReviewDialogOpen(true)}
+              aria-label={t('lawyers.details.reviews.viewAll')}
             >
-              {t('lawyers.reviews.viewAll')}
+              {t('lawyers.details.reviews.viewAll')}
             </Button>
           </Box>
           {lawyer.reviews && lawyer.reviews.length > 0 ? (
@@ -189,7 +216,7 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
                   <ListItemText
                     primary={
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                        <Rating value={review.rating} readOnly size="small" />
+                        <Rating value={review.rating} readOnly size="small" aria-label={t('lawyers.details.reviews.rating', { rating: review.rating })} />
                         <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
                           {new Date(review.date).toLocaleDateString()}
                         </Typography>
@@ -212,15 +239,15 @@ const LawyerDetailsDialog: React.FC<LawyerDetailsDialogProps> = ({ open, onClose
           ) : (
             <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                {t('lawyers.reviews.noReviews')}
+                {t('lawyers.details.reviews.noReviews')}
               </Typography>
             </Paper>
           )}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{t('common.close')}</Button>
-        <Button variant="contained" onClick={onBook}>
+        <Button onClick={onClose} aria-label={t('common.close')}>{t('common.close')}</Button>
+        <Button variant="contained" onClick={onBook} aria-label={t('lawyers.book')}>
           {t('lawyers.book')}
         </Button>
       </DialogActions>

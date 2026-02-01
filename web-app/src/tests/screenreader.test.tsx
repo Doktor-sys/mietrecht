@@ -71,7 +71,7 @@ describe('Screen Reader Support Tests', () => {
   });
 
   test('Layout should have proper landmark roles', () => {
-    renderWithProviders(<Layout />);
+    renderWithProviders(<Layout><div>Test Content</div></Layout>);
 
     // Check for main landmark
     const main = screen.getByRole('main');
@@ -89,7 +89,7 @@ describe('Screen Reader Support Tests', () => {
   });
 
   test('Skip to content link should be present', () => {
-    renderWithProviders(<Layout />);
+    renderWithProviders(<Layout><div>Test Content</div></Layout>);
 
     const skipLink = screen.getByText(/zum hauptinhalt springen/i);
     expect(skipLink).toBeInTheDocument();

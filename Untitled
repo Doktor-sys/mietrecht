@@ -1,0 +1,8 @@
+ SmartLaw Mietrecht - Lokale Testumgebung 🚀
+========================================================
+
+[INFO] Node.js Version: v24.11.1
+[INFO] Verwende 'docker compose' (neue Syntax
+[INFO] Verwende 'docker-compose' (alte Syntax
+[ERROR] Docker Compose nicht gefunden.
+Bitte installieren Sie Docker Desktop mit Docker Compose.

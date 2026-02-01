@@ -64,6 +64,22 @@ router.put('/profile', userController.updateProfile)
 /**
  * @swagger
  * /api/users/preferences:
+ *   get:
+ *     summary: Holt Benutzereinstellungen
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Benutzereinstellungen
+ *       401:
+ *         description: Nicht authentifiziert
+ */
+router.get('/preferences', userController.getPreferences)
+
+/**
+ * @swagger
+ * /api/users/preferences:
  *   put:
  *     summary: Aktualisiert Benutzereinstellungen
  *     tags: [Users]

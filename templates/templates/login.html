@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisMind Login | Anwalts-Bereich</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .transition-premium {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-black text-slate-900 mb-2">JurisMind <span class="text-blue-600">Secure</span></h1>
+            <p class="text-slate-500 font-medium">Anmeldung für Partner-Kanzleien</p>
+        </div>
+
+        <div class="glass-card p-10 rounded-[40px]">
+            <div id="error-message"
+                class="hidden mb-6 p-4 bg-red-50 text-red-600 text-xs font-bold rounded-2xl border border-red-100 flex items-center">
+                <i class="fas fa-exclamation-circle mr-3 text-sm"></i>
+                <span id="error-text">Ungültige Anmeldedaten.</span>
+            </div>
+
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">E-Mail
+                        Adresse</label>
+                    <input type="email" id="email" required
+                        class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium focus:bg-white focus:border-blue-600">
+                </div>
+                <div>
+                    <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Passwort</label>
+                    <input type="password" id="password" required
+                        class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold shadow-inner outline-none transition-premium focus:bg-white focus:border-blue-600">
+                </div>
+
+                <button type="submit"
+                    class="w-full py-5 bg-blue-600 text-white rounded-[28px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-premium flex items-center justify-center space-x-3 hover:bg-blue-700">
+                    <i class="fas fa-lock"></i>
+                    <span>Einloggen</span>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-8 border-t border-slate-100 text-center">
+                <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Secure Access Node 2.0</p>
+            </div>
+        </div>
+
+        <p class="mt-8 text-center text-slate-400 text-xs font-medium">
+            &copy; 2026 JurisMind GmbH. Alle Rechte vorbehalten.
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('jm_token', data.access_token);
+                    localStorage.setItem('jm_role', data.role);
+                    window.location.href = '/lawyer';
+                } else {
+                    errorText.innerText = data.error || 'Login fehlgeschlagen.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorText.innerText = 'Verbindung zum Server fehlgeschlagen.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,15 +1,20 @@
 import { Request, Response, NextFunction } from 'express'
 import { AuthService, RegisterData, LoginCredentials } from '../services/AuthService'
+import { TwoFactorAuthService } from '../services/TwoFactorAuthService'
 import { prisma } from '../config/database'
 import { asyncHandler } from '../middleware/errorHandler'
 import { logger, loggers } from '../utils/logger'
-import { ValidationError } from '../middleware/errorHandler'
+import { ValidationError, AuthenticationError } from '../middleware/errorHandler'
+import jwt from 'jsonwebtoken'
+import { config } from '../config/config'
 
 export class AuthController {
   private authService: AuthService
+  private twoFactorService: TwoFactorAuthService
 
   constructor() {
     this.authService = new AuthService(prisma)
+    this.twoFactorService = new TwoFactorAuthService(prisma)
   }
 
   /**
@@ -94,7 +99,7 @@ export class AuthController {
       acceptedTerms: req.body.acceptedTerms,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      location: req.body.location,
+      city: req.body.city,
       language: req.body.language
     }
 
@@ -133,6 +138,10 @@ export class AuthController {
    *               password:
    *                 type: string
    *                 example: "SecurePass123"
+   *               twoFactorToken:
+   *                 type: string
+   *                 description: Optionaler 2FA Token für Benutzer mit aktivierter 2FA
+   *                 example: "123456"
    *     responses:
    *       200:
    *         description: Erfolgreich angemeldet
@@ -156,6 +165,9 @@ export class AuthController {
    *                           type: string
    *                         refreshToken:
    *                           type: string
+   *                     requires2FA:
+   *                       type: boolean
+   *                       description: Gibt an, ob 2FA erforderlich ist
    *       401:
    *         $ref: '#/components/responses/AuthenticationError'
    *       429:
@@ -168,6 +180,54 @@ export class AuthController {
     }
 
     const ip = req.ip || req.connection.remoteAddress
+
+    // Prüfe ob ein 2FA Token mitgesendet wurde
+    const twoFactorToken = req.body.twoFactorToken
+
+    if (twoFactorToken) {
+      // Wenn 2FA Token vorhanden ist, verifiziere diesen zuerst
+      // Extrahiere userId aus dem temporären Token
+      const tempToken = req.headers.authorization?.replace('Bearer ', '')
+
+      if (!tempToken) {
+        throw new AuthenticationError('Temporärer Token fehlt')
+      }
+
+      try {
+        const decoded = jwt.verify(tempToken, config.jwt.secret) as any
+
+        if (!decoded.tempAuth || !decoded.userId) {
+          throw new AuthenticationError('Ungültiger temporärer Token')
+        }
+
+        // Verifiziere 2FA Token
+        const verificationResult = await this.twoFactorService.verifyTwoFactorToken(
+          decoded.userId,
+          twoFactorToken
+        )
+
+        if (!verificationResult.success) {
+          throw new AuthenticationError(verificationResult.message)
+        }
+
+        // Generiere volle Tokens
+        const fullResult = await this.authService.login(credentials, ip)
+
+        res.json({
+          success: true,
+          data: fullResult,
+          message: 'Anmeldung erfolgreich'
+        })
+        return
+      } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+          throw new AuthenticationError('Ungültiger temporärer Token')
+        }
+        throw error
+      }
+    }
+
+    // Normale Login-Verarbeitung
     const result = await this.authService.login(credentials, ip)
 
     // Log erfolgreichen Login mit zusätzlichen Informationen
@@ -333,14 +393,14 @@ export class AuthController {
         profile: user.profile ? {
           firstName: user.profile.firstName,
           lastName: user.profile.lastName,
-          location: user.profile.location,
-          language: user.profile.language,
-          accessibilityNeeds: user.profile.accessibilityNeeds
+          city: user.profile.city,
+          language: user.profile.language
         } : null,
         preferences: user.preferences ? {
-          notifications: user.preferences.notifications,
+          notificationsEnabled: user.preferences.notificationsEnabled,
           privacy: user.preferences.privacy,
-          language: user.preferences.language
+          language: user.preferences.language,
+          accessibility: (user.preferences as any).accessibility
         } : null
       }
     })

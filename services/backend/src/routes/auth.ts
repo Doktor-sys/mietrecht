@@ -1,18 +1,47 @@
 import { Router } from 'express'
 import { AuthController } from '../controllers/AuthController'
 import { authenticate } from '../middleware/auth'
+import { validateRequest, sanitizeAllInput } from '../middleware/validation'
+import { ValidationService } from '../services/ValidationService'
 
 const router = Router()
 const authController = new AuthController()
 
 // Öffentliche Routen (keine Authentifizierung erforderlich)
-router.post('/register', authController.register)
-router.post('/login', authController.login)
+router.post('/register', 
+  sanitizeAllInput,
+  validateRequest(ValidationService.userRegistration()),
+  authController.register
+)
+
+router.post('/login', 
+  sanitizeAllInput,
+  validateRequest(ValidationService.userLogin()),
+  authController.login
+)
+
 router.post('/refresh', authController.refreshToken)
-router.post('/forgot-password', authController.forgotPassword)
-router.post('/reset-password', authController.resetPassword)
-router.post('/verify-email', authController.verifyEmailWithToken)
-router.post('/confirm-email-change', authController.confirmEmailChange)
+
+router.post('/forgot-password', 
+  sanitizeAllInput,
+  validateRequest(ValidationService.passwordReset()),
+  authController.forgotPassword
+)
+
+router.post('/reset-password', 
+  sanitizeAllInput,
+  authController.resetPassword
+)
+
+router.post('/verify-email', 
+  sanitizeAllInput,
+  authController.verifyEmailWithToken
+)
+
+router.post('/confirm-email-change', 
+  sanitizeAllInput,
+  authController.confirmEmailChange
+)
 
 // Geschützte Routen (Authentifizierung erforderlich)
 router.post('/logout', authenticate, authController.logout)

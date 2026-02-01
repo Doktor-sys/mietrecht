@@ -1,0 +1,442 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmailService = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const config_1 = require("../config/config");
+const logger_1 = require("../utils/logger");
+const redis_1 = require("../config/redis");
+const report_notification_template_1 = require("./email-templates/report-notification.template");
+class EmailService {
+    constructor() {
+        this.transporter = nodemailer_1.default.createTransport({
+            host: config_1.config.email.host,
+            port: config_1.config.email.port,
+            secure: config_1.config.email.secure,
+            auth: {
+                user: config_1.config.email.user,
+                pass: config_1.config.email.password,
+            },
+            tls: {
+                rejectUnauthorized: false,
+            },
+        });
+        this.templates = new Map();
+        this.initializeTemplates();
+    }
+    /**
+     * Sendet eine E-Mail-Verifizierung
+     */
+    async sendVerificationEmail(email, verificationToken, userData) {
+        try {
+            const verificationUrl = `${this.getBaseUrl()}/verify-email?token=${verificationToken}`;
+            const templateData = {
+                ...userData,
+                verificationUrl,
+                baseUrl: this.getBaseUrl(),
+                supportEmail: config_1.config.email.from,
+            };
+            await this.sendTemplatedEmail(email, 'verification', templateData);
+            logger_1.loggers.businessEvent('EMAIL_VERIFICATION_SENT', '', {
+                email: this.maskEmail(email),
+                template: 'verification'
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
+            throw error;
+        }
+    }
+    /**
+     * Sendet eine Passwort-Reset-E-Mail
+     */
+    async sendPasswordResetEmail(email, resetToken, userData) {
+        try {
+            const resetUrl = `${this.getBaseUrl()}/reset-password?token=${resetToken}`;
+            const templateData = {
+                ...userData,
+                resetUrl,
+                baseUrl: this.getBaseUrl(),
+                supportEmail: config_1.config.email.from,
+            };
+            await this.sendTemplatedEmail(email, 'password-reset', templateData);
+            logger_1.loggers.businessEvent('PASSWORD_RESET_EMAIL_SENT', '', {
+                email: this.maskEmail(email),
+                template: 'password-reset'
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim Senden der Passwort-Reset-E-Mail:', error);
+            throw error;
+        }
+    }
+    /**
+     * Sendet eine Willkommens-E-Mail
+     */
+    async sendWelcomeEmail(email, userData) {
+        try {
+            const templateData = {
+                ...userData,
+                baseUrl: this.getBaseUrl(),
+                supportEmail: config_1.config.email.from,
+            };
+            await this.sendTemplatedEmail(email, 'welcome', templateData);
+            logger_1.loggers.businessEvent('WELCOME_EMAIL_SENT', '', {
+                email: this.maskEmail(email),
+                template: 'welcome'
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim Senden der Willkommens-E-Mail:', error);
+            throw error;
+        }
+    }
+    /**
+     * Sendet eine Report-Benachrichtigung
+     */
+    async sendReportNotification(email, reportData) {
+        try {
+            const templateData = {
+                ...reportData,
+                baseUrl: this.getBaseUrl(),
+                supportEmail: config_1.config.email.from,
+                formattedDate: reportData.generatedAt.toLocaleDateString('de-DE', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                formattedCost: `€${reportData.summary.totalCost.toFixed(2)}`
+            };
+            await this.sendTemplatedEmail(email, 'report-notification', templateData);
+            logger_1.loggers.businessEvent('REPORT_NOTIFICATION_SENT', '', {
+                email: this.maskEmail(email),
+                template: 'report-notification',
+                reportType: reportData.reportType
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim Senden der Report-Benachrichtigung:', error);
+            throw error;
+        }
+    }
+    /**
+     * Sendet eine E-Mail mit Template
+     */
+    async sendTemplatedEmail(to, templateName, templateData) {
+        try {
+            const template = this.templates.get(templateName);
+            if (!template) {
+                throw new Error(`Template '${templateName}' nicht gefunden`);
+            }
+            await this.checkEmailRateLimit(to);
+            const html = this.renderTemplate(template.html, templateData);
+            const text = this.renderTemplate(template.text, templateData);
+            const subject = this.renderTemplate(template.subject, templateData);
+            await this.sendEmail({
+                to,
+                subject,
+                html,
+                text,
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim Senden der Template-E-Mail:', error);
+            throw error;
+        }
+    }
+    /**
+     * Sendet eine einfache E-Mail
+     */
+    async sendEmail(options) {
+        try {
+            const mailOptions = {
+                from: config_1.config.email.from,
+                to: options.to,
+                subject: options.subject,
+                html: options.html,
+                text: options.text,
+            };
+            const info = await this.transporter.sendMail(mailOptions);
+            logger_1.logger.info('E-Mail erfolgreich gesendet', {
+                messageId: info.messageId,
+                to: this.maskEmail(options.to),
+                subject: options.subject,
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Fehler beim E-Mail-Versand:', error);
+            throw error;
+        }
+    }
+    /**
+     * Verifiziert die E-Mail-Konfiguration
+     */
+    async verifyConnection() {
+        try {
+            await this.transporter.verify();
+            logger_1.logger.info('E-Mail-Verbindung erfolgreich verifiziert');
+            return true;
+        }
+        catch (error) {
+            logger_1.logger.error('E-Mail-Verbindung fehlgeschlagen:', error);
+            return false;
+        }
+    }
+    /**
+     * Initialisiert E-Mail-Templates
+     */
+    initializeTemplates() {
+        // Report Notification Template
+        this.templates.set('report-notification', report_notification_template_1.reportNotificationTemplate);
+        // E-Mail-Verifizierung Template
+        this.templates.set('verification', {
+            subject: 'SmartLaw - E-Mail-Adresse bestätigen',
+            html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>E-Mail bestätigen</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
+            .content { padding: 30px 20px; }
+            .button { display: inline-block; background: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>SmartLaw Mietrecht</h1>
+            </div>
+            <div class="content">
+              <h2>Willkommen{{#firstName}}, {{firstName}}{{/firstName}}!</h2>
+              <p>Vielen Dank für Ihre Registrierung bei SmartLaw. Um Ihr Konto zu aktivieren, bestätigen Sie bitte Ihre E-Mail-Adresse.</p>
+              <p>Klicken Sie auf den folgenden Button, um Ihre E-Mail-Adresse zu bestätigen:</p>
+              <a href="{{verificationUrl}}" class="button">E-Mail bestätigen</a>
+              <p>Oder kopieren Sie diesen Link in Ihren Browser:</p>
+              <p><a href="{{verificationUrl}}">{{verificationUrl}}</a></p>
+              <p><strong>Wichtig:</strong> Dieser Link ist {{expiresIn}} gültig.</p>
+              <p>Falls Sie sich nicht bei SmartLaw registriert haben, können Sie diese E-Mail ignorieren.</p>
+            </div>
+            <div class="footer">
+              <p>SmartLaw Mietrecht Agent<br>
+              Bei Fragen wenden Sie sich an: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+            text: `
+SmartLaw Mietrecht - E-Mail bestätigen
+
+Willkommen{{#firstName}}, {{firstName}}{{/firstName}}!
+
+Vielen Dank für Ihre Registrierung bei SmartLaw. Um Ihr Konto zu aktivieren, bestätigen Sie bitte Ihre E-Mail-Adresse.
+
+Bestätigungslink: {{verificationUrl}}
+
+Wichtig: Dieser Link ist {{expiresIn}} gültig.
+
+Falls Sie sich nicht bei SmartLaw registriert haben, können Sie diese E-Mail ignorieren.
+
+Bei Fragen: {{supportEmail}}
+      `
+        });
+        // Passwort-Reset Template
+        this.templates.set('password-reset', {
+            subject: 'SmartLaw - Passwort zurücksetzen',
+            html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Passwort zurücksetzen</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+            .content { padding: 30px 20px; }
+            .button { display: inline-block; background: #dc2626; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+            .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>SmartLaw Mietrecht</h1>
+            </div>
+            <div class="content">
+              <h2>Passwort zurücksetzen</h2>
+              <p>Hallo{{#firstName}} {{firstName}}{{/firstName}},</p>
+              <p>Sie haben eine Anfrage zum Zurücksetzen Ihres Passworts gestellt. Klicken Sie auf den folgenden Button, um ein neues Passwort zu erstellen:</p>
+              <a href="{{resetUrl}}" class="button">Neues Passwort erstellen</a>
+              <p>Oder kopieren Sie diesen Link in Ihren Browser:</p>
+              <p><a href="{{resetUrl}}">{{resetUrl}}</a></p>
+              <div class="warning">
+                <p><strong>Sicherheitshinweis:</strong></p>
+                <ul>
+                  <li>Dieser Link ist {{expiresIn}} gültig</li>
+                  <li>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail</li>
+                  <li>Ihr aktuelles Passwort bleibt unverändert, bis Sie ein neues erstellen</li>
+                </ul>
+              </div>
+            </div>
+            <div class="footer">
+              <p>SmartLaw Mietrecht Agent<br>
+              Bei Fragen wenden Sie sich an: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+            text: `
+SmartLaw Mietrecht - Passwort zurücksetzen
+
+Hallo{{#firstName}} {{firstName}}{{/firstName}},
+
+Sie haben eine Anfrage zum Zurücksetzen Ihres Passworts gestellt.
+
+Reset-Link: {{resetUrl}}
+
+SICHERHEITSHINWEIS:
+- Dieser Link ist {{expiresIn}} gültig
+- Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail
+- Ihr aktuelles Passwort bleibt unverändert, bis Sie ein neues erstellen
+
+Bei Fragen: {{supportEmail}}
+      `
+        });
+        // Willkommens-E-Mail Template
+        this.templates.set('welcome', {
+            subject: 'Willkommen bei SmartLaw Mietrecht!',
+            html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Willkommen bei SmartLaw</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #059669; color: white; padding: 20px; text-align: center; }
+            .content { padding: 30px 20px; }
+            .button { display: inline-block; background: #059669; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+            .features { background: #f0f9ff; padding: 20px; margin: 20px 0; border-radius: 5px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🏠 SmartLaw Mietrecht</h1>
+            </div>
+            <div class="content">
+              <h2>Willkommen{{#firstName}}, {{firstName}}{{/firstName}}!</h2>
+              <p>Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Sie können jetzt alle Funktionen von SmartLaw nutzen.</p>
+              
+              <div class="features">
+                <h3>Was Sie jetzt tun können:</h3>
+                <ul>
+                  <li>🤖 <strong>KI-Rechtsberatung:</strong> Stellen Sie Fragen zu Ihrem Mietrecht</li>
+                  <li>📄 <strong>Dokumentenanalyse:</strong> Lassen Sie Mietverträge und Abmahnungen prüfen</li>
+                  <li>⚖️ <strong>Anwaltsvermittlung:</strong> Finden Sie spezialisierte Mietrechtsanwälte</li>
+                  <li>📝 <strong>Musterbriefe:</strong> Generieren Sie rechtssichere Schreiben</li>
+                </ul>
+              </div>
+
+              <a href="{{loginUrl}}" class="button">Jetzt einloggen</a>
+              
+              <p>Als {{userType}} haben Sie Zugriff auf alle relevanten Funktionen für Ihre Bedürfnisse.</p>
+              
+              <p>Bei Fragen stehen wir Ihnen gerne zur Verfügung!</p>
+            </div>
+            <div class="footer">
+              <p>SmartLaw Mietrecht Agent<br>
+              Support: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+            text: `
+SmartLaw Mietrecht - Willkommen!
+
+Willkommen{{#firstName}}, {{firstName}}{{/firstName}}!
+
+Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Sie können jetzt alle Funktionen von SmartLaw nutzen.
+
+Was Sie jetzt tun können:
+- KI-Rechtsberatung: Stellen Sie Fragen zu Ihrem Mietrecht
+- Dokumentenanalyse: Lassen Sie Mietverträge und Abmahnungen prüfen
+- Anwaltsvermittlung: Finden Sie spezialisierte Mietrechtsanwälte
+- Musterbriefe: Generieren Sie rechtssichere Schreiben
+
+Login: {{loginUrl}}
+
+Als {{userType}} haben Sie Zugriff auf alle relevanten Funktionen für Ihre Bedürfnisse.
+
+Bei Fragen: {{supportEmail}}
+      `
+        });
+    }
+    /**
+     * Simple Mustache-like renderer
+     */
+    renderTemplate(template, data) {
+        let rendered = template;
+        Object.keys(data).forEach(key => {
+            const value = data[key];
+            // Normale Platzhalter {{key}}
+            const normalRegex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+            rendered = rendered.replace(normalRegex, value || '');
+            // Bedingte Platzhalter {{#key}}content{{/key}}
+            const conditionalRegex = new RegExp(`{{#${key}}}(.*?){{/${key}}}`, 'gs');
+            rendered = rendered.replace(conditionalRegex, value ? '$1' : '');
+        });
+        // Entferne nicht ersetzte Platzhalter
+        return rendered.replace(/{{[^}]*}}/g, '');
+    }
+    /**
+     * Prüft Rate Limiting für E-Mail-Versand
+     */
+    async checkEmailRateLimit(email) {
+        const key = `email_rate_limit:${email}`;
+        const limit = 5; // 5 E-Mails pro Stunde
+        const windowSeconds = 3600; // 1 Stunde
+        const count = await redis_1.redis.incrementRateLimit(key, windowSeconds);
+        if (count > limit) {
+            logger_1.loggers.securityEvent('EMAIL_RATE_LIMIT_EXCEEDED', undefined, undefined, {
+                email: this.maskEmail(email),
+                count,
+                limit
+            });
+            throw new Error('E-Mail-Rate-Limit überschritten. Bitte warten Sie eine Stunde.');
+        }
+    }
+    /**
+     * Maskiert E-Mail-Adresse für Logging
+     */
+    maskEmail(email) {
+        const [local, domain] = email.split('@');
+        if (local.length <= 2) {
+            return `${local[0]}***@${domain}`;
+        }
+        return `${local.substring(0, 2)}***@${domain}`;
+    }
+    /**
+     * Gibt die Basis-URL der Anwendung zurück
+     */
+    getBaseUrl() {
+        if (config_1.config.nodeEnv === 'production') {
+            return 'https://smartlaw.de';
+        }
+        return 'http://localhost:3000';
+    }
+}
+exports.EmailService = EmailService;

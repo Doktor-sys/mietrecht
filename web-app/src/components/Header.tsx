@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem } from '@mui/material';
-import { Menu as MenuIcon, AccountCircle } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Divider } from '@mui/material';
+import { Menu as MenuIcon, AccountCircle, SettingsAccessibility } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
@@ -12,13 +12,19 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [languageAnchorEl, setLanguageAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleLanguageMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setLanguageAnchorEl(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
+    setLanguageAnchorEl(null);
   };
 
   const handleLogout = () => {
@@ -28,6 +34,7 @@ const Header: React.FC = () => {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    handleClose();
   };
 
   return (
@@ -54,6 +61,9 @@ const Header: React.FC = () => {
               </Button>
               <Button color="inherit" component={RouterLink} to="/lawyers" aria-label={t('nav.lawyers')}>
                 {t('nav.lawyers')}
+              </Button>
+              <Button color="inherit" component={RouterLink} to="/integrations" aria-label={t('nav.integrations')}>
+                {t('nav.integrations')}
               </Button>
             </>
           )}
@@ -125,6 +135,16 @@ const Header: React.FC = () => {
                 >
                   {t('nav.profile')}
                 </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/accessibility-settings"
+                  onClick={handleClose}
+                  aria-label={t('accessibility.settings.title')}
+                >
+                  <SettingsAccessibility sx={{ mr: 1 }} />
+                  {t('accessibility.settings.title')}
+                </MenuItem>
+                <Divider />
                 <MenuItem onClick={handleLogout} aria-label={t('nav.logout')}>
                   {t('nav.logout')}
                 </MenuItem>
@@ -141,6 +161,156 @@ const Header: React.FC = () => {
             </>
           )}
         </Box>
+        
+        {/* Mobile menu */}
+        <IconButton
+          size="large"
+          aria-label="Menü öffnen"
+          aria-controls="menu-mobile"
+          aria-haspopup="true"
+          onClick={handleMenu}
+          color="inherit"
+          sx={{ display: { xs: 'flex', md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          id="menu-mobile"
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          aria-label="Mobile Navigation"
+        >
+          {isAuthenticated ? (
+            <>
+              <MenuItem
+                component={RouterLink}
+                to="/chat"
+                onClick={handleClose}
+                aria-label={t('nav.chat')}
+              >
+                {t('nav.chat')}
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/documents"
+                onClick={handleClose}
+                aria-label={t('nav.documents')}
+              >
+                {t('nav.documents')}
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/lawyers"
+                onClick={handleClose}
+                aria-label={t('nav.lawyers')}
+              >
+                {t('nav.lawyers')}
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/integrations"
+                onClick={handleClose}
+                aria-label={t('nav.integrations')}
+              >
+                {t('nav.integrations')}
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                component={RouterLink}
+                to="/profile"
+                onClick={handleClose}
+                aria-label={t('nav.profile')}
+              >
+                {t('nav.profile')}
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/accessibility-settings"
+                onClick={handleClose}
+                aria-label={t('accessibility.settings.title')}
+              >
+                <SettingsAccessibility sx={{ mr: 1 }} />
+                {t('accessibility.settings.title')}
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={handleLogout} aria-label={t('nav.logout')}>
+                {t('nav.logout')}
+              </MenuItem>
+            </>
+          ) : (
+            <>
+              <MenuItem
+                component={RouterLink}
+                to="/login"
+                onClick={handleClose}
+                aria-label={t('nav.login')}
+              >
+                {t('nav.login')}
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/register"
+                onClick={handleClose}
+                aria-label={t('nav.register')}
+              >
+                {t('nav.register')}
+              </MenuItem>
+            </>
+          )}
+          
+          <Divider />
+          <MenuItem onClick={handleLanguageMenu} aria-label="Sprachauswahl öffnen">
+            {t('nav.language')}
+          </MenuItem>
+          <Menu
+            id="menu-language"
+            anchorEl={languageAnchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(languageAnchorEl)}
+            onClose={handleClose}
+            aria-label="Sprachauswahl"
+          >
+            <MenuItem 
+              onClick={() => changeLanguage('de')} 
+              aria-label="Sprache auf Deutsch ändern"
+              aria-pressed={i18n.language === 'de'}
+            >
+              Deutsch
+            </MenuItem>
+            <MenuItem 
+              onClick={() => changeLanguage('tr')} 
+              aria-label="Dili Türkçe olarak değiştir"
+              aria-pressed={i18n.language === 'tr'}
+            >
+              Türkçe
+            </MenuItem>
+            <MenuItem 
+              onClick={() => changeLanguage('ar')} 
+              aria-label="تغيير اللغة إلى العربية"
+              aria-pressed={i18n.language === 'ar'}
+            >
+              العربية
+            </MenuItem>
+          </Menu>
+        </Menu>
       </Toolbar>
     </AppBar>
   );

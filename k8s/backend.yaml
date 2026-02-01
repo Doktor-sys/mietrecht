@@ -39,6 +39,10 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        # Enable resource metrics for autoscaling
+        env:
+        - name: METRICS_ENABLED
+          value: "true"
         livenessProbe:
           httpGet:
             path: /health

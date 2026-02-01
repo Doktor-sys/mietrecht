@@ -1,0 +1,63 @@
+{
+    admin off
+}
+
+mietrecht {
+    tls internal
+    encode gzip
+    handle_path /smartlaw-agent* {
+        reverse_proxy app:5000
+    }
+    handle /api* {
+        reverse_proxy app:5000
+    }
+    handle /static* {
+        reverse_proxy app:5000
+    }
+    handle /.well-known/* {
+        reverse_proxy app:5000
+    }
+    handle / {
+        redir /smartlaw-agent 308
+    }
+}
+
+mietrecht.jurismind.app {
+    tls dr.nimmerrichter@gmail.com
+    encode gzip
+    handle_path /smartlaw-agent* {
+        reverse_proxy app:5000
+    }
+    handle /api* {
+        reverse_proxy app:5000
+    }
+    handle /static* {
+        reverse_proxy app:5000
+    }
+    handle /.well-known/* {
+        reverse_proxy app:5000
+    }
+    handle / {
+        redir /smartlaw-agent 308
+    }
+}
+
+35-195-246-45.nip.io {
+    tls dr.nimmerrichter@gmail.com
+    encode gzip
+    handle_path /smartlaw-agent* {
+        reverse_proxy app:5000
+    }
+    handle /api* {
+        reverse_proxy app:5000
+    }
+    handle /static* {
+        reverse_proxy app:5000
+    }
+    handle /.well-known/* {
+        reverse_proxy app:5000
+    }
+    handle / {
+        redir /smartlaw-agent 308
+    }
+}

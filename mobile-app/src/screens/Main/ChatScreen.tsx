@@ -7,6 +7,8 @@ import { sendMessage } from '../../store/slices/chatSlice';
 import ChatMessage from '../../components/ChatMessage';
 import TypingIndicator from '../../components/TypingIndicator';
 import websocketService from '../../services/websocket';
+// Import push notification service
+import pushNotificationService from '../../services/pushNotifications';
 
 const ChatScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -48,6 +50,18 @@ const ChatScreen: React.FC = () => {
         conversationId: activeConversationId,
         content: messageText.trim(),
       }) as any);
+      
+      // Schedule a reminder notification if this is a legal question
+      if (messageText.toLowerCase().includes('mietrecht') || messageText.toLowerCase().includes('recht')) {
+        pushNotificationService.scheduleDelayedNotification(
+          'Rechtliche Beratung',
+          'Denken Sie daran, Ihre rechtliche Frage zu dokumentieren',
+          300, // 5 minutes
+          { screen: 'Chat', conversationId: activeConversationId },
+          'legal_updates'
+        );
+      }
+      
       setMessageText('');
     }
   };

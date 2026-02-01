@@ -1,0 +1,169 @@
+{
+  "dashboard": {
+    "title": "SmartLaw - Detailed System Metrics",
+    "tags": [
+      "smartlaw",
+      "system",
+      "performance"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "HTTP Request Rate by Status",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"2..\"}[5m])",
+            "legendFormat": "2xx Success"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"3..\"}[5m])",
+            "legendFormat": "3xx Redirect"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"4..\"}[5m])",
+            "legendFormat": "4xx Client Error"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+            "legendFormat": "5xx Server Error"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 2,
+        "title": "HTTP Request Duration (95th Percentile)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
+            "legendFormat": "{{route}}"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 3,
+        "title": "Active Goroutines",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "go_goroutines",
+            "legendFormat": "Goroutines"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Heap Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "go_memstats_heap_alloc_bytes / 1024 / 1024",
+            "legendFormat": "Heap Alloc (MB)"
+          },
+          {
+            "expr": "go_memstats_heap_sys_bytes / 1024 / 1024",
+            "legendFormat": "Heap Sys (MB)"
+          }
+        ],
+        "gridPos": {
+          "x": 8,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "GC Duration",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(go_gc_duration_seconds_sum[5m])",
+            "legendFormat": "GC Duration"
+          }
+        ],
+        "gridPos": {
+          "x": 16,
+          "y": 8,
+          "w": 8,
+          "h": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(process_cpu_seconds_total[5m]) * 100",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        }
+      },
+      {
+        "id": 7,
+        "title": "Process Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes / 1024 / 1024",
+            "legendFormat": "RSS (MB)"
+          },
+          {
+            "expr": "process_virtual_memory_bytes / 1024 / 1024",
+            "legendFormat": "Virtual (MB)"
+          }
+        ],
+        "gridPos": {
+          "x": 8,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        }
+      },
+      {
+        "id": 8,
+        "title": "Open File Descriptors",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "process_open_fds",
+            "legendFormat": "Open FDs"
+          }
+        ],
+        "gridPos": {
+          "x": 16,
+          "y": 16,
+          "w": 8,
+          "h": 8
+        }
+      }
+    ]
+  }
+}

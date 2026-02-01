@@ -1,8 +1,21 @@
 import { logger } from '../utils/logger';
-import { NLPService, LegalCategory, IntentRecognitionResult, ContextExtractionResult } from './NLPService';
+import { NLPService } from './NLPService';
+import {
+  LegalCategory,
+  ExtendedLegalCategory,
+  IntentRecognitionResult,
+  ContextExtractionResult
+} from '../types/legal';
+
+// Extended type for sub-categories
+export type LegalSubCategory = LegalCategory |
+  'heating_defect' | 'mold' | 'noise' | 'water_damage' | 'general_defect' |
+  'extraordinary_termination' | 'personal_use' | 'payment_default' | 'ordinary_termination' |
+  'additional_payment' | 'calculation_error' | 'general_utility' |
+  'rent_index' | 'modernization_increase' | 'general_increase';
 
 export interface CaseClassification {
-  category: LegalCategory;
+  category: ExtendedLegalCategory;
   subCategory?: string;
   confidence: number;
   riskLevel: 'low' | 'medium' | 'high';
@@ -20,11 +33,11 @@ export interface ClassificationResult {
 
 export class LegalCaseClassifier {
   private nlpService: NLPService;
-  
+
   // Thresholds for escalation
   private readonly CONFIDENCE_THRESHOLD = 0.7;
   private readonly HIGH_VALUE_THRESHOLD = 5000;
-  
+
   constructor() {
     this.nlpService = new NLPService();
   }
@@ -38,16 +51,16 @@ export class LegalCaseClassifier {
 
       // Step 1: Recognize intent
       const intent = await this.nlpService.recognizeIntent(query);
-      
+
       // Step 2: Extract context
       const context = await this.nlpService.extractContext(query, intent);
-      
+
       // Step 3: Classify the case
       const classification = this.performClassification(intent, context);
-      
+
       // Step 4: Generate recommendations
       const recommendations = this.generateRecommendations(classification, context);
-      
+
       logger.info('Case classified', {
         category: classification.category,
         confidence: classification.confidence,
@@ -75,10 +88,10 @@ export class LegalCaseClassifier {
   ): CaseClassification {
     const category = intent.category;
     const confidence = intent.confidence;
-    
+
     // Determine risk level
     const riskLevel = this.determineRiskLevel(category, context);
-    
+
     // Determine if escalation is needed
     const { escalationRecommended, escalationReason } = this.determineEscalation(
       category,
@@ -86,10 +99,10 @@ export class LegalCaseClassifier {
       context,
       riskLevel
     );
-    
+
     // Determine complexity
     const estimatedComplexity = this.determineComplexity(category, context);
-    
+
     // Determine sub-category
     const subCategory = this.determineSubCategory(category, context);
 
@@ -108,29 +121,29 @@ export class LegalCaseClassifier {
    * Determine risk level of the case
    */
   private determineRiskLevel(
-    category: LegalCategory,
+    category: ExtendedLegalCategory,
     context: ContextExtractionResult
   ): 'low' | 'medium' | 'high' {
     // High risk categories
     if (category === 'termination') {
       return 'high';
     }
-    
+
     // Check urgency from context
     if (context.urgency === 'high') {
       return 'high';
     }
-    
+
     // Check estimated value
     if (context.estimatedValue && context.estimatedValue > this.HIGH_VALUE_THRESHOLD) {
       return 'high';
     }
-    
+
     // Medium risk categories
     if (['rent_reduction', 'rent_increase', 'deposit'].includes(category)) {
       return 'medium';
     }
-    
+
     // Default to low risk
     return 'low';
   }
@@ -139,7 +152,7 @@ export class LegalCaseClassifier {
    * Determine if case should be escalated to a lawyer
    */
   private determineEscalation(
-    category: LegalCategory,
+    category: ExtendedLegalCategory,
     confidence: number,
     context: ContextExtractionResult,
     riskLevel: 'low' | 'medium' | 'high'
@@ -151,7 +164,7 @@ export class LegalCaseClassifier {
         escalationReason: 'high_stakes_case'
       };
     }
-    
+
     // Escalate if confidence is too low
     if (confidence < this.CONFIDENCE_THRESHOLD) {
       return {
@@ -159,7 +172,7 @@ export class LegalCaseClassifier {
         escalationReason: 'low_confidence'
       };
     }
-    
+
     // Escalate high-value cases
     if (context.estimatedValue && context.estimatedValue > this.HIGH_VALUE_THRESHOLD) {
       return {
@@ -167,7 +180,7 @@ export class LegalCaseClassifier {
         escalationReason: 'high_value'
       };
     }
-    
+
     // Escalate high-risk cases
     if (riskLevel === 'high') {
       return {
@@ -175,7 +188,7 @@ export class LegalCaseClassifier {
         escalationReason: 'high_risk'
       };
     }
-    
+
     // Escalate if multiple complex legal issues
     if (context.legalIssues.length > 3) {
       return {
@@ -183,7 +196,7 @@ export class LegalCaseClassifier {
         escalationReason: 'complex_legal_situation'
       };
     }
-    
+
     return {
       escalationRecommended: false
     };
@@ -193,28 +206,28 @@ export class LegalCaseClassifier {
    * Determine case complexity
    */
   private determineComplexity(
-    category: LegalCategory,
+    category: ExtendedLegalCategory,
     context: ContextExtractionResult
   ): 'simple' | 'moderate' | 'complex' {
     // Complex categories
     if (category === 'termination' || category === 'modernization') {
       return 'complex';
     }
-    
+
     // Check number of legal issues
     if (context.legalIssues.length > 3) {
       return 'complex';
     }
-    
+
     if (context.legalIssues.length > 1) {
       return 'moderate';
     }
-    
+
     // Check number of facts
     if (context.facts.length > 5) {
       return 'moderate';
     }
-    
+
     return 'simple';
   }
 
@@ -222,13 +235,13 @@ export class LegalCaseClassifier {
    * Determine sub-category based on context
    */
   private determineSubCategory(
-    category: LegalCategory,
+    category: ExtendedLegalCategory,
     context: ContextExtractionResult
   ): string | undefined {
     const factsText = context.facts.join(' ').toLowerCase();
     const issuesText = context.legalIssues.join(' ').toLowerCase();
     const combinedText = `${factsText} ${issuesText}`;
-    
+
     switch (category) {
       case 'rent_reduction':
         if (combinedText.includes('heizung')) return 'heating_defect';
@@ -236,23 +249,23 @@ export class LegalCaseClassifier {
         if (combinedText.includes('lärm') || combinedText.includes('geräusch')) return 'noise';
         if (combinedText.includes('wasser')) return 'water_damage';
         return 'general_defect';
-        
+
       case 'termination':
         if (combinedText.includes('fristlos')) return 'extraordinary_termination';
         if (combinedText.includes('eigenbedarf')) return 'personal_use';
         if (combinedText.includes('zahlungsverzug')) return 'payment_default';
         return 'ordinary_termination';
-        
+
       case 'utility_costs':
         if (combinedText.includes('nachzahlung')) return 'additional_payment';
         if (combinedText.includes('fehler')) return 'calculation_error';
         return 'general_utility';
-        
+
       case 'rent_increase':
         if (combinedText.includes('mietspiegel')) return 'rent_index';
         if (combinedText.includes('modernisierung')) return 'modernization_increase';
         return 'general_increase';
-        
+
       default:
         return undefined;
     }
@@ -266,7 +279,7 @@ export class LegalCaseClassifier {
     context: ContextExtractionResult
   ): string[] {
     const recommendations: string[] = [];
-    
+
     // Category-specific recommendations
     switch (classification.category) {
       case 'rent_reduction':
@@ -277,50 +290,50 @@ export class LegalCaseClassifier {
           recommendations.push('Lassen Sie den Schimmel von einem Sachverständigen begutachten');
         }
         break;
-        
+
       case 'termination':
         recommendations.push('Prüfen Sie die Kündigungsfrist und Form');
         recommendations.push('Lassen Sie die Kündigung rechtlich prüfen');
         recommendations.push('Reagieren Sie innerhalb der gesetzlichen Fristen');
         recommendations.push('Konsultieren Sie einen Fachanwalt für Mietrecht');
         break;
-        
+
       case 'utility_costs':
         recommendations.push('Prüfen Sie die Abrechnung auf Vollständigkeit');
         recommendations.push('Vergleichen Sie mit Vorjahresabrechnungen');
         recommendations.push('Fordern Sie Belegeinsicht an');
-        if (context.legalIssues.some(issue => issue.toLowerCase().includes('fehler'))) {
+        if (context.legalIssues.some((issue: string) => issue.toLowerCase().includes('fehler'))) {
           recommendations.push('Widersprechen Sie der Abrechnung schriftlich innerhalb von 12 Monaten');
         }
         break;
-        
+
       case 'rent_increase':
         recommendations.push('Prüfen Sie die Begründung der Mieterhöhung');
         recommendations.push('Vergleichen Sie mit dem örtlichen Mietspiegel');
         recommendations.push('Sie haben 2 Monate Zeit für eine Reaktion');
         break;
-        
+
       case 'deposit':
         recommendations.push('Fordern Sie die Kaution schriftlich zurück');
         recommendations.push('Setzen Sie eine angemessene Frist');
         recommendations.push('Der Vermieter hat 6 Monate Zeit für die Abrechnung');
         break;
-        
+
       default:
         recommendations.push('Dokumentieren Sie alle relevanten Vorgänge');
         recommendations.push('Kommunizieren Sie schriftlich mit dem Vermieter');
     }
-    
+
     // Escalation recommendation
     if (classification.escalationRecommended) {
       recommendations.push('⚠️ Wir empfehlen die Konsultation eines Fachanwalts für Mietrecht');
     }
-    
+
     // Urgency-based recommendations
     if (context.urgency === 'high') {
       recommendations.unshift('🚨 Dringend: Handeln Sie schnell, um Fristen einzuhalten');
     }
-    
+
     return recommendations;
   }
 

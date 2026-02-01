@@ -1,0 +1,4 @@
+FROM python:3.9-alpine 
+COPY app_simple.py . 
+RUN pip install flask 
+CMD ["python", "app_simple.py"] 

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mietrecht-app:
+    build: .
+    container_name: mietrecht-compose
+    ports:
+      - "7000:5000"
+    volumes:
+      - ./app_simple.py:/app/app_simple.py
+      - ./requirements.txt:/app/requirements.txt
+    environment:
+      - FLASK_ENV=development
+    restart: unless-stopped

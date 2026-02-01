@@ -1,0 +1,315 @@
+{
+  "app": {
+    "title": "SmartLaw Agent - قانون الإيجار",
+    "description": "استشارات قانون الإيجار بدعم الذكاء الاصطناعي"
+  },
+  "nav": {
+    "home": "الصفحة الرئيسية",
+    "chat": "الدردشة",
+    "documents": "المستندات",
+    "lawyers": "المحامون",
+    "profile": "الملف الشخصي",
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "loginTitle": "تسجيل الدخول إلى SmartLaw",
+    "registerTitle": "إنشاء حساب جديد",
+    "userType": "أنا",
+    "tenant": "مستأجر",
+    "landlord": "مالك",
+    "business": "عميل تجاري"
+  },
+  "chat": {
+    "title": "دردشة قانون الإيجار",
+    "placeholder": "صف مشكلتك القانونية المتعلقة بإيجار...",
+    "send": "إرسال",
+    "typing": "المساعد يكتب...",
+    "user": "المستخدم",
+    "assistant": "المساعد",
+    "legalReferences": "المراجع القانونية",
+    "newConversation": "محادثة جديدة",
+    "attachFile": "إرفاق ملف",
+    "uploadDocument": "تحميل مستند",
+    "dragDropFile": "اسحب الملف هنا",
+    "orClickToSelect": "أو انقر للاختيار",
+    "supportedFormats": "التنسيقات المدعومة",
+    "documentType": "نوع المستند",
+    "upload": "تحميل",
+    "uploading": "جاري التحميل...",
+    "fileUploaded": "تم تحميل الملف",
+    "connecting": "جاري الاتصال...",
+    "welcome": "مرحبًا بك في دردشة SmartLaw لقانون الإيجار!",
+    "welcomeHint": "صف مشكلتك القانونية المتعلقة بإيجار وسأكون سعيدًا بمساعدتك.",
+    "documentTypes": {
+      "rentalContract": "عقد الإيجار",
+      "utilityBill": "فاتورة المرافق",
+      "warningLetter": "خطاب تحذير",
+      "termination": "إنهاء",
+      "other": "أخرى"
+    },
+    "error": {
+      "notAuthenticated": "يجب عليك تسجيل الدخول لاستخدام الدردشة.",
+      "connection": "خطأ في الاتصال. يرجى المحاولة مرة أخرى.",
+      "sendFailed": "فشل إرسال الرسالة.",
+      "uploadFailed": "فشل تحميل الملف.",
+      "fileTooLarge": "الملف كبير جدًا (الحد الأقصى 10 ميجابايت).",
+      "invalidFileType": "نوع ملف غير صالح."
+    }
+  },
+  "documents": {
+    "title": "المستندات",
+    "upload": "تحميل مستند",
+    "uploadDocument": "تحميل مستند",
+    "uploadFirst": "تحميل أول مستند",
+    "uploadHint": "قم بتحميل مستندات الإيجار للحصول على تحليل قانوني",
+    "analyze": "تحليل",
+    "noDocuments": "لا توجد مستندات",
+    "view": "عرض",
+    "viewHistory": "عرض تاريخ الإصدار",
+    "viewAnnotations": "عرض التعليقات",
+    "viewWorkflow": "عرض سير العمل",
+    "download": "تحميل",
+    "delete": "حذف",
+    "confirmDelete": "هل أنت متأكد من حذف هذا المستند؟",
+    "dragDropFile": "اسحب الملف هنا",
+    "orClickToSelect": "أو انقر للاختيار",
+    "supportedFormats": "التنسيقات المدعومة",
+    "documentType": "نوع المستند",
+    "uploading": "جاري التحميل",
+    "analysisResults": "نتائج التحليل",
+    "noAnalysis": "لا يوجد تحليل متاح",
+    "selectedFiles": "{{count}} ملف محدد",
+    "selectedFilesList": "الملفات المحددة",
+    "ocrPreview": {
+      "title": "معاينة OCR",
+      "extracting": "جارٍ استخراج النص...",
+      "extractedText": "النص المستخرج",
+      "confidence": "الثقة",
+      "instructions": "تحقق من النص المستخرج. يمكنك إجراء تصحيحات قبل المتابعة في التحليل.",
+      "confirmAndAnalyze": "تأكيد وتحليل"
+    },
+    "sharing": {
+      "title": "مشاركة المستند",
+      "shareWith": "مشاركة مع",
+      "email": "عنوان البريد الإلكتروني",
+      "emailHelper": "أدخل عنوان البريد الإلكتروني للمستخدم الذي تريد مشاركة المستند معه",
+      "permission": "الإذن",
+      "expiresAt": "تاريخ انتهاء الصلاحية",
+      "shareButton": "مشاركة",
+      "sharedWith": "تمت المشاركة مع",
+      "noShares": "لم يتم مشاركة هذا المستند بعد.",
+      "remove": "إزالة المشاركة",
+      "permissions": {
+        "read": "قراءة",
+        "write": "كتابة",
+        "comment": "تعليق"
+      },
+      "success": {
+        "shared": "تمت مشاركة المستند بنجاح",
+        "removed": "تمت إزالة المشاركة بنجاح"
+      },
+      "error": {
+        "loadFailed": "فشل تحميل المشاركات",
+        "shareFailed": "فشل مشاركة المستند",
+        "removeFailed": "فشل إزالة المشاركة",
+        "emailRequired": "عنوان البريد الإلكتروني مطلوب"
+      }
+    },
+    "annotations": {
+      "title": "تعليقات المستند",
+      "addAnnotation": "إضافة تعليق",
+      "replyToAnnotation": "الرد على التعليق",
+      "replyingTo": "الرد على",
+      "textPlaceholder": "أدخل تعليقك أو ملاحظاتك...",
+      "type": "النوع",
+      "addButton": "إضافة",
+      "reply": "رد",
+      "resolve": "وضع علامة كمحلول",
+      "delete": "حذف",
+      "resolved": "تم الحل",
+      "noAnnotations": "لا توجد تعليقات على هذا المستند بعد.",
+      "types": {
+        "comment": "تعليق",
+        "highlight": "تسليط الضوء",
+        "strikethrough": "شطب",
+        "underline": "تسطير",
+        "note": "ملاحظة"
+      },
+      "success": {
+        "created": "تم إنشاء التعليق بنجاح",
+        "updated": "تم تحديث التعليق بنجاح",
+        "deleted": "تم حذف التعليق بنجاح",
+        "resolved": "تم وضع علامة كمحلول"
+      },
+      "error": {
+        "loadFailed": "فشل تحميل التعليقات",
+        "createFailed": "فشل إنشاء التعليق",
+        "updateFailed": "فشل تحديث التعليق",
+        "deleteFailed": "فشل حذف التعليق",
+        "resolveFailed": "فشل وضع علامة كمحلول"
+      }
+    },
+    "types": {
+      "rentalContract": "عقد الإيجار",
+      "utilityBill": "فاتورة المرافق",
+      "warningLetter": "خطاب تحذير",
+      "termination": "إنهاء",
+      "other": "أخرى"
+    },
+    "status": {
+      "draft": "مسودة",
+      "review": "قيد المراجعة",
+      "approved": "معتمد",
+      "archived": "مؤرشف",
+      "rejected": "مرفوض",
+      "uploading": "جاري التحميل",
+      "analyzing": "جاري التحليل",
+      "completed": "مكتمل",
+      "statusError": "خطأ"
+    },
+    "workflow": "سير العمل",
+    "analysis": {
+      "riskLevel": "مستوى المخاطر",
+      "risk": {
+        "low": "منخفض",
+        "medium": "متوسط",
+        "high": "عالي"
+      },
+      "confidence": "الثقة",
+      "analyzedAt": "تم التحليل في",
+      "extractedData": "البيانات المستخرجة",
+      "issues": "المشاكل المكتشفة",
+      "recommendations": "التوصيات",
+      "legalBasis": "الأساس القانوني",
+      "suggestedAction": "الإجراء المقترح",
+      "noIssues": "لم يتم العثور على مشاكل. يبدو المستند جيدًا.",
+      "severity": {
+        "info": "معلومات",
+        "warning": "تحذير",
+        "critical": "حرج"
+      },
+      "priority": {
+        "low": "منخفض",
+        "medium": "متوسط",
+        "high": "عالي"
+      },
+      "actionRequired": "الإجراءات المطلوبة",
+      "copyToClipboard": "نسخ إلى الحافظة",
+      "copied": "تم النسخ!",
+      "summary": "ملخص",
+      "criticalIssues": "المشاكل الحرجة",
+      "warnings": "التحذيرات"
+    },
+    "error": {
+      "loadFailed": "فشل تحميل المستندات.",
+      "uploadFailed": "فشل التحميل.",
+      "downloadFailed": "فشل التنزيل.",
+      "deleteFailed": "فشل الحذف.",
+      "fileTooLarge": "الملف كبير جدًا (الحد الأقصى 10 ميجابايت).",
+      "invalidFileType": "نوع ملف غير صالح.",
+      "extractFailed": "فشل استخراج النص.",
+      "analysisFailed": "فشل التحليل."
+    }
+  },
+  "lawyers": {
+    "title": "البحث عن محامين",
+    "subtitle": "ابحث عن محامين مؤهلين في قانون الإيجار بالقرب منك",
+    "search": "بحث",
+    "location": "الموقع",
+    "locationPlaceholder": "أدخل المدينة أو الرمز البريدي",
+    "specialization": "التخصص",
+    "allSpecializations": "جميع التخصصات",
+    "book": "حجز موعد",
+    "viewProfile": "عرض الملف الشخصي",
+    "hourlyRate": "السعر بالساعة",
+    "reviews": "التقييمات",
+    "resultsCount": "تم العثور على {{count}} محامٍ",
+    "noResults": "لم يتم العثور على محامين",
+    "noResultsHint": "حاول تعديل معايير البحث",
+    "allLawyers": "جميع المحامين",
+    "viewMode": "وضع العرض",
+    "listView": "عرض القائمة",
+    "mapView": "عرض الخريطة",
+    "toggleFilters": "إظهار/إخفاء الفلاتر",
+    "specializations": {
+      "title": "التخصصات",
+      "rentLaw": "قانون الإيجار",
+      "tenantProtection": "حماية المستأجر",
+      "landlordLaw": "قانون المالك",
+      "realEstate": "قانون العقارات"
+    },
+    "filters": {
+      "maxDistance": "المسافة القصوى",
+      "minRating": "الحد الأدنى للتقييم",
+      "maxHourlyRate": "الحد الأقصى للسعر بالساعة",
+      "languages": "اللغات"
+    },
+    "details": {
+      "contact": "معلومات الاتصال",
+      "about": "عن المحامي",
+      "languages": "اللغات",
+      "pricing": "الأسعار",
+      "pricingNote": "قد تختلف الاستشارة الأولى",
+      "reviews": "التقييمات"
+    },
+    "booking": {
+      "title": "حجز موعد",
+      "selectDateTime": "اختر التاريخ والوقت",
+      "selectDate": "اختر التاريخ",
+      "selectTime": "اختر الوقت",
+      "consultationType": "نوع الاستشارة",
+      "selectConsultationType": "اختر نوع الاستشارة",
+      "confirmation": "التأكيد",
+      "confirmBooking": "تأكيد الحجز",
+      "lawyer": "المحامي",
+      "dateTime": "التاريخ والوقت",
+      "type": "نوع الاستشارة",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "صف موضوعك بإيجاز...",
+      "estimatedCost": "التكلفة المقدرة",
+      "confirmAndBook": "تأكيد والحجز",
+      "booking": "جاري الحجز...",
+      "success": "تم الحجز بنجاح!",
+      "types": {
+        "video": "استشارة فيديو",
+        "phone": "استشارة هاتفية",
+        "inPerson": "استشارة شخصية"
+      },
+      "error": {
+        "selectDateTime": "يرجى اختيار التاريخ والوقت",
+        "selectType": "يرجى اختيار نوع الاستشارة",
+        "bookingFailed": "فشل الحجز. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "map": {
+      "placeholder": "عرض الخريطة",
+      "placeholderHint": "الدمج مع خرائط جوجل أو OpenStreetMap",
+      "selectLawyer": "اختر محامٍ من الخريطة"
+    },
+    "error": {
+      "searchFailed": "فشل البحث. يرجى المحاولة مرة أخرى.",
+      "loadFailed": "خطأ في تحميل المحامين"
+    }
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "next": "التالي",
+    "back": "رجوع",
+    "submit": "إرسال",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا"
+  }
+}

@@ -2,18 +2,23 @@ import express, { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, requireAdmin } from '../middleware/auth';
 import { AuditService, AuditEventType } from '../services/AuditService';
+import { EnhancedAuditService } from '../services/EnhancedAuditService';
 import { SecurityMonitoringService } from '../services/SecurityMonitoringService';
 import { ComplianceReportingService } from '../services/ComplianceReportingService';
+import { AlertManager } from '../services/kms/AlertManager';
 import { logger } from '../utils/logger';
 
 const router: Router = express.Router();
 const prisma = new PrismaClient();
 const auditService = new AuditService(prisma);
-const securityMonitoring = new SecurityMonitoringService(prisma, auditService);
+const enhancedAuditService = new EnhancedAuditService(prisma, process.env.AUDIT_HMAC_KEY || 'default-key');
+const alertManager = new AlertManager();
+const securityMonitoring = new SecurityMonitoringService(prisma, auditService, alertManager);
 const complianceReporting = new ComplianceReportingService(
   prisma,
   auditService,
-  securityMonitoring
+  securityMonitoring,
+  alertManager
 );
 
 /**
@@ -206,8 +211,8 @@ router.get('/anomalies', authenticate, requireAdmin, async (req, res) => {
     const { userId, tenantId, timeWindowMinutes = '60' } = req.query;
 
     const anomalies = await auditService.detectAnomalies(
-      userId as string | undefined,
-      tenantId as string | undefined,
+      undefined,
+      undefined,
       parseInt(timeWindowMinutes as string)
     );
 
@@ -520,6 +525,202 @@ router.get('/compliance/report/export', authenticate, requireAdmin, async (req, 
     res.status(500).json({
       success: false,
       error: 'Failed to export compliance report'
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/audit/enhanced/logs:
+ *   get:
+ *     summary: Erweiterte Audit-Logs abfragen
+ *     tags: [Audit]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: eventType
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: blockHeight
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: minBlockHeight
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: maxBlockHeight
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 100
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *     responses:
+ *       200:
+ *         description: Erweiterte Audit-Logs erfolgreich abgerufen
+ *       401:
+ *         description: Nicht authentifiziert
+ *       403:
+ *         description: Keine Berechtigung
+ */
+router.get('/enhanced/logs', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const {
+      userId,
+      eventType,
+      startDate,
+      endDate,
+      blockHeight,
+      minBlockHeight,
+      maxBlockHeight,
+      limit,
+      offset
+    } = req.query;
+
+    const filters: any = {};
+    
+    if (userId) filters.userId = userId as string;
+    if (eventType) filters.eventType = eventType as string;
+    if (startDate) filters.startDate = new Date(startDate as string);
+    if (endDate) filters.endDate = new Date(endDate as string);
+    if (blockHeight) filters.blockHeight = parseInt(blockHeight as string);
+    if (minBlockHeight) filters.minBlockHeight = parseInt(minBlockHeight as string);
+    if (maxBlockHeight) filters.maxBlockHeight = parseInt(maxBlockHeight as string);
+    if (limit) filters.limit = parseInt(limit as string);
+    if (offset) filters.offset = parseInt(offset as string);
+
+    const logs = await enhancedAuditService.queryEnhancedLogs(filters);
+
+    res.json({
+      success: true,
+      data: logs,
+      count: logs.length
+    });
+  } catch (error) {
+    logger.error('Failed to query enhanced audit logs:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to query enhanced audit logs'
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/audit/enhanced/chain/verify:
+ *   post:
+ *     summary: Audit-Kette verifizieren
+ *     tags: [Audit]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Audit-Kettenverifizierung erfolgreich
+ *       401:
+ *         description: Nicht authentifiziert
+ *       403:
+ *         description: Keine Berechtigung
+ */
+router.post('/enhanced/chain/verify', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await enhancedAuditService.verifyAuditChain();
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    logger.error('Failed to verify audit chain:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to verify audit chain'
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/audit/enhanced/anomalies:
+ *   get:
+ *     summary: Erweiterte Anomalien erkennen
+ *     tags: [Audit]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: tenantId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Erweiterte Anomalien erfolgreich erkannt
+ *       401:
+ *         description: Nicht authentifiziert
+ *       403:
+ *         description: Keine Berechtigung
+ */
+router.get('/enhanced/anomalies', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { startDate, endDate, tenantId } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        error: 'startDate and endDate are required'
+      });
+    }
+
+    const anomalies = await enhancedAuditService.detectEnhancedAnomalies(
+      new Date(startDate as string),
+      new Date(endDate as string),
+      tenantId as string | undefined
+    );
+
+    res.json({
+      success: true,
+      data: anomalies,
+      count: anomalies.length
+    });
+  } catch (error) {
+    logger.error('Failed to detect enhanced anomalies:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to detect enhanced anomalies'
     });
   }
 });

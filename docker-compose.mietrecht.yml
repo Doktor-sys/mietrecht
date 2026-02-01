@@ -1,0 +1,70 @@
+# Docker Compose Mietrecht Konfiguration
+
+services:
+  mietrecht-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.mietrecht
+    container_name: mietrecht-agent
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - BGH_MAX_RESULTS=${BGH_MAX_RESULTS:-10}
+      - LANDGERICHTE_MAX_RESULTS=${LANDGERICHTE_MAX_RESULTS:-15}
+      - BECKONLINE_MAX_RESULTS=${BECKONLINE_MAX_RESULTS:-10}
+    volumes:
+      - ./scripts/database/data:/app/scripts/database/data
+    depends_on:
+      - postgres
+    networks:
+      - mietrecht-network
+
+  postgres:
+    image: postgres:13-alpine
+    container_name: mietrecht-postgres
+    environment:
+      - POSTGRES_DB=mietrecht_agent
+      - POSTGRES_USER=mietrecht_user
+      - POSTGRES_PASSWORD=mietrecht_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - mietrecht-network
+
+  # Worker service for running the agent periodically
+  mietrecht-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.mietrecht
+    container_name: mietrecht-worker
+    command: [ "node", "scripts/mietrecht_agent_real_data.js" ]
+    environment:
+      - NODE_ENV=production
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - BGH_MAX_RESULTS=${BGH_MAX_RESULTS:-10}
+      - LANDGERICHTE_MAX_RESULTS=${LANDGERICHTE_MAX_RESULTS:-15}
+      - BECKONLINE_MAX_RESULTS=${BECKONLINE_MAX_RESULTS:-10}
+    volumes:
+      - ./scripts/database/data:/app/scripts/database/data
+    depends_on:
+      - postgres
+    networks:
+      - mietrecht-network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  mietrecht-network:
+    driver: bridge

@@ -109,6 +109,32 @@ const anwaelte = [
       themengebiete: ["Mietpreisbremse", "Verfassungsrecht"],
       frequenz: "woechentlich"
     }
+  },
+  {
+    id: 3,
+    name: "Thomas Wagner",
+    email: "wagner@kanzlei-wagner.de",
+    kanzlei: "Kanzlei Wagner",
+    schwerpunkte: ["Mietrecht", "Wirtschaftsrecht"],
+    regionen: ["Bayern", "Baden-Württemberg"],
+    einstellungen: {
+      gerichtsarten: ["Landgericht", "Oberlandesgericht"],
+      themengebiete: ["Betriebskosten", "Wohnungseigentum"],
+      frequenz: "woechentlich"
+    }
+  },
+  {
+    id: 4,
+    name: "Julia Meier",
+    email: "j.meier@ra-meier.de",
+    kanzlei: "Rechtsanwälte Meier & Kollegen",
+    schwerpunkte: ["Mietrecht", "Baurecht"],
+    regionen: ["Nordrhein-Westfalen", "Hessen"],
+    einstellungen: {
+      gerichtsarten: ["Bundesgerichtshof", "Landgericht", "Oberlandesgericht"],
+      themengebiete: ["Modernisierung", "Mietspiegel", "Kündigungsschutz"],
+      frequenz: "woechentlich"
+    }
   }
 ];
 
@@ -161,177 +187,176 @@ function kategorisiereUrteile(urteile) {
 }
 
 /**
- * Generiert HTML-Newsletter-Inhalt für einen Anwalt
+ * Generiert HTML-Newsletter für einen Anwalt
  * @param {Object} anwalt - Anwalt-Objekt
  * @param {Array} urteile - Gefilterte Urteile für den Anwalt
- * @returns {String} HTML-E-Mail-Inhalt
+ * @returns {String} HTML-Newsletter
  */
 function generiereNewsletter(anwalt, urteile) {
-  const aktuellesDatum = new Date().toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  
+  const aktuellesDatum = new Date().toLocaleDateString('de-DE');
   const kalenderwoche = getKalenderwoche(new Date());
   
-  const kategorisierteUrteile = kategorisiereUrteile(urteile);
-  
   let html = `
-<!DOCTYPE html>
-<html>
-<head>
+  <!DOCTYPE html>
+  <html lang="de">
+  <head>
     <meta charset="UTF-8">
-    <title>Mietrechts-Urteile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mietrechts-Update KW ${kalenderwoche}</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .kopf { background-color: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 5px; }
-        .abschnitt { margin: 25px 0; padding: 15px; border-left: 4px solid #3498db; background-color: #f8f9fa; border-radius: 0 5px 5px 0; }
-        .urteil { 
-            border: 1px solid #ddd; 
-            margin: 15px 0; 
-            padding: 15px; 
-            border-radius: 5px;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .themen-tag { 
-            display: inline-block; 
-            background-color: #3498db; 
-            color: white; 
-            padding: 3px 8px; 
-            border-radius: 3px; 
-            font-size: 0.8em; 
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-        .gericht-name { color: #2c3e50; font-weight: bold; }
-        .datum { color: #7f8c8d; }
-        .aktenzeichen { color: #95a5a6; font-size: 0.9em; }
-        .wichtig-hoch { border-left-color: #e74c3c; }
-        .wichtig-mittel { border-left-color: #f39c12; }
-        .wichtig-niedrig { border-left-color: #2ecc71; }
-        .fussbereich { 
-            margin-top: 30px; 
-            padding-top: 15px; 
-            border-top: 1px solid #eee; 
-            font-size: 0.9em; 
-            color: #777;
-            text-align: center;
-        }
-        .praxishinweise { 
-            background-color: #fff8e1; 
-            border-left: 4px solid #ffc107; 
-            padding: 15px; 
-            border-radius: 0 5px 5px 0;
-            margin: 15px 0;
-        }
-        h1, h2, h3 { color: #2c3e50; }
-        a { color: #3498db; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #1a5276;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .urteil {
+        border-left: 4px solid #3498db;
+        padding: 10px 15px;
+        margin: 15px 0;
+        background-color: #f8f9fa;
+      }
+      .gericht {
+        font-weight: bold;
+        color: #1a5276;
+      }
+      .az {
+        color: #7f8c8d;
+        font-style: italic;
+      }
+      .themen {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin: 10px 0;
+      }
+      .thema {
+        background-color: #e8f4f8;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      .praxishinweis {
+        background-color: #e8f8f5;
+        border-left: 4px solid #27ae60;
+        padding: 10px 15px;
+        margin: 15px 0;
+      }
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.9em;
+        color: #7f8c8d;
+        text-align: center;
+      }
     </style>
-</head>
-<body>
-    <div class="kopf">
-        <h1>Mietrechts-Urteile der Woche</h1>
-        <p>Kalenderwoche ${kalenderwoche}, ${aktuellesDatum}</p>
-        <p>Guten Tag ${anwalt.name},</p>
-        <p>hier sind die relevanten Mietrechts-Urteile für Ihre Praxis:</p>
-    </div>
-  `;
-  
-  // BGH-Urteile Abschnitt
-  if (kategorisierteUrteile.bgh.length > 0) {
+  </head>
+  <body>
+    <div class="header">
+      <h1>Mietrechts-Update</h1>
+      <p>KW ${kalenderwoche} • ${aktuellesDatum}</p>
+      <p>Persönlich für ${anwalt.name}</p>
+    </div>`;
+
+  if (urteile.length === 0) {
     html += `
-    <div class="abschnitt">
-        <h2>📌 Neue BGH-Urteile (${kategorisierteUrteile.bgh.length})</h2>
-    `;
-    
-    kategorisierteUrteile.bgh.forEach(urteil => {
-      const wichtigkeitKlasse = `wichtig-${urteil.wichtigkeit}`;
-      html += `
-        <div class="urteil ${wichtigkeitKlasse}">
-            <div class="gericht-name">${urteil.gericht}, ${urteil.ort}</div>
-            <div class="datum">${formatiereDatum(urteil.datum)} | <span class="aktenzeichen">${urteil.az}</span></div>
-            <h3>${urteil.themen.map(thema => `<span class="themen-tag">${thema}</span>`).join('')}</h3>
-            <p><strong>Zusammenfassung:</strong> ${urteil.zusammenfassung}</p>
-            <p><strong>Praxishinweise:</strong> ${urteil.praxishinweise}</p>
-            <p><a href="${urteil.url}" target="_blank">Vollständigen Urtext anzeigen</a></p>
-        </div>
-      `;
-    });
-    
-    html += `</div>`;
-  }
-  
-  // Landgerichts-Urteile Abschnitt
-  if (kategorisierteUrteile.landgerichte.length > 0) {
-    html += `
-    <div class="abschnitt">
-        <h2>🏛️ Wichtige Landgerichts-Urteile (${kategorisierteUrteile.landgerichte.length})</h2>
-    `;
-    
-    kategorisierteUrteile.landgerichte.forEach(urteil => {
-      const wichtigkeitKlasse = `wichtig-${urteil.wichtigkeit}`;
-      html += `
-        <div class="urteil ${wichtigkeitKlasse}">
-            <div class="gericht-name">${urteil.gericht}, ${urteil.ort}</div>
-            <div class="datum">${formatiereDatum(urteil.datum)} | <span class="aktenzeichen">${urteil.az}</span></div>
-            <h3>${urteil.themen.map(thema => `<span class="themen-tag">${thema}</span>`).join('')}</h3>
-            <p><strong>Zusammenfassung:</strong> ${urteil.zusammenfassung}</p>
-            <p><strong>Praxishinweise:</strong> ${urteil.praxishinweise}</p>
-            <p><a href="${urteil.url}" target="_blank">Vollständigen Urtext anzeigen</a></p>
-        </div>
-      `;
-    });
-    
-    html += `</div>`;
-  }
-  
-  // Verfassungsgerichts-Urteile Abschnitt
-  if (kategorisierteUrteile.verfassungsgericht.length > 0) {
-    html += `
-    <div class="abschnitt">
-        <h2>⚖️ Bundesverfassungsgericht (${kategorisierteUrteile.verfassungsgericht.length})</h2>
-    `;
-    
-    kategorisierteUrteile.verfassungsgericht.forEach(urteil => {
-      const wichtigkeitKlasse = `wichtig-${urteil.wichtigkeit}`;
-      html += `
-        <div class="urteil ${wichtigkeitKlasse}">
-            <div class="gericht-name">${urteil.gericht}, ${urteil.ort}</div>
-            <div class="datum">${formatiereDatum(urteil.datum)} | <span class="aktenzeichen">${urteil.az}</span></div>
-            <h3>${urteil.themen.map(thema => `<span class="themen-tag">${thema}</span>`).join('')}</h3>
-            <p><strong>Zusammenfassung:</strong> ${urteil.zusammenfassung}</p>
-            <p><strong>Praxishinweise:</strong> ${urteil.praxishinweise}</p>
-            <p><a href="${urteil.url}" target="_blank">Vollständigen Urtext anzeigen</a></p>
-        </div>
-      `;
-    });
-    
-    html += `</div>`;
-  }
-  
-  // Praxishinweise Zusammenfassung
-  const alleHinweise = urteile.map(u => u.praxishinweise).join(' ');
-  if (alleHinweise) {
-    html += `
-    <div class="praxishinweise">
-        <h2>💼 Praxishinweise für Ihre Kanzlei</h2>
-        <p>${generierePraxisZusammenfassung(urteile)}</p>
-    </div>
-    `;
+    <div class="keine-urteile">
+      <h2>Keine neuen relevanten Urteile gefunden</h2>
+      <p>In dieser Woche gibt es keine neuen Urteile, die Ihren Einstellungen entsprechen.</p>
+    </div>`;
+    return html + '</body></html>';
   }
   
   html += `
-    <div class="fussbereich">
-        <p>Dieser Newsletter wird Ihnen vom SmartLaw Mietrecht Agent gesendet.</p>
-        <p><a href="https://jurismind.de/einstellungen">Einstellungen ändern</a> | <a href="https://jurismind.de/abmelden">Abmelden</a></p>
-        <p><small>Diese E-Mail wurde automatisch generiert. Antworten Sie nicht auf diese Nachricht.</small></p>
+    <div class="statistik">
+      <p>Es wurden <strong>${urteile.length} Urteile</strong> gefunden, die Ihren Einstellungen entsprechen.</p>
+    </div>`;
+  
+  // Alle Urteile durchgehen und HTML generieren
+  const kategorien = kategorisiereUrteile(urteile);
+  
+  // BGH-Urteile
+  if (kategorien.bgh.length > 0) {
+    html += `
+    <h2>Neue BGH-Urteile</h2>`;
+    kategorien.bgh.forEach(urteil => {
+      html += `
+    <div class="urteil">
+      <div class="gericht">${urteil.gericht}, ${urteil.ort}</div>
+      <div class="az">Aktenzeichen: ${urteil.az} • ${formatiereDatum(urteil.datum)}</div>
+      <div class="themen">
+        ${urteil.themen.map(thema => `<span class="thema">${thema}</span>`).join('')}
+      </div>
+      <p>${urteil.zusammenfassung}</p>
+      <div class="praxishinweis">
+        <strong>Praxishinweis:</strong> ${urteil.praxishinweise}
+      </div>
+      <p><a href="${urteil.url}" target="_blank">Zum Volltext</a></p>
+    </div>`;
+    });
+  }
+  
+  // Landgerichts-Urteile
+  if (kategorien.landgerichte.length > 0) {
+    html += `
+    <h2>Wichtige Landgerichts-Urteile</h2>`;
+    kategorien.landgerichte.forEach(urteil => {
+      html += `
+    <div class="urteil">
+      <div class="gericht">${urteil.gericht}, ${urteil.ort}</div>
+      <div class="az">Aktenzeichen: ${urteil.az} • ${formatiereDatum(urteil.datum)}</div>
+      <div class="themen">
+        ${urteil.themen.map(thema => `<span class="thema">${thema}</span>`).join('')}
+      </div>
+      <p>${urteil.zusammenfassung}</p>
+      <div class="praxishinweis">
+        <strong>Praxishinweis:</strong> ${urteil.praxishinweise}
+      </div>
+      <p><a href="${urteil.url}" target="_blank">Zum Volltext</a></p>
+    </div>`;
+    });
+  }
+  
+  // Verfassungsgerichts-Urteile
+  if (kategorien.verfassungsgericht.length > 0) {
+    html += `
+    <h2>Bundesverfassungsgericht</h2>`;
+    kategorien.verfassungsgericht.forEach(urteil => {
+      html += `
+    <div class="urteil">
+      <div class="gericht">${urteil.gericht}, ${urteil.ort}</div>
+      <div class="az">Aktenzeichen: ${urteil.az} • ${formatiereDatum(urteil.datum)}</div>
+      <div class="themen">
+        ${urteil.themen.map(thema => `<span class="thema">${thema}</span>`).join('')}
+      </div>
+      <p>${urteil.zusammenfassung}</p>
+      <div class="praxishinweis">
+        <strong>Praxishinweis:</strong> ${urteil.praxishinweise}
+      </div>
+      <p><a href="${urteil.url}" target="_blank">Zum Volltext</a></p>
+    </div>`;
+    });
+  }
+  
+  // Footer
+  html += `
+    <div class="footer">
+      <p>Dies ist eine automatisch generierte Nachricht. Bitte antworten Sie nicht auf diese E-Mail.</p>
+      <p>© ${new Date().getFullYear()} Mietrecht Urteilsagent. Alle Rechte vorbehalten.</p>
     </div>
-</body>
-</html>
-  `;
+  </body>
+  </html>`;
   
   return html;
 }
@@ -379,20 +404,42 @@ function generierePraxisZusammenfassung(urteile) {
 }
 
 /**
- * Simuliert das Senden einer E-Mail
+ * Erstellt eine HTML-Datei und simuliert das Versenden
  * @param {Object} anwalt - Anwalt-Objekt
- * @param {String} betreff - E-Mail-Betreff
- * @param {String} inhalt - E-Mail-Inhalt
+ * @param {String} betreff - Betreff der E-Mail
+ * @param {String} htmlInhalt - HTML-Inhalt für den Newsletter
  */
-function sendeEmail(anwalt, betreff, inhalt) {
-  console.log(`\n=== E-MAIL SIMULATION ===`);
-  console.log(`An: ${anwalt.name} <${anwalt.email}>`);
-  console.log(`Betreff: ${betreff}`);
-  console.log(`Inhaltsvorschau: ${inhalt.substring(0, 200)}...`);
-  console.log(`=== ENDE E-MAIL SIMULATION ===\n`);
+function sendeEmail(anwalt, betreff, htmlInhalt) {
+  // Erstelle einen Dateinamen mit Anwaltsname und Datum
+  const dateiname = `mietrechts_update_${anwalt.name.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+  const dateipfad = path.join(__dirname, '..', 'reports', dateiname);
   
-  // In einer echten Implementierung würde dies einen E-Mail-Service verwenden:
-  // await transporter.sendMail({ to: anwalt.email, subject: betreff, html: inhalt });
+  // Erstelle den reports-Ordner, falls nicht vorhanden
+  if (!fs.existsSync(path.join(__dirname, '..', 'reports'))) {
+    fs.mkdirSync(path.join(__dirname, '..', 'reports'));
+  }
+  
+  // HTML-Datei speichern
+  fs.writeFileSync(dateipfad, htmlInhalt, 'utf8');
+  
+  console.log(`\n=== ZUSAMMENFASSUNG FÜR ${anwalt.name.toUpperCase()} ===`);
+  console.log(`Betreff: ${betreff}`);
+  console.log(`HTML-Report wurde erstellt: ${dateipfad}`);
+  console.log(`=== ENDE ZUSAMMENFASSUNG ===\n`);
+  
+  // In einer echten Implementierung würde hier die E-Mail mit PDF-Anhang versendet werden
+  // z.B. mit nodemailer oder einem ähnlichen Paket
+  
+  // Optional: Hier könnte man auch eine PDF-Konvertierung einfügen
+  // z.B. mit puppeteer, pdfkit oder einem anderen PDF-Generator
+  
+  // Beispiel für PDF-Erstellung (erfordert zusätzliche Abhängigkeiten):
+  // const pdf = require('html-pdf');
+  // const pdfOptions = { format: 'A4' };
+  // pdf.create(htmlInhalt, pdfOptions).toFile(pdfPath, (err, res) => {
+  //   if (err) return console.error(err);
+  //   console.log('PDF wurde erstellt:', res.filename);
+  // });
 }
 
 /**
@@ -402,9 +449,12 @@ async function fuehreMietrechtAgentAus() {
   console.log("Starte Mietrecht Urteilsagent...");
   console.log(`Datum: ${new Date().toLocaleString('de-DE')}`);
   
+  // Gesamtzahl der Anwälte ausgeben
+  console.log(`Verarbeite Updates für ${anwaelte.length} Anwälte...\n`);
+  
   // Jeden Anwalt verarbeiten
-  for (const anwalt of anwaelte) {
-    console.log(`\nVerarbeite Updates für ${anwalt.name}...`);
+  for (const [index, anwalt] of anwaelte.entries()) {
+    console.log(`[${index + 1}/${anwaelte.length}] Verarbeite Updates für ${anwalt.name} (${anwalt.kanzlei})...`);
     
     // Urteile für diesen Anwalt filtern
     const gefilterteUrteile = filterUrteileFuerAnwalt(mockUrteile, anwalt);
@@ -413,13 +463,13 @@ async function fuehreMietrechtAgentAus() {
     
     // Newsletter-Inhalt generieren
     const newsletterInhalt = generiereNewsletter(anwalt, gefilterteUrteile);
-    const emailBetreff = `Mietrechts-Urteile - Kalenderwoche ${getKalenderwoche(new Date())}`;
+    const emailBetreff = `Mietrechts-Urteile - KW ${getKalenderwoche(new Date())} - ${anwalt.name.split(' ')[0]}`;
     
     // E-Mail senden (simuliert)
-    sendeEmail(anwalt, emailBetreff, newsletterInhalt);
+    await sendeEmail(anwalt, emailBetreff, newsletterInhalt);
     
-    // Aktivität protokollieren
-    console.log(`  Newsletter an ${anwalt.email} gesendet`);
+    // Kleine Pause zwischen den Anwälten (1 Sekunde)
+    await new Promise(resolve => setTimeout(resolve, 1000));
   }
   
   console.log("\nMietrecht Urteilsagent erfolgreich abgeschlossen.");

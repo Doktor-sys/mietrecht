@@ -1,0 +1,24 @@
+
+// Audit-Modell
+model AuditLog {
+  id            String   @id @default(cuid())
+  timestamp     DateTime @default(now())
+  eventType     String
+  userId        String?
+  tenantId      String?
+  resourceType  String?
+  resourceId    String?
+  action        String
+  result        String
+  ipAddress     String?
+  userAgent     String?
+  metadata      Json?
+  hmacSignature String   @default("")
+
+  @@index([timestamp])
+  @@index([userId])
+  @@index([tenantId])
+  @@index([eventType])
+  @@index([action])
+  @@map("audit_logs")
+}

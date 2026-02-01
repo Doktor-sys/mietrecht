@@ -37,11 +37,28 @@ export class ChatService {
   }
 
   /**
+   * Refine AI response based on user feedback
+   */
+  async refineResponse(
+    originalResponse: AIResponse,
+    feedback: string,
+    userQuery: string
+  ): Promise<AIResponse> {
+    return this.responseGenerator.refineResponse(originalResponse, feedback, userQuery);
+  }
+
+  /**
    * Start a new conversation
    */
   async startConversation(userId: string, initialQuery: string): Promise<ConversationResponse> {
     try {
       logger.info('Starting new conversation', { userId, queryLength: initialQuery.length });
+
+      // Get user profile
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        include: { profile: true }
+      });
 
       // Classify the case
       const classification = await this.classifier.classifyCase(initialQuery);
@@ -71,7 +88,9 @@ export class ChatService {
       // Generate AI response with legal references
       const aiResponse = await this.responseGenerator.generateResponse(
         classification,
-        initialQuery
+        initialQuery,
+        undefined, // conversation context
+        user // user profile
       );
 
       // Save AI message
@@ -117,19 +136,25 @@ export class ChatService {
     try {
       logger.info('Sending message', { conversationId, userId, messageLength: message.length });
 
-      // Verify case belongs to user
-      const existingCase = await this.prisma.case.findFirst({
-        where: {
-          id: conversationId,
-          userId
-        },
-        include: {
-          messages: {
-            orderBy: { timestamp: 'desc' },
-            take: 10
+      // Verify case belongs to user and get user profile
+      const [existingCase, user] = await Promise.all([
+        this.prisma.case.findFirst({
+          where: {
+            id: conversationId,
+            userId
+          },
+          include: {
+            messages: {
+              orderBy: { timestamp: 'desc' },
+              take: 10
+            }
           }
-        }
-      });
+        }),
+        this.prisma.user.findUnique({
+          where: { id: userId },
+          include: { profile: true }
+        })
+      ]);
 
       if (!existingCase) {
         throw new Error('Conversation not found or access denied');
@@ -154,7 +179,8 @@ export class ChatService {
       const aiResponse = await this.responseGenerator.generateResponse(
         classification,
         message,
-        context
+        context,
+        user
       );
 
       // Save AI message

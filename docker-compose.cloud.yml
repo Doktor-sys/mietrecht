@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Für lokale Entwicklung mit Google Cloud ähnlicher Umgebung
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.cloudrun
+    container_name: jurismind-cloud-local
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # PostgreSQL für lokale Entwicklung
+  database:
+    image: postgres:13-alpine
+    container_name: jurismind-postgres-local
+    environment:
+      POSTGRES_DB: jurismind_dev
+      POSTGRES_USER: jurismind
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

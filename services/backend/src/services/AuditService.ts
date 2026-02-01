@@ -142,6 +142,64 @@ export class AuditService {
   }
 
   /**
+   * Exportiert Audit-Logs in verschiedenen Formaten
+   */
+  async exportLogs(
+    options: QueryLogsOptions,
+    format: 'json' | 'csv' = 'json'
+  ): Promise<string | Buffer> {
+    try {
+      const logs = await this.queryLogs(options);
+      
+      if (format === 'csv') {
+        // Erstelle CSV-Header
+        const headers = [
+          'ID',
+          'Timestamp',
+          'Event Type',
+          'User ID',
+          'Tenant ID',
+          'Resource Type',
+          'Resource ID',
+          'Action',
+          'Result',
+          'IP Address',
+          'User Agent'
+        ];
+        
+        // Erstelle CSV-Zeilen
+        const rows = logs.map(log => [
+          log.id,
+          log.timestamp.toISOString(),
+          log.eventType,
+          log.userId || '',
+          log.tenantId || '',
+          log.resourceType || '',
+          log.resourceId || '',
+          log.action,
+          log.result,
+          log.ipAddress || '',
+          log.userAgent || ''
+        ]);
+        
+        // Kombiniere Header und Zeilen
+        const csvContent = [
+          headers.join(','),
+          ...rows.map(row => row.map(field => `"${field.replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
+        
+        return csvContent;
+      } else {
+        // JSON-Format
+        return JSON.stringify(logs, null, 2);
+      }
+    } catch (error) {
+      logger.error('Failed to export audit logs:', error);
+      throw new Error('Failed to export audit logs');
+    }
+  }
+
+  /**
    * Fragt Audit-Logs ab
    */
   async queryLogs(options: QueryLogsOptions): Promise<AuditLogEntry[]> {

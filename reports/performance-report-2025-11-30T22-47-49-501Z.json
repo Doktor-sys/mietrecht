@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-11-30T22:47:49.500Z",
+  "systemInfo": {
+    "nodeVersion": "v24.11.1",
+    "platform": "win32",
+    "arch": "x64",
+    "memoryUsage": {
+      "rss": 63369216,
+      "heapTotal": 18378752,
+      "heapUsed": 16632496,
+      "external": 3574776,
+      "arrayBuffers": 110817
+    },
+    "uptime": 29.2719696
+  },
+  "performanceMetrics": {
+    "system": {
+      "timestamp": "2025-11-30T22:47:48.666Z",
+      "memory": {
+        "rss": 59,
+        "heapTotal": 17,
+        "heapUsed": 16,
+        "external": 3
+      },
+      "cpu": {
+        "user": 2984,
+        "system": 1906
+      },
+      "uptime": 28
+    },
+    "database": {
+      "error": "getLawyersCount is not a function"
+    },
+    "application": {
+      "timestamp": "2025-11-30T22:47:49.500Z",
+      "cache": {
+        "size": 0
+      }
+    },
+    "api": {
+      "timestamp": "2025-11-30T22:47:49.500Z",
+      "bgbRequests": 82,
+      "landgerichtRequests": 1,
+      "bverfgRequests": 1,
+      "beckOnlineRequests": 9,
+      "averageResponseTime": 406.56391702860515
+    },
+    "cache": {}
+  },
+  "recommendations": [
+    {
+      "priority": "medium",
+      "message": "Memory usage exceeds 80%. Consider implementing more aggressive cache eviction.",
+      "action": "Review cache size limits and data retention policies"
+    }
+  ],
+  "summary": {
+    "overallHealth": "Fair",
+    "keyMetrics": {
+      "cacheHitRate": null,
+      "avgDatabaseQueryTime": null,
+      "avgApiResponseTime": null,
+      "memoryUsage": 0.9053559240583909
+    }
+  }
+}

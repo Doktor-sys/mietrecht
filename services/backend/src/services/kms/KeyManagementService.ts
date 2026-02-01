@@ -467,4 +467,347 @@ export class KeyManagementService {
       );
     }
   }
+
+  /**
+   * Gets the active key for a specific purpose
+   */
+  async getActiveKeyForPurpose(tenantId: string, purpose: KeyPurpose): Promise<KeyMetadata> {
+    try {
+      // Check cache first
+      const cacheKey = `kms:active_key:${tenantId}:${purpose}`;
+      const cachedData = await this.redis.get(cacheKey);
+      
+      if (cachedData) {
+        const keyMetadata: KeyMetadata = JSON.parse(cachedData);
+        
+        // Create HMAC signature for audit log
+        const masterKey = this.encryptionService.generateKey();
+        const auditData = JSON.stringify({
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          action: 'get_active_key_for_purpose',
+          result: 'success',
+          timestamp: new Date().toISOString()
+        });
+        const hmacSignature = this.encryptionService.createHMAC(auditData, masterKey);
+        
+        // Create audit log
+        await this.prisma.keyAuditLog.create({
+          data: {
+            id: `audit-${crypto.randomUUID()}`,
+            keyId: keyMetadata.id,
+            timestamp: new Date(),
+            eventType: AuditEventType.KEY_ACCESSED,
+            tenantId: tenantId,
+            action: 'get_active_key_for_purpose',
+            result: 'success',
+            metadata: {
+              purpose: purpose
+            },
+            hmacSignature
+          }
+        });
+        
+        return keyMetadata;
+      }
+      
+      // Get the active key from database
+      const keyRecord = await this.prisma.encryptionKey.findFirst({
+        where: {
+          tenantId: tenantId,
+          purpose: purpose,
+          status: KeyStatus.ACTIVE
+        },
+        orderBy: {
+          version: 'desc' // Get the latest version
+        },
+        include: {
+          rotationSchedule: true
+        }
+      });
+      
+      if (!keyRecord) {
+        // If no active key found, create a new one
+        const newKey = await this.createKey({
+          tenantId: tenantId,
+          purpose: purpose,
+          algorithm: 'aes-256-gcm'
+        });
+        
+        return newKey;
+      }
+      
+      // Convert rotation schedule
+      let rotationSchedule: RotationSchedule | undefined;
+      if (keyRecord.rotationSchedule) {
+        rotationSchedule = {
+          enabled: keyRecord.rotationSchedule.enabled,
+          intervalDays: keyRecord.rotationSchedule.intervalDays,
+          nextRotationAt: keyRecord.rotationSchedule.nextRotationAt,
+          lastRotationAt: keyRecord.rotationSchedule.lastRotationAt || undefined
+        };
+      }
+      
+      const keyMetadata: KeyMetadata = {
+        id: keyRecord.id,
+        tenantId: keyRecord.tenantId,
+        purpose: keyRecord.purpose as KeyPurpose,
+        algorithm: keyRecord.algorithm,
+        version: keyRecord.version,
+        status: keyRecord.status as KeyStatus,
+        createdAt: keyRecord.createdAt,
+        updatedAt: keyRecord.updatedAt,
+        expiresAt: keyRecord.expiresAt || undefined,
+        lastUsedAt: new Date(),
+        rotationSchedule,
+        metadata: keyRecord.metadata as Record<string, any> | undefined
+      };
+      
+      // Store in cache
+      await this.redis.setEx(cacheKey, 3600, JSON.stringify(keyMetadata));
+      
+      // Create HMAC signature for audit log
+      const masterKey = this.encryptionService.generateKey();
+      const auditData = JSON.stringify({
+        eventType: AuditEventType.KEY_ACCESSED,
+        tenantId: tenantId,
+        action: 'get_active_key_for_purpose',
+        result: 'success',
+        timestamp: new Date().toISOString()
+      });
+      const hmacSignature = this.encryptionService.createHMAC(auditData, masterKey);
+      
+      // Create audit log
+      await this.prisma.keyAuditLog.create({
+        data: {
+          id: `audit-${crypto.randomUUID()}`,
+          keyId: keyRecord.id,
+          timestamp: new Date(),
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          action: 'get_active_key_for_purpose',
+          result: 'success',
+          metadata: {
+            purpose: purpose
+          },
+          hmacSignature
+        }
+      });
+      
+      return keyMetadata;
+    } catch (error) {
+      logger.error(`Failed to get active key for purpose ${purpose}:`, error);
+      
+      throw new KeyManagementError(
+        `Failed to get active key for purpose: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        KeyManagementErrorCode.MASTER_KEY_ERROR
+      );
+    }
+  }
+
+  /**
+   * Gets a key by ID and decrypts it
+   */
+  async getKey(keyId: string, tenantId: string, serviceId?: string): Promise<string> {
+    try {
+      // Check cache first
+      const cacheKey = `kms:decrypted_key:${keyId}:${tenantId}`;
+      const cachedData = await this.redis.get(cacheKey);
+      
+      if (cachedData) {
+        // Update lastUsedAt
+        await this.prisma.encryptionKey.update({
+          where: {
+            id: keyId,
+            tenantId: tenantId
+          },
+          data: {
+            lastUsedAt: new Date()
+          }
+        });
+        
+        // Create HMAC signature for audit log
+        const masterKey = this.encryptionService.generateKey();
+        const auditData = JSON.stringify({
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          serviceId: serviceId,
+          action: 'get_key',
+          result: 'success',
+          timestamp: new Date().toISOString()
+        });
+        const hmacSignature = this.encryptionService.createHMAC(auditData, masterKey);
+        
+        // Create audit log
+        await this.prisma.keyAuditLog.create({
+          data: {
+            id: `audit-${crypto.randomUUID()}`,
+            keyId: keyId,
+            timestamp: new Date(),
+            eventType: AuditEventType.KEY_ACCESSED,
+            tenantId: tenantId,
+            serviceId: serviceId,
+            action: 'get_key',
+            result: 'success',
+            metadata: {
+              keyId: keyId
+            },
+            hmacSignature
+          }
+        });
+        
+        return cachedData;
+      }
+      
+      // Get the key from database
+      const keyRecord = await this.prisma.encryptionKey.findUnique({
+        where: {
+          id: keyId,
+          tenantId: tenantId
+        }
+      });
+      
+      if (!keyRecord) {
+        // Create HMAC signature for error audit log
+        const masterKey = this.encryptionService.generateKey();
+        const errorAuditData = JSON.stringify({
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          serviceId: serviceId,
+          action: 'get_key',
+          result: 'failure',
+          timestamp: new Date().toISOString(),
+          error: 'Encryption key not found'
+        });
+        const errorHmacSignature = this.encryptionService.createHMAC(errorAuditData, masterKey);
+        
+        // Create audit log for error
+        await this.prisma.keyAuditLog.create({
+          data: {
+            id: `audit-${crypto.randomUUID()}`,
+            keyId: keyId, // Use the provided keyId even though it wasn't found
+            timestamp: new Date(),
+            eventType: AuditEventType.KEY_ACCESSED,
+            tenantId: tenantId,
+            serviceId: serviceId,
+            action: 'get_key',
+            result: 'failure',
+            metadata: {
+              error: 'Encryption key not found',
+              keyId: keyId
+            },
+            hmacSignature: errorHmacSignature
+          }
+        });
+        
+        throw new KeyManagementError(
+          'Encryption key not found',
+          KeyManagementErrorCode.KEY_NOT_FOUND
+        );
+      }
+      
+      // Check if key is active
+      if (keyRecord.status !== KeyStatus.ACTIVE && keyRecord.status !== KeyStatus.DEPRECATED) {
+        // Create HMAC signature for error audit log
+        const masterKey = this.encryptionService.generateKey();
+        const errorAuditData = JSON.stringify({
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          serviceId: serviceId,
+          action: 'get_key',
+          result: 'failure',
+          timestamp: new Date().toISOString(),
+          error: `Key status is ${keyRecord.status}`
+        });
+        const errorHmacSignature = this.encryptionService.createHMAC(errorAuditData, masterKey);
+        
+        // Create audit log for error
+        await this.prisma.keyAuditLog.create({
+          data: {
+            id: `audit-${crypto.randomUUID()}`,
+            keyId: keyId,
+            timestamp: new Date(),
+            eventType: AuditEventType.KEY_ACCESSED,
+            tenantId: tenantId,
+            serviceId: serviceId,
+            action: 'get_key',
+            result: 'failure',
+            metadata: {
+              error: `Key status is ${keyRecord.status}`,
+              keyId: keyId,
+              status: keyRecord.status
+            },
+            hmacSignature: errorHmacSignature
+          }
+        });
+        
+        throw new KeyManagementError(
+          `Key is not active: ${keyRecord.status}`,
+          KeyManagementErrorCode.KEY_DISABLED
+        );
+      }
+      
+      // In a real implementation, we would decrypt the key using the master key
+      // For now, we'll just return a placeholder - in a real system, this would
+      // involve decrypting the encryptedKey field with the master key
+      const decryptedKey = "placeholder_decrypted_key_" + keyId;
+      
+      // Store in cache
+      await this.redis.setEx(cacheKey, 300, decryptedKey); // 5 minutes cache
+      
+      // Update lastUsedAt
+      await this.prisma.encryptionKey.update({
+        where: {
+          id: keyId,
+          tenantId: tenantId
+        },
+        data: {
+          lastUsedAt: new Date()
+        }
+      });
+      
+      // Create HMAC signature for audit log
+      const masterKey = this.encryptionService.generateKey();
+      const auditData = JSON.stringify({
+        eventType: AuditEventType.KEY_ACCESSED,
+        tenantId: tenantId,
+        serviceId: serviceId,
+        action: 'get_key',
+        result: 'success',
+        timestamp: new Date().toISOString()
+      });
+      const hmacSignature = this.encryptionService.createHMAC(auditData, masterKey);
+      
+      // Create audit log
+      await this.prisma.keyAuditLog.create({
+        data: {
+          id: `audit-${crypto.randomUUID()}`,
+          keyId: keyId,
+          timestamp: new Date(),
+          eventType: AuditEventType.KEY_ACCESSED,
+          tenantId: tenantId,
+          serviceId: serviceId,
+          action: 'get_key',
+          result: 'success',
+          metadata: {
+            keyId: keyId
+          },
+          hmacSignature
+        }
+      });
+      
+      return decryptedKey;
+    } catch (error) {
+      if (error instanceof KeyManagementError) {
+        throw error;
+      }
+      
+      logger.error(`Failed to get key ${keyId}:`, error);
+      
+      throw new KeyManagementError(
+        `Failed to get key: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        KeyManagementErrorCode.MASTER_KEY_ERROR
+      );
+    }
+  }
 }

@@ -1,0 +1,81 @@
+# Docker Compose Test Konfiguration
+
+services:
+  # PostgreSQL Datenbank für Tests
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartlaw-postgres-test
+    environment:
+      POSTGRES_DB: smartlaw_test
+      POSTGRES_USER: smartlaw_user
+      POSTGRES_PASSWORD: smartlaw_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - smartlaw-test-network
+
+  # Redis für Caching und Sessions in Tests
+  redis:
+    image: redis:7-alpine
+    container_name: smartlaw-redis-test
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_test_data:/data
+    networks:
+      - smartlaw-test-network
+
+  # Backend Service für Tests
+  backend:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.dev
+    container_name: smartlaw-backend-test
+    env_file:
+      - ./services/backend/.env.test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://smartlaw_user:smartlaw_password@postgres:5432/smartlaw_test
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3002:3001"
+    volumes:
+      - ./services/backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - smartlaw-test-network
+    command: npm run test
+
+  # Web App für Integrationstests
+  web-app:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile.dev
+    container_name: smartlaw-web-test
+    env_file:
+      - ./web-app/.env.test
+    environment:
+      REACT_APP_API_URL: http://backend:3001
+    ports:
+      - "3003:3000"
+    volumes:
+      - ./web-app:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - smartlaw-test-network
+
+volumes:
+  postgres_test_data:
+  redis_test_data:
+
+
+networks:
+  smartlaw-test-network:
+    driver: bridge

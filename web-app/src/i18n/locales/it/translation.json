@@ -1,0 +1,328 @@
+{
+  "translation": {
+    "app": {
+      "title": "SmartLaw Agent - Diritto degli Affitti",
+      "description": "Consulenza legale sugli affitti supportata dall'intelligenza artificiale"
+    },
+    "nav": {
+      "home": "Home",
+      "chat": "Chat",
+      "documents": "Documenti",
+      "lawyers": "Avvocati",
+      "profile": "Profilo",
+      "login": "Accedi",
+      "register": "Registrati",
+      "logout": "Esci",
+      "language": "Lingua",
+      "accessibility": "Accessibilità"
+    },
+    "auth": {
+      "email": "Email",
+      "password": "Password",
+      "login": "Accedi",
+      "register": "Registrati",
+      "loginTitle": "Accedi a SmartLaw",
+      "registerTitle": "Crea nuovo account",
+      "userType": "Sono",
+      "tenant": "Inquilino",
+      "landlord": "Proprietario",
+      "business": "Cliente aziendale"
+    },
+    "chat": {
+      "title": "Chat sul diritto degli affitti",
+      "placeholder": "Descrivi il tuo problema legale relativo agli affitti...",
+      "send": "Invia",
+      "typing": "Assistente sta scrivendo...",
+      "user": "Utente",
+      "assistant": "Assistente",
+      "legalReferences": "Riferimenti legali",
+      "newConversation": "Nuova conversazione",
+      "attachFile": "Allega file",
+      "uploadDocument": "Carica documento",
+      "dragDropFile": "Trascina il file qui",
+      "orClickToSelect": "o clicca per selezionare",
+      "supportedFormats": "Formati supportati",
+      "documentType": "Tipo di documento",
+      "upload": "Carica",
+      "uploading": "Caricamento in corso...",
+      "fileUploaded": "File caricato",
+      "connecting": "Connessione in corso...",
+      "welcome": "Benvenuto nella chat SmartLaw sul diritto degli affitti!",
+      "welcomeHint": "Descrivi il tuo problema legale relativo agli affitti e sarò felice di aiutarti.",
+      "documentTypes": {
+        "rentalContract": "Contratto di locazione",
+        "utilityBill": "Bolletta dei servizi",
+        "warningLetter": "Lettera di richiamo",
+        "termination": "Risoluzione",
+        "other": "Altri"
+      },
+      "error": {
+        "notAuthenticated": "Devi accedere per utilizzare la chat.",
+        "connection": "Errore di connessione. Riprova.",
+        "sendFailed": "Impossibile inviare il messaggio.",
+        "uploadFailed": "Impossibile caricare il file.",
+        "fileTooLarge": "Il file è troppo grande (max 10 MB).",
+        "invalidFileType": "Tipo di file non valido."
+      }
+    },
+    "documents": {
+      "title": "Documenti",
+      "upload": "Carica documento",
+      "uploadDocument": "Carica documento",
+      "uploadFirst": "Carica primo documento",
+      "uploadHint": "Carica documenti sugli affitti per ottenere un'analisi legale",
+      "analyze": "Analizza",
+      "noDocuments": "Nessun documento",
+      "view": "Visualizza",
+      "viewHistory": "Visualizza cronologia versioni",
+      "viewAnnotations": "Visualizza annotazioni",
+      "viewWorkflow": "Visualizza flusso di lavoro",
+      "download": "Scarica",
+      "delete": "Elimina",
+      "confirmDelete": "Sei sicuro di voler eliminare questo documento?",
+      "dragDropFile": "Trascina il file qui",
+      "orClickToSelect": "o clicca per selezionare",
+      "supportedFormats": "Formati supportati",
+      "documentType": "Tipo di documento",
+      "uploading": "Caricamento in corso",
+      "analysisResults": "Risultati dell'analisi",
+      "noAnalysis": "Nessuna analisi disponibile",
+      "selectedFiles": "{{count}} file selezionati",
+      "selectedFilesList": "File selezionati",
+      "ocrPreview": {
+        "title": "Anteprima OCR",
+        "extracting": "Estrazione del testo in corso...",
+        "extractedText": "Testo estratto",
+        "confidence": "Affidabilità",
+        "instructions": "Controlla il testo estratto. Puoi apportare correzioni prima di continuare con l'analisi.",
+        "confirmAndAnalyze": "Conferma e analizza"
+      },
+      "sharing": {
+        "title": "Condividi documento",
+        "shareWith": "Condividi con",
+        "email": "Indirizzo email",
+        "emailHelper": "Inserisci l'indirizzo email dell'utente con cui desideri condividere il documento",
+        "permission": "Autorizzazione",
+        "expiresAt": "Data di scadenza",
+        "shareButton": "Condividi",
+        "sharedWith": "Condiviso con",
+        "noShares": "Questo documento non è ancora stato condiviso.",
+        "remove": "Rimuovi condivisione",
+        "permissions": {
+          "read": "Lettura",
+          "write": "Scrittura",
+          "comment": "Commento"
+        },
+        "success": {
+          "shared": "Documento condiviso con successo",
+          "removed": "Condivisione rimossa con successo"
+        },
+        "error": {
+          "loadFailed": "Impossibile caricare le condivisioni",
+          "shareFailed": "Impossibile condividere il documento",
+          "removeFailed": "Impossibile rimuovere la condivisione",
+          "emailRequired": "L'indirizzo email è obbligatorio"
+        }
+      },
+      "annotations": {
+        "title": "Annotazioni del documento",
+        "addAnnotation": "Aggiungi annotazione",
+        "replyToAnnotation": "Rispondi all'annotazione",
+        "replyingTo": "In risposta a",
+        "textPlaceholder": "Inserisci il tuo commento o annotazione...",
+        "type": "Tipo",
+        "addButton": "Aggiungi",
+        "reply": "Rispondi",
+        "resolve": "Segna come risolto",
+        "delete": "Elimina",
+        "resolved": "Risolto",
+        "noAnnotations": "Ancora nessuna annotazione su questo documento.",
+        "types": {
+          "comment": "Commento",
+          "highlight": "Evidenzia",
+          "strikethrough": "Barrato",
+          "underline": "Sottolineato",
+          "note": "Nota"
+        },
+        "success": {
+          "created": "Annotazione creata con successo",
+          "updated": "Annotazione aggiornata con successo",
+          "deleted": "Annotazione eliminata con successo",
+          "resolved": "Annotazione segnata come risolta"
+        },
+        "error": {
+          "loadFailed": "Impossibile caricare le annotazioni",
+          "createFailed": "Impossibile creare l'annotazione",
+          "updateFailed": "Impossibile aggiornare l'annotazione",
+          "deleteFailed": "Impossibile eliminare l'annotazione",
+          "resolveFailed": "Impossibile segnare l'annotazione come risolta"
+        }
+      },
+      "types": {
+        "rentalContract": "Contratto di locazione",
+        "utilityBill": "Bolletta dei servizi",
+        "warningLetter": "Lettera di richiamo",
+        "termination": "Risoluzione",
+        "other": "Altri"
+      },
+      "status": {
+        "draft": "Bozza",
+        "review": "In revisione",
+        "approved": "Approvato",
+        "archived": "Archiviato",
+        "rejected": "Rifiutato",
+        "uploading": "Caricamento in corso",
+        "analyzing": "Analisi in corso",
+        "completed": "Completato",
+        "statusError": "Errore"
+      },
+      "workflow": "Flusso di lavoro",
+      "analysis": {
+        "riskLevel": "Livello di rischio",
+        "risk": {
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        },
+        "confidence": "Affidabilità",
+        "analyzedAt": "Analizzato il",
+        "extractedData": "Dati estratti",
+        "issues": "Problemi trovati",
+        "recommendations": "Raccomandazioni",
+        "legalBasis": "Base legale",
+        "suggestedAction": "Azione suggerita",
+        "noIssues": "Nessun problema trovato. Il documento sembra essere in ordine.",
+        "severity": {
+          "info": "Informazione",
+          "warning": "Avviso",
+          "critical": "Critico"
+        },
+        "priority": {
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        },
+        "actionRequired": "Azione richiesta",
+        "copyToClipboard": "Copia negli appunti",
+        "copied": "Copiato!",
+        "summary": "Riepilogo",
+        "criticalIssues": "Problemi critici",
+        "warnings": "Avvisi"
+      },
+      "error": {
+        "loadFailed": "Impossibile caricare i documenti.",
+        "uploadFailed": "Caricamento fallito.",
+        "downloadFailed": "Download fallito.",
+        "deleteFailed": "Eliminazione fallita.",
+        "fileTooLarge": "Il file è troppo grande (max 10 MB).",
+        "invalidFileType": "Tipo di file non valido.",
+        "extractFailed": "Estrazione del testo fallita.",
+        "analysisFailed": "Analisi fallita."
+      }
+    },
+    "lawyers": {
+      "title": "Trova avvocati",
+      "subtitle": "Trova avvocati specializzati nel diritto degli affitti vicino a te",
+      "search": "Cerca",
+      "location": "Posizione",
+      "locationPlaceholder": "Inserisci città o codice postale",
+      "specialization": "Specializzazione",
+      "allSpecializations": "Tutte le specializzazioni",
+      "book": "Prenota appuntamento",
+      "viewProfile": "Vedi profilo",
+      "hourlyRate": "Tariffa oraria",
+      "reviews": "Recensioni",
+      "resultsCount": "{{count}} avvocati trovati",
+      "noResults": "Nessun avvocato trovato",
+      "noResultsHint": "Prova ad adattare i tuoi criteri di ricerca",
+      "allLawyers": "Tutti gli avvocati",
+      "viewMode": "Modalità di visualizzazione",
+      "listView": "Vista elenco",
+      "mapView": "Vista mappa",
+      "toggleFilters": "Mostra/nascondi filtri",
+      "specializations": {
+        "title": "Specializzazioni",
+        "rentLaw": "Diritto degli affitti",
+        "tenantProtection": "Protezione dell'inquilino",
+        "landlordLaw": "Diritto del proprietario",
+        "realEstate": "Diritto immobiliare"
+      },
+      "filters": {
+        "maxDistance": "Distanza massima",
+        "minRating": "Valutazione minima",
+        "maxHourlyRate": "Tariffa oraria massima",
+        "languages": "Lingue"
+      },
+      "details": {
+        "contact": "Informazioni di contatto",
+        "about": "Informazioni sull'avvocato",
+        "languages": "Lingue",
+        "pricing": "Prezzi",
+        "pricingNote": "La prima consulenza può variare",
+        "reviews": "Recensioni"
+      },
+      "booking": {
+        "title": "Prenota appuntamento",
+        "selectDateTime": "Seleziona data e ora",
+        "selectDate": "Seleziona data",
+        "selectTime": "Seleziona ora",
+        "consultationType": "Tipo di consulenza",
+        "selectConsultationType": "Seleziona tipo di consulenza",
+        "confirmation": "Conferma",
+        "confirmBooking": "Conferma prenotazione",
+        "lawyer": "Avvocato",
+        "dateTime": "Data e ora",
+        "type": "Tipo di consulenza",
+        "notes": "Note",
+        "notesPlaceholder": "Descrivi brevemente il tuo argomento...",
+        "estimatedCost": "Costo stimato",
+        "confirmAndBook": "Conferma e prenota",
+        "booking": "Prenotazione in corso...",
+        "success": "Prenotazione riuscita!",
+        "types": {
+          "video": "Consulenza video",
+          "phone": "Consulenza telefonica",
+          "inPerson": "Consulenza in presenza"
+        },
+        "error": {
+          "selectDateTime": "Seleziona data e ora",
+          "selectType": "Seleziona un tipo di consulenza",
+          "bookingFailed": "Prenotazione fallita. Riprova."
+        }
+      },
+      "map": {
+        "placeholder": "Vista mappa",
+        "placeholderHint": "Integrazione con Google Maps o OpenStreetMap",
+        "selectLawyer": "Seleziona un avvocato dalla mappa"
+      },
+      "error": {
+        "searchFailed": "Ricerca fallita. Riprova.",
+        "loadFailed": "Errore nel caricamento degli avvocati"
+      }
+    },
+    "accessibility": {
+      "settings": "Impostazioni di accessibilità",
+      "fontSize": "Dimensione carattere",
+      "highContrast": "Contrasto elevato",
+      "highContrastDesc": "Attiva/disattiva modalità contrasto elevato per migliorare la visibilità",
+      "screenReaderMode": "Modalità lettore schermo",
+      "screenReaderModeDesc": "Ottimizzazione per l'utilizzo con lettore schermo",
+      "reset": "Reimposta impostazioni"
+    },
+    "common": {
+      "loading": "Caricamento...",
+      "error": "Si è verificato un errore",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "close": "Chiudi",
+      "next": "Avanti",
+      "back": "Indietro",
+      "submit": "Invia",
+      "delete": "Elimina",
+      "edit": "Modifica",
+      "confirm": "Conferma",
+      "yes": "Sì",
+      "no": "No"
+    }
+  }
+}

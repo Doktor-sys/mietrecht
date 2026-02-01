@@ -1,0 +1,41 @@
+/**
+ * Database Schema Checker
+ * This script checks the database schema for the users table.
+ */
+
+const { db } = require('./connection.js');
+
+// Check if users table exists
+const checkUsersTableSQL = `
+SELECT name FROM sqlite_master WHERE type='table' AND name='users';
+`;
+
+db.get(checkUsersTableSQL, [], (err, row) => {
+  if (err) {
+    console.error('Error checking for users table:', err.message);
+  } else if (row) {
+    console.log('Users table exists');
+    
+    // Get table schema
+    const getSchemaSQL = `
+    PRAGMA table_info(users);
+    `;
+    
+    db.all(getSchemaSQL, [], (err, rows) => {
+      if (err) {
+        console.error('Error getting table schema:', err.message);
+      } else {
+        console.log('Users table schema:');
+        rows.forEach(row => {
+          console.log(`  ${row.name} (${row.type}) ${row.notnull ? 'NOT NULL' : ''} ${row.pk ? 'PRIMARY KEY' : ''}`);
+        });
+      }
+      
+      // Close database connection
+      db.close();
+    });
+  } else {
+    console.log('Users table does not exist');
+    db.close();
+  }
+});

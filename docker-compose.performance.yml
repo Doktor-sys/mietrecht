@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # Hauptanwendung mit Performance-Optimierungen
+  jurismind-backend-perf:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres-perf
+      - DB_PORT=5432
+      - DB_NAME=jurismind_perf
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis-perf
+      - REDIS_PORT=6379
+      - PERFORMANCE_MONITORING=true
+    depends_on:
+      - postgres-perf
+      - redis-perf
+    volumes:
+      - ./services/backend/reports:/app/reports
+    networks:
+      - perf-network
+
+  # Performance-optimierte PostgreSQL-Datenbank
+  postgres-perf:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=jurismind_perf
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_perf_data:/var/lib/postgresql/data
+      - ./services/backend/scripts/init-db-perf.sh:/docker-entrypoint-initdb.d/init-db.sh
+    networks:
+      - perf-network
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=4MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+
+  # Performance-optimiertes Redis
+  redis-perf:
+    image: redis:6-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_perf_data:/data
+      - ./services/backend/config/redis-perf.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - perf-network
+
+  # Load-Testing-Service
+  load-tester:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.test
+    depends_on:
+      - jurismind-backend-perf
+    environment:
+      - TEST_TARGET_URL=http://jurismind-backend-perf:3000/api/health
+      - TEST_CONCURRENCY=20
+      - TEST_RPS=50
+      - TEST_DURATION=120
+    networks:
+      - perf-network
+
+  # Monitoring-Stack
+  prometheus:
+    image: prom/prometheus:v2.30.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./services/backend/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - perf-network
+
+  grafana:
+    image: grafana/grafana:8.1.5
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./services/backend/config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./services/backend/config/grafana-dashboard-provider.yaml:/etc/grafana/provisioning/dashboards/dashboard-provider.yaml
+      - ./services/backend/config/grafana-dashboard.json:/var/lib/grafana/dashboards/performance-dashboard.json
+    depends_on:
+      - prometheus
+    networks:
+      - perf-network
+
+  # Performance-Profiling-Tools
+  profiler:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.profiler
+    volumes:
+      - ./services/backend/reports:/app/reports
+    networks:
+      - perf-network
+
+volumes:
+  postgres_perf_data:
+  redis_perf_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  perf-network:
+    driver: bridge

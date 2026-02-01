@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Datenbank
   postgres:
@@ -135,6 +133,7 @@ volumes:
   elasticsearch_data:
   minio_data:
   clamav_data:
+
 
 networks:
   smartlaw-network:

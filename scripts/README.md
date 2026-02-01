@@ -1,6 +1,66 @@
 # Task Migration Tools
 
-This directory contains tools to help migrate from the Markdown-based task management system to a digital task tracking system.
+This directory contains tools for migrating from Markdown-based task management to digital task tracking systems.
+
+## Available Scripts
+
+### Core Tools
+- `parse-tasks`: Parse Markdown task files
+- `test`: Run parser tests
+
+### Asana Integration
+- `asana-setup`: Set up Asana integration
+- `test-asana`: Test Asana integration
+
+### Weekly Agent
+- `weekly-agent`: Run weekly update agent
+- `test-weekly-agent`: Test weekly agent
+
+### Mietrecht Agent
+- `mietrecht-agent`: Run Mietrecht agent prototype
+- `test-mietrecht-agent`: Test Mietrecht agent
+- `mietrecht-agent-de`: Run German version of Mietrecht agent
+- `test-mietrecht-agent-de`: Test German Mietrecht agent
+- `mietrecht-agent-real-data`: Run Mietrecht agent with real data sources
+- `test-mietrecht-agent-real-data`: Test Mietrecht agent with real data
+
+### API Clients
+- `bgh-api-client`: BGH API client
+- `test-bgh-api`: Test BGH API client
+- `landgericht-api-client`: Landgericht API client
+- `test-landgericht-api`: Test Landgericht API client
+- `njw-api-client`: NJW API client
+- `test-njw-api`: Test NJW API client
+- `test-mietrecht-agent-with-njw`: Test Mietrecht agent with NJW integration
+
+### Cache and Monitoring
+- `api-cache`: API caching system
+- `test-api-cache`: Test API cache
+
+### Integration
+- `github-asana`: GitHub-Asana webhook integration
+- `deploy-heroku`: Deploy to Heroku
+
+### Machine Learning
+- `test-legal-classifier`: Test legal text classifier
+- `install-ml-deps`: Install ML dependencies (TensorFlow.js and PyTorch)
+
+## Additional Documentation
+
+- [Advanced Features](README_ADVANCED_FEATURES.md)
+- [Dashboard](README_DASHBOARD.md)
+- [Data Sources](README_DATA_SOURCES.md)
+- [GitHub-Asana Integration](README_GITHUB_ASANA.md)
+- [Integrations](README_INTEGRATIONS.md)
+- [German Mietrecht Agent](README_MIETRECHT_AGENT_DE.md)
+- [NLP](README_NLP.md)
+- [Real APIs](README_REAL_APIS.md)
+- [Web Configuration](README_WEB_CONFIG.md)
+- [Legal Text Classifier](ml/README_LEGAL_CLASSIFIER.md)
+
+## Testing
+
+Most scripts have corresponding test scripts. Run tests to verify functionality.
 
 ## Overview
 

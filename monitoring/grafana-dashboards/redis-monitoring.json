@@ -1,0 +1,131 @@
+{
+  "dashboard": {
+    "title": "SmartLaw - Redis Monitoring",
+    "tags": [
+      "smartlaw",
+      "redis",
+      "cache"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Redis Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_memory_used_bytes / 1024 / 1024",
+            "legendFormat": "Used Memory (MB)"
+          },
+          {
+            "expr": "redis_memory_max_bytes / 1024 / 1024",
+            "legendFormat": "Max Memory (MB)"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 2,
+        "title": "Redis Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_connected_clients",
+            "legendFormat": "Connected Clients"
+          },
+          {
+            "expr": "redis_blocked_clients",
+            "legendFormat": "Blocked Clients"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 3,
+        "title": "Redis Commands Processed",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(redis_commands_processed_total[5m])",
+            "legendFormat": "Commands/sec"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Redis Key Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_keyspace_hits_total",
+            "legendFormat": "Keyspace Hits"
+          },
+          {
+            "expr": "redis_keyspace_misses_total",
+            "legendFormat": "Keyspace Misses"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Redis Network I/O",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(redis_net_input_bytes_total[5m]) / 1024",
+            "legendFormat": "Input (KB/s)"
+          },
+          {
+            "expr": "rate(redis_net_output_bytes_total[5m]) / 1024",
+            "legendFormat": "Output (KB/s)"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Redis Evicted Keys",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_evicted_keys_total",
+            "legendFormat": "Evicted Keys"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 16,
+          "w": 12,
+          "h": 8
+        }
+      }
+    ]
+  }
+}

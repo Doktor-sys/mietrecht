@@ -1,33 +1,51 @@
 {
-  "name": "@smartlaw/github-asana-integration",
+  "name": "task-migration-tools",
   "version": "1.0.0",
-  "description": "GitHub-Asana integration webhook handler",
-  "main": "github_asana_webhook.js",
+  "description": "Tools for migrating from Markdown-based task management to digital task tracking systems",
+  "main": "parse_tasks_md.js",
   "scripts": {
-    "start": "node github_asana_webhook.js",
-    "dev": "nodemon github_asana_webhook.js",
-    "setup": "node setup_github_asana_integration.js",
-    "test": "jest",
-    "test-webhook": "node test_github_webhook.js",
-    "deploy": "node deploy_to_heroku.js"
+    "parse-tasks": "node parse_tasks_md.js",
+    "test": "node test_parser.js",
+    "asana-setup": "node asana_setup_helper.js",
+    "test-asana": "node test_asana_setup.js",
+    "weekly-agent": "node weekly_update_agent_prototype.js",
+    "test-weekly-agent": "node test_weekly_agent.js",
+    "mietrecht-agent": "node mietrecht_agent_prototype.js",
+    "test-mietrecht-agent": "node test_mietrecht_agent.js",
+    "mietrecht-agent-de": "node mietrecht_agent_de.js",
+    "test-mietrecht-agent-de": "node teste_mietrecht_agent_de.js",
+    "bgh-api-client": "node bgh_api_client.js",
+    "test-bgh-api": "node test_bgh_api_client.js",
+    "mietrecht-agent-real-data": "node mietrecht_agent_real_data.js",
+    "test-mietrecht-agent-real-data": "node test_mietrecht_agent_real_data.js",
+    "test-mietrecht-agent-db": "node test_mietrecht_agent_db.js",
+    "test-mietrecht-agent-logging": "node test_mietrecht_agent_logging.js",
+    "landgericht-api-client": "node landgericht_api_client.js",
+    "test-landgericht-api": "node test_landgericht_api_client.js",
+    "api-cache": "node api_cache.js",
+    "test-api-cache": "node test_api_cache.js",
+    "njw-api-client": "node njw_api_client.js",
+    "test-njw-api": "node test_njw_api_client.js",
+    "test-mietrecht-agent-with-njw": "node test_mietrecht_agent_with_njw.js",
+    "github-asana": "node github_asana_webhook.js",
+    "deploy-heroku": "node deploy_to_heroku.js",
+    "test-legal-classifier": "node test/test_legal_text_classifier.js",
+    "install-ml-deps": "npm install @tensorflow/tfjs-node && pip install torch"
   },
   "keywords": [
-    "github",
+    "task-management",
+    "migration",
+    "parser",
     "asana",
-    "integration",
-    "webhook"
+    "weekly-agent",
+    "mietrecht"
   ],
-  "author": "SmartLaw Development Team",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.6.0"
-  },
+  "author": "SmartLaw Mietrecht Team",
+  "license": "UNLICENSED",
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "jest": "^29.7.0"
+    "jest": "^29.0.0"
   },
-  "engines": {
-    "node": ">=18.0.0"
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.10.0"
   }
 }

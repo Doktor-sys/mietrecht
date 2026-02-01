@@ -1,0 +1,315 @@
+{
+  "app": {
+    "title": "SmartLaw Agent - Kira Hukuku",
+    "description": "Yapay zeka destekli kira hukuku danışmanlığı"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "chat": "Sohbet",
+    "documents": "Belgeler",
+    "lawyers": "Avukatlar",
+    "profile": "Profil",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "logout": "Çıkış Yap"
+  },
+  "auth": {
+    "email": "E-posta",
+    "password": "Şifre",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "loginTitle": "SmartLaw'a Giriş Yap",
+    "registerTitle": "Yeni Hesap Oluştur",
+    "userType": "Ben",
+    "tenant": "Kiracı",
+    "landlord": "Ev Sahibi",
+    "business": "İşletme Müşterisi"
+  },
+  "chat": {
+    "title": "Kira Hukuku Sohbeti",
+    "placeholder": "Kira hukuku sorununuzu açıklayın...",
+    "send": "Gönder",
+    "typing": "Asistan yazıyor...",
+    "user": "Kullanıcı",
+    "assistant": "Asistan",
+    "legalReferences": "Yasal Referanslar",
+    "newConversation": "Yeni Sohbet",
+    "attachFile": "Dosya ekle",
+    "uploadDocument": "Belge yükle",
+    "dragDropFile": "Dosyayı buraya sürükleyin",
+    "orClickToSelect": "veya seçmek için tıklayın",
+    "supportedFormats": "Desteklenen formatlar",
+    "documentType": "Belge türü",
+    "upload": "Yükle",
+    "uploading": "Yükleniyor...",
+    "fileUploaded": "Dosya yüklendi",
+    "connecting": "Bağlanıyor...",
+    "welcome": "SmartLaw Kira Hukuku Sohbetine Hoş Geldiniz!",
+    "welcomeHint": "Kira hukuku sorununuzu açıklayın, size yardımcı olmaktan mutluluk duyarım.",
+    "documentTypes": {
+      "rentalContract": "Kira Sözleşmesi",
+      "utilityBill": "Ek Masraf Hesabı",
+      "warningLetter": "Uyarı Mektubu",
+      "termination": "Fesih",
+      "other": "Diğer"
+    },
+    "error": {
+      "notAuthenticated": "Sohbeti kullanmak için giriş yapmalısınız.",
+      "connection": "Bağlantı hatası. Lütfen tekrar deneyin.",
+      "sendFailed": "Mesaj gönderilemedi.",
+      "uploadFailed": "Dosya yüklenemedi.",
+      "fileTooLarge": "Dosya çok büyük (maks. 10MB).",
+      "invalidFileType": "Geçersiz dosya türü."
+    }
+  },
+  "documents": {
+    "title": "Belgeler",
+    "upload": "Belge Yükle",
+    "uploadDocument": "Belge Yükle",
+    "uploadFirst": "İlk Belgeyi Yükle",
+    "uploadHint": "Hukuki analiz almak için kira belgelerini yükleyin",
+    "analyze": "Analiz Et",
+    "noDocuments": "Belge bulunamadı",
+    "view": "Görüntüle",
+    "viewHistory": "Sürüm geçmişini görüntüle",
+    "viewAnnotations": "Açıklamaları görüntüle",
+    "viewWorkflow": "İş Akışını Görüntüle",
+    "download": "İndir",
+    "delete": "Sil",
+    "confirmDelete": "Bu belgeyi silmek istediğinizden emin misiniz?",
+    "dragDropFile": "Dosyayı buraya sürükleyin",
+    "orClickToSelect": "veya seçmek için tıklayın",
+    "supportedFormats": "Desteklenen formatlar",
+    "documentType": "Belge türü",
+    "uploading": "Yükleniyor",
+    "analysisResults": "Analiz Sonuçları",
+    "noAnalysis": "Analiz mevcut değil",
+    "selectedFiles": "{{count}} dosya seçildi",
+    "selectedFilesList": "Seçilen dosyalar",
+    "ocrPreview": {
+      "title": "OCR Önizlemesi",
+      "extracting": "Metin çıkarılıyor...",
+      "extractedText": "Çıkarılan Metin",
+      "confidence": "Güven",
+      "instructions": "Çıkarılan metni kontrol edin. Analize devam etmeden önce düzeltmeler yapabilirsiniz.",
+      "confirmAndAnalyze": "Onayla ve analiz et"
+    },
+    "sharing": {
+      "title": "Belgeyi paylaş",
+      "shareWith": "Şununla paylaş",
+      "email": "E-posta adresi",
+      "emailHelper": "Belgeyi paylaşmak istediğiniz kullanıcının e-posta adresini girin",
+      "permission": "İzin",
+      "expiresAt": "Son kullanma tarihi",
+      "shareButton": "Paylaş",
+      "sharedWith": "Şununla paylaşıldı",
+      "noShares": "Bu belge henüz paylaşılmadı.",
+      "remove": "Paylaşımı kaldır",
+      "permissions": {
+        "read": "Okuma",
+        "write": "Yazma",
+        "comment": "Yorum yapma"
+      },
+      "success": {
+        "shared": "Belge başarıyla paylaşıldı",
+        "removed": "Paylaşım başarıyla kaldırıldı"
+      },
+      "error": {
+        "loadFailed": "Paylaşımlar yüklenemedi",
+        "shareFailed": "Belge paylaşılamadı",
+        "removeFailed": "Paylaşım kaldırılamadı",
+        "emailRequired": "E-posta adresi gerekli"
+      }
+    },
+    "annotations": {
+      "title": "Belge açıklamaları",
+      "addAnnotation": "Açıklama ekle",
+      "replyToAnnotation": "Açıklamayı yanıtla",
+      "replyingTo": "Yanıtlanan",
+      "textPlaceholder": "Yorumunuzu veya açıklamanızı girin...",
+      "type": "Tür",
+      "addButton": "Ekle",
+      "reply": "Yanıtla",
+      "resolve": "Çözüldü olarak işaretle",
+      "delete": "Sil",
+      "resolved": "Çözüldü",
+      "noAnnotations": "Bu belge için henüz açıklama yok.",
+      "types": {
+        "comment": "Yorum",
+        "highlight": "Vurgulama",
+        "strikethrough": "Üstü çizili",
+        "underline": "Altı çizili",
+        "note": "Not"
+      },
+      "success": {
+        "created": "Açıklama başarıyla oluşturuldu",
+        "updated": "Açıklama başarıyla güncellendi",
+        "deleted": "Açıklama başarıyla silindi",
+        "resolved": "Açıklama çözüldü olarak işaretlendi"
+      },
+      "error": {
+        "loadFailed": "Açıklamalar yüklenemedi",
+        "createFailed": "Açıklama oluşturulamadı",
+        "updateFailed": "Açıklama güncellenemedi",
+        "deleteFailed": "Açıklama silinemedi",
+        "resolveFailed": "Açıklama çözüldü olarak işaretlenemedi"
+      }
+    },
+    "types": {
+      "rentalContract": "Kira Sözleşmesi",
+      "utilityBill": "Ek Masraf Hesabı",
+      "warningLetter": "Uyarı Mektubu",
+      "termination": "Fesih",
+      "other": "Diğer"
+    },
+    "status": {
+      "draft": "Taslak",
+      "review": "İncelemede",
+      "approved": "Onaylandı",
+      "archived": "Arşivlendi",
+      "rejected": "Reddedildi",
+      "uploading": "Yükleniyor",
+      "analyzing": "Analiz ediliyor",
+      "completed": "Tamamlandı",
+      "statusError": "Hata"
+    },
+    "workflow": "İş Akışı",
+    "analysis": {
+      "riskLevel": "Risk Seviyesi",
+      "risk": {
+        "low": "Düşük",
+        "medium": "Orta",
+        "high": "Yüksek"
+      },
+      "confidence": "Güvenilirlik",
+      "analyzedAt": "Analiz tarihi",
+      "extractedData": "Çıkarılan Veriler",
+      "issues": "Bulunan Sorunlar",
+      "recommendations": "Öneriler",
+      "legalBasis": "Yasal Dayanak",
+      "suggestedAction": "Önerilen Eylem",
+      "noIssues": "Sorun bulunamadı. Belge düzgün görünüyor.",
+      "severity": {
+        "info": "Bilgi",
+        "warning": "Uyarı",
+        "critical": "Kritik"
+      },
+      "priority": {
+        "low": "Düşük",
+        "medium": "Orta",
+        "high": "Yüksek"
+      },
+      "actionRequired": "Eylem Gerekli",
+      "copyToClipboard": "Panoya Kopyala",
+      "copied": "Kopyalandı!",
+      "summary": "Özet",
+      "criticalIssues": "Kritik Sorunlar",
+      "warnings": "Uyarılar"
+    },
+    "error": {
+      "loadFailed": "Belgeler yüklenemedi.",
+      "uploadFailed": "Yükleme başarısız.",
+      "downloadFailed": "İndirme başarısız.",
+      "deleteFailed": "Silme başarısız.",
+      "fileTooLarge": "Dosya çok büyük (maks. 10MB).",
+      "invalidFileType": "Geçersiz dosya türü.",
+      "extractFailed": "Metin çıkarma başarısız oldu.",
+      "analysisFailed": "Analiz başarısız oldu."
+    }
+  },
+  "lawyers": {
+    "title": "Avukat Bul",
+    "subtitle": "Yakınınızdaki nitelikli kira hukuku avukatlarını bulun",
+    "search": "Ara",
+    "location": "Konum",
+    "locationPlaceholder": "Şehir veya posta kodu girin",
+    "specialization": "Uzmanlık",
+    "allSpecializations": "Tüm Uzmanlıklar",
+    "book": "Randevu Al",
+    "viewProfile": "Profili Görüntüle",
+    "hourlyRate": "Saatlik Ücret",
+    "reviews": "Değerlendirmeler",
+    "resultsCount": "{{count}} avukat bulundu",
+    "noResults": "Avukat bulunamadı",
+    "noResultsHint": "Arama kriterlerinizi ayarlamayı deneyin",
+    "allLawyers": "Tüm Avukatlar",
+    "viewMode": "Görünüm Modu",
+    "listView": "Liste Görünümü",
+    "mapView": "Harita Görünümü",
+    "toggleFilters": "Filtreleri göster/gizle",
+    "specializations": {
+      "title": "Uzmanlıklar",
+      "rentLaw": "Kira Hukuku",
+      "tenantProtection": "Kiracı Koruması",
+      "landlordLaw": "Ev Sahibi Hukuku",
+      "realEstate": "Gayrimenkul Hukuku"
+    },
+    "filters": {
+      "maxDistance": "Maksimum Mesafe",
+      "minRating": "Minimum Değerlendirme",
+      "maxHourlyRate": "Maksimum Saatlik Ücret",
+      "languages": "Diller"
+    },
+    "details": {
+      "contact": "İletişim Bilgileri",
+      "about": "Avukat Hakkında",
+      "languages": "Diller",
+      "pricing": "Fiyatlar",
+      "pricingNote": "İlk danışma farklı olabilir",
+      "reviews": "Değerlendirmeler"
+    },
+    "booking": {
+      "title": "Randevu Al",
+      "selectDateTime": "Tarih ve saat seçin",
+      "selectDate": "Tarih seçin",
+      "selectTime": "Saat seçin",
+      "consultationType": "Danışma türü",
+      "selectConsultationType": "Danışma türü seçin",
+      "confirmation": "Onay",
+      "confirmBooking": "Rezervasyonu onayla",
+      "lawyer": "Avukat",
+      "dateTime": "Tarih ve saat",
+      "type": "Danışma türü",
+      "notes": "Notlar",
+      "notesPlaceholder": "Sorununuzu kısaca açıklayın...",
+      "estimatedCost": "Tahmini maliyet",
+      "confirmAndBook": "Onayla ve rezerve et",
+      "booking": "Rezerve ediliyor...",
+      "success": "Rezervasyon başarılı!",
+      "types": {
+        "video": "Video danışma",
+        "phone": "Telefon danışma",
+        "inPerson": "Yüz yüze danışma"
+      },
+      "error": {
+        "selectDateTime": "Lütfen tarih ve saat seçin",
+        "selectType": "Lütfen bir danışma türü seçin",
+        "bookingFailed": "Rezervasyon başarısız. Lütfen tekrar deneyin."
+      }
+    },
+    "map": {
+      "placeholder": "Harita Görünümü",
+      "placeholderHint": "Google Maps veya OpenStreetMap entegrasyonu",
+      "selectLawyer": "Haritadan bir avukat seçin"
+    },
+    "error": {
+      "searchFailed": "Arama başarısız. Lütfen tekrar deneyin.",
+      "loadFailed": "Avukatlar yüklenirken hata oluştu"
+    }
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "next": "İleri",
+    "back": "Geri",
+    "submit": "Gönder",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "confirm": "Onayla",
+    "yes": "Evet",
+    "no": "Hayır"
+  }
+}

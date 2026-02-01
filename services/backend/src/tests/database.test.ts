@@ -37,9 +37,9 @@ describe('Database Configuration Tests', () => {
       const tables = await testPrisma.$queryRaw<Array<{ tablename: string }>>`
         SELECT tablename FROM pg_tables WHERE schemaname = 'public'
       `
-      
+
       const tableNames = tables.map(t => t.tablename)
-      
+
       const expectedTables = [
         'users',
         'user_profiles',
@@ -70,9 +70,9 @@ describe('Database Configuration Tests', () => {
       const indexes = await testPrisma.$queryRaw<Array<{ indexname: string }>>`
         SELECT indexname FROM pg_indexes WHERE schemaname = 'public'
       `
-      
+
       const indexNames = indexes.map(i => i.indexname)
-      
+
       // Prüfe wichtige Indizes
       expect(indexNames).toContain('users_email_key')
       expect(indexNames).toContain('legal_knowledge_reference_key')
@@ -119,7 +119,7 @@ describe('Database Configuration Tests', () => {
             create: {
               firstName: 'Max',
               lastName: 'Mustermann',
-              location: 'Berlin',
+              city: 'Berlin',
             },
           },
           preferences: {

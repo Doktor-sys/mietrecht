@@ -34,7 +34,7 @@ const generateMockLogs = (count: number): AuditLog[] => {
         action: i % 3 === 0 ? 'LOGIN' : i % 3 === 1 ? 'DOCUMENT_ACCESS' : 'SETTINGS_CHANGE',
         userId: `user-${Math.floor(Math.random() * 10)}`,
         resource: i % 3 === 1 ? `doc-${Math.floor(Math.random() * 100)}` : 'system',
-        status: Math.random() > 0.1 ? 'success' : 'failure',
+        status: Math.random() > 0.1 ? 'success' : 'failure' as 'success' | 'failure',
         timestamp: new Date(Date.now() - Math.floor(Math.random() * 1000000000)).toISOString(),
         details: 'Operation details...',
     })).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());

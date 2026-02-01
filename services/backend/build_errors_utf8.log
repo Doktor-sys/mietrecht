@@ -1,0 +1,575 @@
+﻿
+> @smartlaw/backend@1.0.0 build
+> tsc
+
+src/analytics/PredictiveAnalyticsService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/analytics/PredictiveAnalyticsService.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'Case'.
+src/analytics/PredictiveAnalyticsService.ts(3,16): error TS2305: Module '"@prisma/client"' has no exported member 'Document'.
+src/analytics/PredictiveAnalyticsService.ts(3,26): error TS2305: Module '"@prisma/client"' has no exported member 'User'.
+src/analytics/PredictiveAnalyticsService.ts(63,21): error TS7006: Parameter 'caseItem' implicitly has an 'any' type.
+src/analytics/PredictiveAnalyticsService.ts(328,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/analytics/PredictiveAnalyticsService.ts(332,41): error TS7006: Parameter 'word' implicitly has an 'any' type.
+src/analytics/PredictiveAnalyticsService.ts(336,28): error TS7006: Parameter 'term' implicitly has an 'any' type.
+src/config/database.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/config/database.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/config/elasticsearch.ts(19,34): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(20,40): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(21,40): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(26,17): error TS2339: Property 'on' does not exist on type 'Client'.
+src/config/elasticsearch.ts(26,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/config/elasticsearch.ts(26,38): error TS7006: Parameter 'result' implicitly has an 'any' type.
+src/config/elasticsearch.ts(38,17): error TS2339: Property 'on' does not exist on type 'Client'.
+src/config/elasticsearch.ts(38,32): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/config/elasticsearch.ts(38,37): error TS7006: Parameter 'result' implicitly has an 'any' type.
+src/config/elasticsearch.ts(59,23): error TS2339: Property 'statusCode' does not exist on type 'boolean'.
+src/config/elasticsearch.ts(69,23): error TS2339: Property 'body' does not exist on type 'InfoResponse'.
+src/config/elasticsearch.ts(120,24): error TS2339: Property 'body' does not exist on type 'ReindexResponse'.
+src/config/elasticsearch.ts(121,25): error TS2339: Property 'body' does not exist on type 'ReindexResponse'.
+src/config/elasticsearch.ts(145,23): error TS2339: Property 'body' does not exist on type 'IndicesStatsResponse'.
+src/config/elasticsearch.ts(178,20): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/elasticsearch.ts(179,33): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/elasticsearch.ts(186,23): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/minio.ts(37,56): error TS2339: Property 'region' does not exist on type '{ endpoint: string; port: number; useSSL: boolean; accessKey: string; secretKey: string; bucketName: string; }'.
+src/controllers/B2BController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/BookingController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/BookingController.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'MeetingType'.
+src/controllers/BookingController.ts(2,37): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/controllers/BookingController.ts(44,19): error TS2339: Property 'id' does not exist on type 'BookingDetails'.
+src/controllers/BookingController.ts(82,19): error TS2339: Property 'meetingType' does not exist on type 'BookingDetails'.
+src/controllers/DocumentController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/DocumentController.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/controllers/KnowledgeController.ts(6,10): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/controllers/KnowledgeController.ts(6,21): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/controllers/LegalDataImportController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/MietspiegelController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/MonitoringController.ts(3,8): error TS2613: Module '"F:/JurisMind/Mietrecht/services/backend/src/utils/logger"' has no default export. Did you mean to use 'import { logger } from "F:/JurisMind/Mietrecht/services/backend/src/utils/logger"' instead?
+src/controllers/PaymentController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/RiskAssessmentController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/RiskAssessmentController.ts(439,36): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/controllers/StrategyRecommendationsController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/StrategyRecommendationsController.ts(5,41): error TS2307: Cannot find module '../../../scripts/ml/recommendationEngine' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(6,57): error TS2307: Cannot find module '../../../scripts/ml/enhancedStrategyRecommendations' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(7,40): error TS2307: Cannot find module '../../../scripts/nlp/documentSummarizer' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(126,34): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/controllers/StrategyRecommendationsController.ts(144,57): error TS7006: Parameter 'rec' implicitly has an 'any' type.
+src/controllers/StrategyRecommendationsController.ts(209,96): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/controllers/StrategyRecommendationsController.ts(289,34): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/controllers/StrategyRecommendationsController.ts(320,65): error TS7006: Parameter 'rec' implicitly has an 'any' type.
+src/controllers/StripeWebhookController.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/controllers/UserController.ts(2,65): error TS2305: Module '"../services/UserService"' has no exported member 'UserSearchFilters'.
+src/controllers/UserController.ts(7,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/controllers/UserController.ts(58,18): error TS2339: Property 'id' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(59,21): error TS2339: Property 'email' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(60,24): error TS2339: Property 'userType' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(61,26): error TS2339: Property 'isVerified' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(62,24): error TS2339: Property 'isActive' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(63,25): error TS2339: Property 'createdAt' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(64,27): error TS2339: Property 'lastLoginAt' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(662,18): error TS2339: Property 'id' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(663,21): error TS2339: Property 'email' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(664,24): error TS2339: Property 'userType' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(665,26): error TS2339: Property 'isVerified' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(666,24): error TS2339: Property 'isActive' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(667,25): error TS2339: Property 'createdAt' does not exist on type 'UserWithProfile'.
+src/controllers/UserController.ts(668,27): error TS2339: Property 'lastLoginAt' does not exist on type 'UserWithProfile'.
+src/middleware/advancedAuth.ts(5,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/middleware/advancedAuth.ts(12,7): error TS2717: Subsequent property declarations must have the same type.  Property 'user' must be of type '{ id: string; email: string; userType: UserType; sessionId: string; } | undefined', but here has type '{ id: string; email: string; userType: UserType; sessionId: string; deviceId?: string | undefined; scopes?: string[] | undefined; } | undefined'.
+src/middleware/advancedAuth.ts(55,7): error TS2353: Object literal may only specify known properties, and 'deviceId' does not exist in type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/middleware/advancedAuth.ts(227,13): error TS2353: Object literal may only specify known properties, and 'deviceId' does not exist in type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/middleware/apiKeyAuth.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/middleware/apiKeyAuth.ts(226,17): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/middleware/auth.ts(5,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/middleware/rateLimiter.ts(139,32): error TS2339: Property 'role' does not exist on type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/ml/DecisionCategorizer.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/ml/LegalDecisionPredictor.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/ml/PersonalizedRecommender.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/analytics.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/routes/analytics.ts(9,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/audit.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/chat.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/chat.ts(8,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/routes/dashboard.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/routes/dsgvo.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/employment.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/employment.ts(82,11): error TS2353: Object literal may only specify known properties, and 'intent' does not exist in type 'CaseClassification'.
+src/routes/gdpr.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/gdpr.ts(46,38): error TS2339: Property 'exportUserData' does not exist on type 'GDPRComplianceService'.
+src/routes/gdpr.ts(101,38): error TS2339: Property 'deleteUserData' does not exist on type 'GDPRComplianceService'.
+src/routes/gdpr.ts(188,23): error TS2339: Property 'updateConsent' does not exist on type 'GDPRComplianceService'.
+src/routes/kms.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/knowledge.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/routes/knowledge.ts(10,43): error TS2551: Property 'searchLegalContent' does not exist on type 'KnowledgeController'. Did you mean 'addLegalContent'?
+src/routes/legal-data-import.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/mietspiegel.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/mietspiegel.ts(165,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(165,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(165,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(246,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(246,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(246,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(298,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(298,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(298,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(387,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(387,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(387,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(582,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(582,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(582,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(736,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(736,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/mietspiegel.ts(736,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/routes/security-dashboard.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/routes/user.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/scripts/check-prisma.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/scripts/seedB2BData.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/scripts/seedTemplates.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/scripts/seedTemplates.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/security/ZeroTrustService.ts(8,10): error TS2305: Module '"@prisma/client"' has no exported member 'User'.
+src/services/AdvancedAuthService.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/AdvancedAuthService.ts(3,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/services/AdvancedAuthService.ts(171,16): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(172,46): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(176,67): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(186,24): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(366,62): error TS2339: Property 'verifyToken' does not exist on type 'TwoFactorAuthService'.
+src/services/AdvancedAuthService.ts(839,31): error TS2554: Expected 3 arguments, but got 2.
+src/services/AIResponseGenerator.ts(4,10): error TS2459: Module '"./NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/services/AIResponseGenerator.ts(5,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/AIResponseGenerator.ts(234,22): error TS7053: Element implicitly has an 'any' type because expression of type 'LegalCategory' can't be used to index type 'Record<ExtendedLegalCategory, string[]>'.
+src/services/AIResponseGenerator.ts(244,12): error TS7053: Element implicitly has an 'any' type because expression of type 'LegalCategory' can't be used to index type 'Record<ExtendedLegalCategory, LegalReference[]>'.
+src/services/AnalyticsService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/AnalyticsService.ts(319,35): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(357,43): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(360,28): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(360,33): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(363,41): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(363,46): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(370,23): error TS18046: 'b.count' is of type 'unknown'.
+src/services/AnalyticsService.ts(370,33): error TS18046: 'a.count' is of type 'unknown'.
+src/services/AnalyticsService.ts(374,44): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(374,49): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(467,35): error TS7006: Parameter 'k' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(507,22): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(512,23): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(517,19): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/services/AnalyticsService.ts(669,26): error TS18048: 'analytics.complianceReport' is possibly 'undefined'.
+src/services/AuditService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/AuditService.ts(224,23): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/services/AuthService.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/AuthService.ts(3,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/services/AutomatedReportCronJob.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/BenchmarkingService.ts(1,11): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/BenchmarkingService.ts(116,35): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/services/BookingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/BookingService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Booking'.
+src/services/BookingService.ts(1,33): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/services/BookingService.ts(1,48): error TS2305: Module '"@prisma/client"' has no exported member 'MeetingType'.
+src/services/BookingService.ts(88,61): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/services/BookingService.ts(366,45): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/services/BulkProcessingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/CaseService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/CaseService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Case'.
+src/services/CaseService.ts(1,30): error TS2305: Module '"@prisma/client"' has no exported member 'CaseStatus'.
+src/services/CentralizedAnalyticsService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ChatService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ChatService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Priority'.
+src/services/ChatService.ts(1,34): error TS2305: Module '"@prisma/client"' has no exported member 'Message'.
+src/services/ChatService.ts(251,24): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/services/ComplianceMonitoringService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ComplianceReportingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ComplianceReportingService.ts(513,48): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/services/ComplianceReportingService.ts(559,50): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/services/ConsultationService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ConsultationService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'MeetingType'.
+src/services/ConsultationService.ts(355,47): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/services/ConsultationService.ts(360,43): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/services/ConsultationService.ts(366,49): error TS7006: Parameter 'ref' implicitly has an 'any' type.
+src/services/DatabaseOptimizer.ts(1,11): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DatabaseReplicaService.ts(1,11): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DataVisualizationService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentAnalysisService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentAnalysisService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/services/DocumentAnalysisService.ts(772,37): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/services/DocumentAnalysisService.ts(779,55): error TS7006: Parameter 'rec' implicitly has an 'any' type.
+src/services/DocumentAnalysisService.ts(813,17): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/DocumentAnalysisService.ts(814,14): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/DocumentAnalysisService.ts(818,44): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/services/DocumentAnalysisService.ts(825,62): error TS7006: Parameter 'rec' implicitly has an 'any' type.
+src/services/DocumentAnnotationService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentAnnotationService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'AnnotationType'.
+src/services/DocumentGeneratorService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Document'.
+src/services/DocumentService.ts(1,34): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentStatus'.
+src/services/DocumentService.ts(1,50): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/services/DocumentSharingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentStorageService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentStorageService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Document'.
+src/services/DocumentStorageService.ts(1,52): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/services/DocumentStorageService.ts(799,43): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/services/DocumentStorageService.ts(799,48): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/DocumentStorageService.ts(802,25): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/DocumentWorkflowService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/DocumentWorkflowService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentStatus'.
+src/services/DocumentWorkflowService.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'WorkflowAction'.
+src/services/EnhancedAuditService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/EnhancedDSGVOComplianceService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/EnhancedExportService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/GDPRComplianceService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/IntegrationService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/AuditLogger.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/AuditLogger.ts(211,23): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/services/kms/AuditLogger.ts(288,22): error TS7006: Parameter 'count' implicitly has an 'any' type.
+src/services/kms/HealthChecker.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/KeyManagementService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/KeyRotationManager.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/KeyRotationManager.ts(442,28): error TS7006: Parameter 'schedule' implicitly has an 'any' type.
+src/services/kms/KeyStorage.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/kms/KeyStorage.ts(268,23): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/services/kms/KeyStorage.ts(334,22): error TS7006: Parameter 'count' implicitly has an 'any' type.
+src/services/kms/KeyStorage.ts(365,23): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/services/kms/MonitoringCronJob.ts(1,18): error TS2307: Cannot find module 'node-cron' or its corresponding type declarations.
+src/services/kms/MonitoringCronJob.ts(27,31): error TS2339: Property 'updateKeyStatistics' does not exist on type 'KeyManagementService'.
+src/services/kms/MonitoringCronJob.ts(37,46): error TS2339: Property 'checkHealth' does not exist on type 'KeyManagementService'.
+src/services/kms/MonitoringCronJob.ts(51,40): error TS2339: Property 'getActiveAlerts' does not exist on type 'KeyManagementService'.
+src/services/kms/RotationCronJob.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/KnowledgeService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/KnowledgeService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalKnowledge'.
+src/services/KnowledgeService.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/services/LawyerMatchingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/LawyerMatchingService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Lawyer'.
+src/services/LawyerMatchingService.ts(127,28): error TS7006: Parameter 'lawyer' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(130,55): error TS7006: Parameter 'slot' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(138,49): error TS7006: Parameter 'review' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(161,11): error TS7006: Parameter 'lawyer' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(167,31): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(167,34): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(249,34): error TS2339: Property 'specializations' does not exist on type 'LawyerProfile'.
+src/services/LawyerMatchingService.ts(249,57): error TS7006: Parameter 'spec' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(259,33): error TS2339: Property 'rating' does not exist on type 'LawyerProfile'.
+src/services/LawyerMatchingService.ts(261,16): error TS2339: Property 'rating' does not exist on type 'LawyerProfile'.
+src/services/LawyerMatchingService.ts(262,55): error TS2339: Property 'rating' does not exist on type 'LawyerProfile'.
+src/services/LawyerMatchingService.ts(281,24): error TS2339: Property 'id' does not exist on type 'LawyerProfile'.
+src/services/LawyerMatchingService.ts(384,51): error TS7006: Parameter 'slot' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(392,45): error TS7006: Parameter 'review' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(485,45): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/services/LawyerMatchingService.ts(485,50): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/services/LegalDataImportService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/LegalDataImportService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalKnowledge'.
+src/services/LegalDataImportService.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/services/LegalDataImportService.ts(254,29): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/services/LegalDataImportService.ts(284,54): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/services/LegalDataImportService.ts(337,32): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/services/LegalDataImportService.ts(337,37): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/services/LegalDataUpdateService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/LegalDataUpdateService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalKnowledge'.
+src/services/MietspiegelService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/MietspiegelService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'MietspiegelData'.
+src/services/MietspiegelService.ts(323,45): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/services/MLService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/OptimizedDatabaseService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/OptimizedDatabaseService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'User'.
+src/services/OptimizedDatabaseService.ts(1,30): error TS2305: Module '"@prisma/client"' has no exported member 'Case'.
+src/services/OptimizedDatabaseService.ts(1,36): error TS2305: Module '"@prisma/client"' has no exported member 'Document'.
+src/services/PartnershipService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/PaymentService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/PaymentService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/services/PaymentService.ts(1,39): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/services/PaymentService.ts(249,27): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/services/QueryOptimizer.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ReportingService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/ReportingService.ts(182,11): error TS2322: Type '{ type: string; count: unknown; percentage: number; }[]' is not assignable to type '{ type: string; count: number; percentage: number; }[]'.
+  Type '{ type: string; count: unknown; percentage: number; }' is not assignable to type '{ type: string; count: number; percentage: number; }'.
+    Types of property 'count' are incompatible.
+      Type 'unknown' is not assignable to type 'number'.
+src/services/ReportingService.ts(361,41): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/services/ReportingService.ts(361,46): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/services/ReportingService.ts(369,54): error TS18046: 'count' is of type 'unknown'.
+src/services/SecurityMonitoringService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/SecurityMonitoringService.ts(717,32): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/services/SecurityMonitoringService.ts(735,40): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/services/SecurityMonitoringService.ts(759,17): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/services/SecurityMonitoringService.ts(760,14): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/services/StripePaymentService.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/StripePaymentService.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/services/StripePaymentService.ts(2,39): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/services/TemplateService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/TemplateService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/services/TemplateService.ts(342,28): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/TrendAnalysisService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/TwoFactorAuthService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/UserService.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/services/UserService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'User'.
+src/services/UserService.ts(527,34): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/services/UserService.ts(528,36): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/services/UserService.ts(529,36): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/services/UserService.ts(531,61): error TS7006: Parameter 'curr' implicitly has an 'any' type.
+src/services/ValidationService.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/services/ValidationService.ts(224,15): error TS18048: 'req.query' is possibly 'undefined'.
+src/services/ValidationService.ts(224,65): error TS18048: 'req.query' is possibly 'undefined'.
+src/tests/aiBiasDetection.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/aiBiasDetection.test.ts(4,10): error TS2459: Module '"../services/NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/tests/aiConfidence.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/aiConfidence.test.ts(4,10): error TS2459: Module '"../services/NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/tests/aiRegression.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/aiRegression.test.ts(4,10): error TS2459: Module '"../services/NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/tests/aiResponseGenerator.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/aiResponseGenerator.test.ts(4,10): error TS2459: Module '"../services/NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/tests/auditLogger.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/auditService.test.ts(10,20): error TS2554: Expected 1 arguments, but got 0.
+src/tests/auditService.test.ts(35,41): error TS2339: Property 'logAuditEvent' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(61,41): error TS2339: Property 'logAuditEvent' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(77,41): error TS2339: Property 'queryAuditLogs' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(96,41): error TS2339: Property 'queryAuditLogs' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(122,41): error TS2339: Property 'queryAuditLogs' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(142,41): error TS2339: Property 'getAuditTrail' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(169,21): error TS2339: Property 'totalGDPREvents' does not exist on type 'ComplianceReport'.
+src/tests/auditService.test.ts(189,41): error TS2339: Property 'detectUnauthorizedAccess' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(204,41): error TS2339: Property 'archiveOldLogs' does not exist on type 'AuditService'.
+src/tests/auditService.test.ts(226,41): error TS2339: Property 'verifyAuditIntegrity' does not exist on type 'AuditService'.
+src/tests/auth.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/auth.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/tests/authService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/authService.test.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/tests/authService.test.ts(58,7): error TS2353: Object literal may only specify known properties, and 'location' does not exist in type 'RegisterData'.
+src/tests/b2bApi.test.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/b2bApi.test.ts(5,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(6,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(7,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(8,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(9,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(10,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(11,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(12,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(13,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(14,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(15,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(16,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(17,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(18,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(19,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(20,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(21,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(22,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(23,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(24,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(25,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(26,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(27,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(28,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(29,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(30,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(31,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(32,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(33,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(34,10): error TS2300: Duplicate identifier 'it'.
+src/tests/b2bApi.test.ts(35,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/b2bApi.test.ts(36,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/bookingService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'MeetingType'.
+src/tests/bookingService.test.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/tests/bulkProcessingPerformance.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/chatService.test.ts(19,28): error TS2554: Expected 1 arguments, but got 0.
+src/tests/chatService.test.ts(20,31): error TS2554: Expected 1 arguments, but got 0.
+src/tests/chatService.test.ts(25,7): error TS2554: Expected 1 arguments, but got 3.
+src/tests/chatService.test.ts(53,9): error TS2353: Object literal may only specify known properties, and 'category' does not exist in type 'ClassificationResult | Promise<ClassificationResult>'.
+src/tests/chatService.test.ts(100,66): error TS2345: Argument of type '{ message: string; confidence: number; legalReferences: { type: "law"; reference: string; title: string; }[]; suggestedActions: { type: string; description: string; }[]; escalationRecommended: boolean; }' is not assignable to parameter of type 'AIResponse | Promise<AIResponse>'.
+  Type '{ message: string; confidence: number; legalReferences: { type: "law"; reference: string; title: string; }[]; suggestedActions: { type: string; description: string; }[]; escalationRecommended: boolean; }' is missing the following properties from type 'AIResponse': actionRecommendations, templateReferences
+src/tests/chatService.test.ts(109,40): error TS2554: Expected 3 arguments, but got 2.
+src/tests/chatService.test.ts(116,35): error TS2339: Property 'sendToUser' does not exist on type 'Mocked<WebSocketService>'.
+src/tests/chatService.test.ts(131,66): error TS2345: Argument of type '{ message: string; confidence: number; legalReferences: never[]; suggestedActions: never[]; escalationRecommended: boolean; }' is not assignable to parameter of type 'AIResponse | Promise<AIResponse>'.
+  Type '{ message: string; confidence: number; legalReferences: never[]; suggestedActions: never[]; escalationRecommended: boolean; }' is missing the following properties from type 'AIResponse': actionRecommendations, templateReferences
+src/tests/chatService.test.ts(133,40): error TS2554: Expected 3 arguments, but got 2.
+src/tests/chatService.test.ts(136,21): error TS2339: Property 'confidence' does not exist on type 'ConversationResponse'.
+src/tests/chatService.test.ts(182,40): error TS2554: Expected 2 arguments, but got 1.
+src/tests/chatService.test.ts(184,21): error TS2339: Property 'success' does not exist on type 'void'.
+src/tests/consultationService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'MeetingType'.
+src/tests/consultationService.test.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/tests/database.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/database.test.ts(41,37): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/tests/database.test.ts(74,38): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tests/database.test.ts(203,59): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/tests/database.test.ts(238,40): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/tests/documentAnalysis.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/documentAnalysis.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/tests/documentGenerator.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/documentGenerator.test.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/tests/documentGenerator.test.ts(63,28): error TS2339: Property 'toEndWith' does not exist on type 'JestMatchers<string>'.
+src/tests/documentStorage.simple.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/tests/documentStorage.simple.test.ts(2,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(3,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(4,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.simple.test.ts(5,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(6,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(7,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.simple.test.ts(8,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(9,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.simple.test.ts(10,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(11,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.simple.test.ts(12,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(13,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(14,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(15,10): error TS2300: Duplicate identifier 'it'.
+src/tests/documentStorage.simple.test.ts(16,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.simple.test.ts(17,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/documentStorage.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/documentStorage.test.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'DocumentType'.
+src/tests/emailAuth.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/emailAuth.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/tests/gdprCompliance.test.ts(44,40): error TS2339: Property 'exportUserData' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(58,21): error TS2339: Property 'exportUserData' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(72,40): error TS2339: Property 'deleteUserData' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(89,25): error TS2339: Property 'deleteUserData' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(91,36): error TS2339: Property 'deleteEncryptedFile' does not exist on type 'Mocked<EncryptionService>'.
+src/tests/gdprCompliance.test.ts(110,40): error TS2339: Property 'updateConsent' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(132,40): error TS2339: Property 'getConsentStatus' does not exist on type 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(148,40): error TS2341: Property 'anonymizeUserData' is private and only accessible within class 'GDPRComplianceService'.
+src/tests/gdprCompliance.test.ts(150,21): error TS2339: Property 'success' does not exist on type 'void'.
+src/tests/gdprCompliance.test.ts(174,40): error TS2339: Property 'generateDataPortabilityExport' does not exist on type 'GDPRComplianceService'.
+src/tests/keyManagementService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/keyManagementService.test.ts(350,34): error TS2339: Property 'activateKey' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(382,34): error TS2339: Property 'deactivateKey' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(416,34): error TS2339: Property 'markKeyCompromised' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(449,34): error TS2339: Property 'deleteKey' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(473,30): error TS2339: Property 'deleteKey' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(496,34): error TS2339: Property 'deleteKey' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(508,49): error TS2339: Property 'getHealthStatus' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(522,49): error TS2339: Property 'getHealthStatus' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(533,49): error TS2339: Property 'getHealthStatus' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(565,50): error TS2339: Property 'validateKeyIntegrity' does not exist on type 'KeyManagementService'.
+src/tests/keyManagementService.test.ts(577,50): error TS2339: Property 'validateKeyIntegrity' does not exist on type 'KeyManagementService'.
+src/tests/keyRotationManager.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/keyStorage.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/keyStorage.test.ts(10,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(11,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(12,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(13,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(14,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(15,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(16,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(17,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(18,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(19,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(20,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(21,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(22,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(23,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(24,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(25,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(26,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(27,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(28,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(29,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(30,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(31,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(32,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(33,10): error TS2300: Duplicate identifier 'it'.
+src/tests/keyStorage.test.ts(34,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/keyStorage.test.ts(36,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/kms-schema.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/kms-schema.test.ts(311,26): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/tests/knowledge.embeddings.test.ts(1,65): error TS2307: Cannot find module 'vitest' or its corresponding type declarations.
+src/tests/knowledge.embeddings.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/knowledgeService.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/knowledgeService.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/tests/lawyerMatching.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/lawyerMatching.test.ts(98,32): error TS2339: Property 'rating' does not exist on type 'LawyerProfile'.
+src/tests/lawyerMatching.test.ts(110,32): error TS2339: Property 'hourlyRate' does not exist on type 'LawyerProfile'.
+src/tests/lawyerMatching.test.ts(147,25): error TS2339: Property 'specializations' does not exist on type 'LawyerProfile'.
+src/tests/lawyerMatching.test.ts(171,23): error TS2339: Property 'name' does not exist on type 'LawyerProfile'.
+src/tests/lawyerMatching.test.ts(347,25): error TS2339: Property 'rating' does not exist on type 'LawyerProfile'.
+src/tests/legalDataImport.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/tests/legalDataImport.test.ts(69,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(89,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(109,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(128,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(150,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(179,57): error TS2345: Argument of type '{ court: string; fileNumber: string; date: Date; title: string; summary: string; keywords: string[]; }[]' is not assignable to parameter of type '{ reference: string; title: string; content: string; date: Date; }[]'.
+  Type '{ court: string; fileNumber: string; date: Date; title: string; summary: string; keywords: string[]; }' is missing the following properties from type '{ reference: string; title: string; content: string; date: Date; }': reference, content
+src/tests/legalDataImport.test.ts(181,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(317,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/legalDataImport.test.ts(367,21): error TS2339: Property 'success' does not exist on type 'ImportResult'.
+src/tests/mietspiegel.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/mietspiegelService.simple.test.ts(1,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(2,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(3,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(4,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(5,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(6,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(7,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(8,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(9,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(10,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(11,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(12,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(13,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(14,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(15,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(16,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(17,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(18,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(19,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(20,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(21,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(22,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(23,10): error TS2300: Duplicate identifier 'it'.
+src/tests/mietspiegelService.simple.test.ts(24,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(26,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.simple.test.ts(27,10): error TS2300: Duplicate identifier 'describe'.
+src/tests/mietspiegelService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/nlpService.test.ts(1,22): error TS2459: Module '"../services/NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/tests/paymentIntegration.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/paymentIntegration.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/tests/paymentIntegration.test.ts(2,39): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/tests/paymentIntegration.test.ts(4,10): error TS2305: Module '"../services/AuthService"' has no exported member 'generateToken'.
+src/tests/paymentService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/tests/paymentService.test.ts(1,25): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/tests/paymentService.test.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/tests/reporting.test.ts(3,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/securityMonitoring.test.ts(12,23): error TS2554: Expected 3 arguments, but got 0.
+src/tests/securityMonitoring.test.ts(27,44): error TS2339: Property 'detectAnomalousActivity' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(42,44): error TS2339: Property 'detectAnomalousActivity' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(57,44): error TS2339: Property 'detectAnomalousActivity' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(79,29): error TS2339: Property 'logSecurityEvent' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(97,14): error TS2339: Property 'incr' does not exist on type 'RedisService'.
+src/tests/securityMonitoring.test.ts(100,44): error TS2339: Property 'checkRateLimiting' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(111,14): error TS2339: Property 'incr' does not exist on type 'RedisService'.
+src/tests/securityMonitoring.test.ts(113,44): error TS2339: Property 'checkRateLimiting' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(127,44): error TS2339: Property 'detectBruteForceAttack' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(149,29): error TS2339: Property 'monitorDataAccess' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(173,44): error TS2339: Property 'generateSecurityReport' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(187,14): error TS2551: Property 'setex' does not exist on type 'RedisService'. Did you mean 'set'?
+src/tests/securityMonitoring.test.ts(189,29): error TS2339: Property 'blockSuspiciousIP' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(191,20): error TS2551: Property 'setex' does not exist on type 'RedisService'. Did you mean 'set'?
+src/tests/securityMonitoring.test.ts(205,44): error TS2339: Property 'isIPBlocked' does not exist on type 'SecurityMonitoringService'.
+src/tests/securityMonitoring.test.ts(216,44): error TS2339: Property 'isIPBlocked' does not exist on type 'SecurityMonitoringService'.
+src/tests/stripePaymentService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/tests/stripePaymentService.test.ts(1,25): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/tests/stripePaymentService.test.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'BookingStatus'.
+src/tests/stripePaymentService.test.ts(143,9): error TS2554: Expected 1 arguments, but got 3.
+src/tests/stripePaymentService.test.ts(410,9): error TS2554: Expected 1 arguments, but got 2.
+src/tests/stripePaymentService.test.ts(446,9): error TS2554: Expected 1 arguments, but got 3.
+src/tests/templateService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/templateService.test.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/tests/unit/advanced-risk-assessment.test.ts(9,8): error TS2307: Cannot find module '../../../scripts/ml/advancedRiskAssessment' or its corresponding type declarations.
+src/tests/unit/enhanced-strategy-recommendations.test.ts(16,8): error TS2307: Cannot find module '../../../scripts/ml/enhancedStrategyRecommendations' or its corresponding type declarations.
+src/tests/unit/risk-assessment.test.ts(1,10): error TS2614: Module '"../../controllers/RiskAssessmentController"' has no exported member 'RiskAssessmentController'. Did you mean to use 'import RiskAssessmentController from "../../controllers/RiskAssessmentController"' instead?
+src/tests/unit/risk-assessment.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/unit/risk-assessment.test.ts(4,40): error TS2307: Cannot find module '../../../../scripts/ml/advancedRiskAssessment' or its corresponding type declarations.
+src/tests/unit/risk-assessment.test.ts(5,29): error TS2307: Cannot find module '../../../../scripts/ml/caseAnalyzer' or its corresponding type declarations.
+src/tests/unit/risk-assessment.test.ts(6,37): error TS2307: Cannot find module '../../../../scripts/ml/clientProfiler' or its corresponding type declarations.
+src/tests/unit/risk-assessment.test.ts(7,40): error TS2307: Cannot find module '../../../../scripts/nlp/documentSummarizer' or its corresponding type declarations.
+src/tests/unit/strategy-recommendations.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/unit/strategy-recommendations.test.ts(4,41): error TS2307: Cannot find module '../../../../scripts/ml/recommendationEngine' or its corresponding type declarations.
+src/tests/unit/strategy-recommendations.test.ts(5,57): error TS2307: Cannot find module '../../../../scripts/ml/enhancedStrategyRecommendations' or its corresponding type declarations.
+src/tests/unit/strategy-recommendations.test.ts(6,40): error TS2307: Cannot find module '../../../../scripts/nlp/documentSummarizer' or its corresponding type declarations.
+src/tests/user.test.ts(2,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/user.test.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/tests/userService.test.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/tests/userService.test.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'UserType'.
+src/tests/userService.test.ts(89,20): error TS2339: Property 'id' does not exist on type 'UserWithProfile'.
+src/tests/userService.test.ts(90,20): error TS2339: Property 'email' does not exist on type 'UserWithProfile'.
+src/tests/userService.test.ts(107,20): error TS2339: Property 'email' does not exist on type 'UserWithProfile'.
+src/tests/userService.test.ts(115,20): error TS2339: Property 'email' does not exist on type 'UserWithProfile'.
+src/utils/cacheManager.ts(25,3): error TS2666: Exports and export assignments are not permitted in module augmentations.
+src/utils/dbOptimizer.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.

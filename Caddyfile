@@ -1,0 +1,59 @@
+35-195-246-45.nip.io {
+    encode gzip
+    
+    # Root route - direkt zur App
+    handle / {
+        reverse_proxy app:5000
+    }
+    
+    # Health check endpoint
+    handle /health {
+        reverse_proxy app:5000
+    }
+    
+    # SmartLaw Agent routes
+    handle /smartlaw-agent* {
+        reverse_proxy app:5000
+    }
+    
+    # API routes
+    handle /api* {
+        reverse_proxy app:5000
+    }
+    
+    # Static files
+    handle /static* {
+        reverse_proxy app:5000
+    }
+}
+
+mietrecht.jurismind.app {
+    encode gzip
+    
+    # Root route - direkt zur App
+    handle / {
+        reverse_proxy app:5000
+    }
+    
+    # Health check endpoint
+    handle /health {
+        reverse_proxy app:5000
+    }
+    
+    # SmartLaw Agent routes
+    handle /smartlaw-agent* {
+        reverse_proxy app:5000
+    }
+    
+    # API routes
+    handle /api* {
+        reverse_proxy app:5000
+    }
+    
+    # Static files
+    handle /static* {
+        reverse_proxy app:5000
+    }
+}
+
+

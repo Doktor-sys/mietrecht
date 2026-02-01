@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisMind Lawyer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+</head>
+
+<body class="p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900">Lawyer <span class="text-blue-600">Dashboard</span></h1>
+                <p class="text-slate-500 font-medium">Willkommen zurück, Kanzlei JurisMind.</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm font-bold text-slate-900">Dr. Sabine Schulze</p>
+                    <p class="text-[10px] text-blue-600 font-black uppercase tracking-widest">Partner</p>
+                </div>
+                <img src="https://i.pravatar.cc/150?u=lawyer"
+                    class="w-12 h-12 rounded-2xl border-2 border-white shadow-lg">
+                <button onclick="logout()"
+                    class="w-10 h-10 bg-white text-slate-400 rounded-xl hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm border border-slate-100">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="glass-card p-8 rounded-[35px]">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Anfragen Heute</p>
+                <h3 class="text-4xl font-black text-slate-900" id="stat-new">0</h3>
+            </div>
+            <div class="glass-card p-8 rounded-[35px]">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Umsatz Monat</p>
+                <h3 class="text-4xl font-black text-blue-600">14.290 €</h3>
+            </div>
+            <div class="glass-card p-8 rounded-[35px]">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Bewertung</p>
+                <h3 class="text-4xl font-black text-amber-500">4.9 / 5.0</h3>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-[40px] overflow-hidden">
+            <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+                <h2 class="text-xl font-black text-slate-900">Aktuelle Mandatsanfragen</h2>
+                <button onclick="loadCases()"
+                    class="p-2 text-blue-600 hover:rotate-180 transition-transform duration-500"><i
+                        class="fas fa-sync-alt"></i></button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th class="p-6">ID</th>
+                            <th class="p-6">Mandant / Thema</th>
+                            <th class="p-6">Beratung</th>
+                            <th class="p-6">Zeitpunkt</th>
+                            <th class="p-6">Status</th>
+                            <th class="p-6">Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="case-table-body">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+
+</html>

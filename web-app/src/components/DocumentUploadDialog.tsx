@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -36,6 +36,17 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the file input when dialog opens
+  useEffect(() => {
+    if (open && fileInputRef.current) {
+      // Small delay to ensure dialog is rendered
+      setTimeout(() => {
+        fileInputRef.current?.focus();
+      }, 100);
+    }
+  }, [open]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -140,11 +151,24 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{t('documents.uploadDocument')}</DialogTitle>
+    <Dialog 
+      open={open} 
+      onClose={handleClose} 
+      maxWidth="sm" 
+      fullWidth
+      aria-labelledby="document-upload-dialog-title"
+      aria-describedby="document-upload-dialog-description"
+    >
+      <DialogTitle id="document-upload-dialog-title">
+        {t('documents.uploadDocument')}
+      </DialogTitle>
       <DialogContent>
+        <Typography id="document-upload-dialog-description" sx={{ mb: 2 }}>
+          {t('documents.uploadDescription', 'Laden Sie Ihre Mietrecht-Dokumente hoch für die Analyse')}
+        </Typography>
+        
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2 }} role="alert" aria-live="assertive">
             {error}
           </Alert>
         )}
@@ -167,9 +191,18 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
             transition: 'all 0.3s',
             mb: 2,
           }}
-          onClick={() => !uploading && document.getElementById('file-input')?.click()}
+          onClick={() => !uploading && fileInputRef.current?.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              !uploading && fileInputRef.current?.click();
+            }
+          }}
+          aria-label={t('documents.dragDropFile')}
         >
-          <CloudUploadIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <CloudUploadIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} aria-hidden="true" />
           <Typography variant="body1" gutterBottom>
             {selectedFiles.length > 0 
               ? t('documents.selectedFiles', { count: selectedFiles.length })
@@ -183,12 +216,14 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
           </Typography>
           <input
             id="file-input"
+            ref={fileInputRef}
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
             onChange={handleFileInputChange}
             style={{ display: 'none' }}
             disabled={uploading}
             multiple // Allow multiple file selection
+            aria-label={t('documents.fileInput')}
           />
         </Box>
 
@@ -206,7 +241,7 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
                     !uploading && (
                       <IconButton 
                         edge="end" 
-                        aria-label="delete"
+                        aria-label={t('documents.removeFile', { fileName: file.name })}
                         onClick={() => removeFile(index)}
                       >
                         <DeleteIcon />
@@ -226,11 +261,13 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
 
         {/* Dokumenttyp-Auswahl */}
         <FormControl fullWidth disabled={selectedFiles.length === 0 || uploading}>
-          <InputLabel>{t('documents.documentType')}</InputLabel>
+          <InputLabel id="document-type-label">{t('documents.documentType')}</InputLabel>
           <Select
             value={documentType}
             onChange={(e) => setDocumentType(e.target.value)}
             label={t('documents.documentType')}
+            labelId="document-type-label"
+            aria-describedby="document-type-help"
           >
             <MenuItem value="rental_contract">{t('documents.types.rentalContract')}</MenuItem>
             <MenuItem value="utility_bill">{t('documents.types.utilityBill')}</MenuItem>
@@ -238,11 +275,14 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
             <MenuItem value="termination">{t('documents.types.termination')}</MenuItem>
             <MenuItem value="other">{t('documents.types.other')}</MenuItem>
           </Select>
+          <Typography id="document-type-help" variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+            {t('documents.documentTypeHelp')}
+          </Typography>
         </FormControl>
 
         {uploading && (
           <Box sx={{ mt: 2 }}>
-            <LinearProgress variant="determinate" value={uploadProgress} />
+            <LinearProgress variant="determinate" value={uploadProgress} aria-label={t('documents.uploadProgress')} />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
               {t('documents.uploading')}: {uploadProgress}%
             </Typography>
@@ -250,13 +290,14 @@ const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({ open, onClo
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={uploading}>
+        <Button onClick={handleClose} disabled={uploading} aria-label={t('common.cancel')}>
           {t('common.cancel')}
         </Button>
         <Button
           onClick={handleUpload}
           variant="contained"
           disabled={selectedFiles.length === 0 || !documentType || uploading}
+          aria-label={t('documents.upload')}
         >
           {t('documents.upload')}
         </Button>

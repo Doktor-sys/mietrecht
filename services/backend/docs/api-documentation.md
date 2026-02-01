@@ -28,116 +28,59 @@ This document describes the implementation of comprehensive API documentation fo
 - **Response Duration**: Display of request processing time
 - **Authorization Persistence**: Token persistence across sessions
 
+## New Enhanced Profile Preferences Endpoints
+
+### GET /api/users/preferences
+Retrieves user preferences including enhanced profile settings for accessibility, legal topics, document preferences, and alerts.
+
+### PUT /api/users/preferences
+Updates user preferences with support for enhanced profile settings including:
+- Accessibility settings (high contrast, dyslexia friendly, reduced motion, etc.)
+- Legal topic preferences
+- Frequently used document types
+- Customizable alert notifications
+
 ## Implementation Details
 
-### Documentation Structure
-The API documentation is organized into the following functional areas:
+### Documentation Generation
+- **Swagger JSDoc**: Annotations in controller files generate OpenAPI specification
+- **Route Scanning**: Automatic detection of all registered routes
+- **Model Definitions**: TypeScript interfaces converted to OpenAPI schemas
+- **Security Schemes**: JWT Bearer token authentication documented
 
-1. **Authentication** - User registration, login, and token management
-2. **User Management** - Profile updates, preferences, and account management
-3. **Chat System** - Real-time messaging with AI and lawyers
-4. **Document Processing** - Upload, analysis, and generation of legal documents
-5. **Legal Knowledge** - Access to legal databases and search functionality
-6. **Lawyer Services** - Lawyer search, booking, and consultation
-7. **Mietspiegel** - Rental price index data and analysis
-8. **Booking System** - Appointment scheduling and management
-9. **Payment Processing** - Secure payment handling and invoicing
-10. **Business Services** - B2B integration and partner services
-11. **Webhooks** - External service integration
-12. **Audit & Compliance** - Security auditing and compliance reporting
-13. **Key Management** - Cryptographic key management and security
-14. **Feedback System** - User feedback collection and analysis
-15. **GDPR Compliance** - Data protection and privacy controls
-16. **Security Dashboard** - Security monitoring and incident response
+### Access Points
+- **Swagger UI**: Interactive documentation at `/api-docs`
+- **JSON Specification**: Raw OpenAPI spec at `/api-docs-json`
+- **YAML Specification**: Alternative format at `/api-docs-yaml`
 
-### Schema Definitions
-Comprehensive schema definitions have been created for all core entities:
-
-- **User** - Complete user profile with preferences and accessibility settings
-- **Case** - Legal case management with categories and priorities
-- **Message** - Chat message structure with metadata and legal references
-- **Document** - Document metadata with type and size information
-- **Lawyer** - Lawyer profiles with specializations and ratings
-- **LegalReference** - Legal citations with titles and URLs
-- **SearchResult** - Search results with relevance scoring and highlights
-- **SecurityAlert** - Security incident reporting with severity levels
-- **Payment** - Payment processing with status tracking
-- **Invoice** - Invoice generation and management
-- **Booking** - Appointment scheduling with time slots
-- **TimeSlot** - Lawyer availability management
-
-### Error Response Handling
-Standardized error responses for common scenarios:
-
-- **ValidationError** - Input validation failures
-- **AuthenticationError** - Invalid credentials or expired tokens
-- **AuthorizationError** - Insufficient permissions
-- **NotFoundError** - Missing resources
-- **ConflictError** - Resource conflicts (e.g., duplicate emails)
-- **RateLimitError** - Exceeded request limits
-
-## Acceptance Criteria Verification
-
-✅ **Swagger UI is accessible at /api/docs**: Available at `http://localhost:3001/api-docs`  
-✅ **All REST endpoints are documented with examples**: Comprehensive documentation for all 17 route modules  
-✅ **Request/response schemas are validated against code**: Schemas defined and validated in swagger.ts  
-✅ **Documentation is automatically updated with code changes**: Generated from JSDoc annotations in controllers  
-
-## Accessing Documentation
-
-### Local Development
-```
-http://localhost:3001/api-docs
-```
-
-### Production Environment
-```
-https://api.smartlaw.de/api-docs
-```
-
-### JSON Specification
-The raw OpenAPI specification is available at:
-```
-http://localhost:3001/api-docs.json
-```
-
-## Key Features
-
-### Interactive Testing
-- Try out API endpoints directly from the documentation
-- Automatic request formatting and validation
-- Real-time response display with syntax highlighting
-
-### Authentication
-- Built-in JWT token authentication support
-- Token persistence across browser sessions
-- Clear indication of protected endpoints
-
-### Schema Validation
-- Request/response schema validation
-- Example data for all endpoints
-- Error response documentation
-
-### Search and Filtering
-- Quick search for endpoints
-- Tag-based filtering
-- Response time measurement
+### Security
+- **JWT Authentication**: All protected endpoints require valid Bearer token
+- **CSRF Protection**: Security headers included in all responses
+- **Rate Limiting**: Documentation endpoints respect rate limiting policies
 
 ## Best Practices
 
 ### Documentation Maintenance
-- Keep JSDoc comments up to date with code changes
-- Validate documentation during CI/CD pipeline
-- Regular review of endpoint coverage
-
-### Schema Design
-- Use consistent naming conventions
-- Provide meaningful examples
-- Document all required and optional fields
-
-### Error Handling
+- Keep JSDoc annotations synchronized with code changes
+- Provide clear examples for complex request/response structures
 - Document all possible error responses
-- Provide clear error messages
+- Include detailed parameter descriptions
+
+### Endpoint Design
+- Use descriptive summary and description fields
+- Provide concrete examples for request/response bodies
+- Define clear success and error response structures
+- Include relevant tags for logical grouping
+
+## Error Handling
+
+### Documentation Errors
+- Invalid JSDoc annotations will prevent documentation generation
+- Schema mismatches between documentation and implementation are detected
+- Missing required fields in endpoint definitions are flagged
+
+### User Experience
+- Clear error messages
 - Include timestamp and error codes
 
 ## Future Improvements

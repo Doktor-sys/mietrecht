@@ -6,6 +6,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import LawyersPage from '../pages/LawyersPage';
 import lawyerReducer from '../store/slices/lawyerSlice';
 import authReducer from '../store/slices/authSlice';
+import chatReducer from '../store/slices/chatSlice';
+import documentReducer from '../store/slices/documentSlice';
 
 // Mock API
 jest.mock('../services/api', () => ({
@@ -47,6 +49,8 @@ const createTestStore = () => {
     reducer: {
       lawyer: lawyerReducer,
       auth: authReducer,
+      chat: chatReducer,
+      document: documentReducer,
     },
     preloadedState: {
       auth: {
@@ -61,6 +65,16 @@ const createTestStore = () => {
         selectedLawyer: null,
         searchCriteria: {},
         loading: false,
+      },
+      chat: {
+        messages: [],
+        isTyping: false,
+        conversationId: null,
+      },
+      document: {
+        documents: [],
+        selectedDocument: null,
+        uploading: false,
       },
     },
   });
@@ -78,7 +92,7 @@ describe('LawyersPage', () => {
 
   it('rendert die Anwaltssuche-Seite korrekt', () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -92,7 +106,7 @@ describe('LawyersPage', () => {
 
   it('lädt Anwälte beim Mounten', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -110,7 +124,7 @@ describe('LawyersPage', () => {
   it('filtert Anwälte nach Standort', async () => {
     const { lawyerAPI } = require('../services/api');
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -135,7 +149,7 @@ describe('LawyersPage', () => {
   it('filtert Anwälte nach Spezialisierung', async () => {
     const { lawyerAPI } = require('../services/api');
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -162,7 +176,7 @@ describe('LawyersPage', () => {
 
   it('öffnet Anwalts-Details-Dialog', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -185,7 +199,7 @@ describe('LawyersPage', () => {
 
   it('öffnet Buchungs-Dialog', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -214,7 +228,7 @@ describe('LawyersPage', () => {
     });
 
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -230,7 +244,7 @@ describe('LawyersPage', () => {
 
   it('zeigt Bewertungen korrekt an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -247,7 +261,7 @@ describe('LawyersPage', () => {
 
   it('zeigt Stundensätze an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -266,7 +280,7 @@ describe('LawyersPage', () => {
 describe('LawyerDetailsDialog', () => {
   it('zeigt Anwalts-Details korrekt an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -292,7 +306,7 @@ describe('LawyerDetailsDialog', () => {
 
   it('zeigt Sprachen an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -316,7 +330,7 @@ describe('LawyerDetailsDialog', () => {
 
   it('öffnet Buchungs-Dialog aus Details-Dialog', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -349,7 +363,7 @@ describe('LawyerDetailsDialog', () => {
 describe('BookingDialog', () => {
   it('zeigt Buchungs-Schritte korrekt an', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -374,7 +388,7 @@ describe('BookingDialog', () => {
 
   it('ermöglicht Datum-Auswahl', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -398,7 +412,7 @@ describe('BookingDialog', () => {
 
   it('ermöglicht Zeit-Auswahl nach Datum-Auswahl', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -427,7 +441,7 @@ describe('BookingDialog', () => {
 
   it('navigiert durch Buchungs-Schritte', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -465,7 +479,7 @@ describe('BookingDialog', () => {
 
   it('zeigt Fehler bei unvollständiger Auswahl', async () => {
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -494,7 +508,7 @@ describe('BookingDialog', () => {
   it('bucht erfolgreich eine Beratung', async () => {
     const { lawyerAPI } = require('../services/api');
     const store = createTestStore();
-    
+
     render(
       <Provider store={store}>
         <BrowserRouter>

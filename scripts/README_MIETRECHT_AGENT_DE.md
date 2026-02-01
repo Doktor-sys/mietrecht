@@ -108,10 +108,12 @@ Anwälte können ihre Präferenzen in der Anwalt-Konfiguration festlegen:
 ### Projektstruktur
 ```
 scripts/
-├── mietrecht_agent_de.js       # Hauptanwendung
-├── teste_mietrecht_agent_de.js # Testsuite
-├── starte_mietrecht_agent.bat  # Windows-Starter
-└── package.json               # Projektkonfiguration
+├── mietrecht_agent_de.js              # Hauptanwendung
+├── mietrecht_agent_enhanced.js        # Erweiterte KI/ML-Version
+├── teste_mietrecht_agent_de.js        # Testsuite
+├── starte_mietrecht_agent.bat         # Windows-Starter (Basisversion)
+├── run_enhanced_mietrecht_agent.bat   # Windows-Starter (Erweiterte KI/ML-Version)
+└── package.json                       # Projektkonfiguration
 ```
 
 ### Hauptmodule
@@ -129,6 +131,7 @@ scripts/
 - ✅ HTML-Newsletter-Generierung mit allen benötigten Abschnitten
 - ✅ E-Mail-Simulationsfunktionalität
 - ✅ Personalisierung basierend auf individuellen Anwaltsprofilen
+- ✅ Erweiterte KI/ML-Funktionen (neue Testmodule verfügbar)
 
 ## Datenschutz und Compliance
 
@@ -151,6 +154,13 @@ scripts/
 - Maschinelles Lernen für prädiktive Präferenzmodellierung
 - Automatische Identifikation von Praxishinweisen
 - Trendanalyse für Rechtsentwicklungen
+
+### Erweiterte KI/ML-Funktionen (Implementiert)
+- Umfassende Risikobewertung für juristische Fälle
+- Personalisierte Rechtsstrategieempfehlungen
+- Fortgeschrittene Dokumentenanalyse mit semantischer Verarbeitung
+- Verbesserte Entitätenextraktion und Sentiment-Analyse
+- Integriertes Empfehlungssystem für Mandanten und Anwälte
 
 ### Erweiterte Funktionen
 - Echtzeit-Benachrichtigungen für wichtige Urteile

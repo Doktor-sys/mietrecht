@@ -1,0 +1,447 @@
+﻿
+> @smartlaw/backend@1.0.0 build
+> tsc
+
+src/config/elasticsearch.ts(19,34): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(20,40): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(21,40): error TS2339: Property 'auth' does not exist on type '{ url: string; index: string; }'.
+src/config/elasticsearch.ts(26,17): error TS2339: Property 'on' does not exist on type 'Client'.
+src/config/elasticsearch.ts(38,17): error TS2339: Property 'on' does not exist on type 'Client'.
+src/config/elasticsearch.ts(59,23): error TS2339: Property 'statusCode' does not exist on type 'boolean'.
+src/config/elasticsearch.ts(69,23): error TS2339: Property 'body' does not exist on type 'InfoResponse'.
+src/config/elasticsearch.ts(120,24): error TS2339: Property 'body' does not exist on type 'ReindexResponse'.
+src/config/elasticsearch.ts(121,25): error TS2339: Property 'body' does not exist on type 'ReindexResponse'.
+src/config/elasticsearch.ts(145,23): error TS2339: Property 'body' does not exist on type 'IndicesStatsResponse'.
+src/config/elasticsearch.ts(178,20): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/elasticsearch.ts(179,33): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/elasticsearch.ts(186,23): error TS2339: Property 'body' does not exist on type 'BulkResponse'.
+src/config/minio.ts(37,56): error TS2339: Property 'region' does not exist on type '{ endpoint: string; port: number; useSSL: boolean; accessKey: string; secretKey: string; bucketName: string; }'.
+src/controllers/B2BController.ts(73,11): error TS2561: Object literal may only specify known properties, but 'filename' does not exist in type 'Without<DocumentCreateInput, DocumentUncheckedCreateInput> & DocumentUncheckedCreateInput'. Did you mean to write 'fileName'?
+src/controllers/B2BController.ts(181,11): error TS2353: Object literal may only specify known properties, and 'confidence' does not exist in type 'Without<ChatInteractionCreateInput, ChatInteractionUncheckedCreateInput> & ChatInteractionUncheckedCreateInput'.
+src/controllers/B2BController.ts(218,11): error TS2353: Object literal may only specify known properties, and 'inputData' does not exist in type 'Without<TemplateGenerationCreateInput, TemplateGenerationUncheckedCreateInput> & TemplateGenerationUncheckedCreateInput'.
+src/controllers/B2BController.ts(333,13): error TS2353: Object literal may only specify known properties, and 'createdAt' does not exist in type 'TemplateGenerationWhereInput'.
+src/controllers/B2BController.ts(380,9): error TS2322: Type '{ organizationId: string; }' is not assignable to type 'WebhookWhereUniqueInput'.
+  Type '{ organizationId: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: WebhookWhereInput | WebhookWhereInput[] | undefined; OR?: WebhookWhereInput[] | undefined; ... 9 more ...; deliveries?: WebhookDeliveryListRelationFilter | undefined; }'.
+    Property 'id' is missing in type '{ organizationId: string; }' but required in type '{ id: string; }'.
+src/controllers/B2BController.ts(715,13): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'BatchJobSelect<DefaultArgs>'.
+src/controllers/BookingController.ts(83,9): error TS2322: Type 'VideoMeetingConfig | null' is not assignable to type 'null'.
+  Type 'VideoMeetingConfig' is not assignable to type 'null'.
+src/controllers/BookingController.ts(140,9): error TS2322: Type '{ email: string; }' is not assignable to type 'LawyerWhereUniqueInput'.
+  Type '{ email: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: LawyerWhereInput | LawyerWhereInput[] | undefined; OR?: LawyerWhereInput[] | undefined; ... 17 more ...; bookings?: BookingListRelationFilter | undefined; }'.
+    Property 'id' is missing in type '{ email: string; }' but required in type '{ id: string; }'.
+src/controllers/BookingController.ts(195,9): error TS2322: Type '{ email: string; }' is not assignable to type 'LawyerWhereUniqueInput'.
+  Type '{ email: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: LawyerWhereInput | LawyerWhereInput[] | undefined; OR?: LawyerWhereInput[] | undefined; ... 17 more ...; bookings?: BookingListRelationFilter | undefined; }'.
+    Property 'id' is missing in type '{ email: string; }' but required in type '{ id: string; }'.
+src/controllers/BookingController.ts(267,9): error TS2322: Type '{ email: string; }' is not assignable to type 'LawyerWhereUniqueInput'.
+  Type '{ email: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: LawyerWhereInput | LawyerWhereInput[] | undefined; OR?: LawyerWhereInput[] | undefined; ... 17 more ...; bookings?: BookingListRelationFilter | undefined; }'.
+    Property 'id' is missing in type '{ email: string; }' but required in type '{ id: string; }'.
+src/controllers/BookingController.ts(378,9): error TS2322: Type '{ email: string; }' is not assignable to type 'LawyerWhereUniqueInput'.
+  Type '{ email: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: LawyerWhereInput | LawyerWhereInput[] | undefined; OR?: LawyerWhereInput[] | undefined; ... 17 more ...; bookings?: BookingListRelationFilter | undefined; }'.
+    Property 'id' is missing in type '{ email: string; }' but required in type '{ id: string; }'.
+src/controllers/DocumentController.ts(314,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/controllers/feedback.controller.ts(14,17): error TS2353: Object literal may only specify known properties, and 'category' does not exist in type '(Without<FeedbackCreateInput, FeedbackUncheckedCreateInput> & FeedbackUncheckedCreateInput) | (Without<...> & FeedbackCreateInput)'.
+src/controllers/KnowledgeController.ts(6,10): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/controllers/MonitoringController.ts(3,8): error TS2613: Module '"F:/JurisMind/Mietrecht/services/backend/src/utils/logger"' has no default export. Did you mean to use 'import { logger } from "F:/JurisMind/Mietrecht/services/backend/src/utils/logger"' instead?
+src/controllers/MonitoringController.ts(177,21): error TS2345: Argument of type '{ type: string; message: string; severity: string; }' is not assignable to parameter of type 'never'.
+src/controllers/MonitoringController.ts(188,21): error TS2345: Argument of type '{ type: string; message: string; severity: string; }' is not assignable to parameter of type 'never'.
+src/controllers/MonitoringController.ts(199,21): error TS2345: Argument of type '{ type: string; message: string; severity: string; }' is not assignable to parameter of type 'never'.
+src/controllers/MonitoringController.ts(210,21): error TS2345: Argument of type '{ type: string; message: string; severity: string; }' is not assignable to parameter of type 'never'.
+src/controllers/MonitoringController.ts(221,19): error TS2345: Argument of type '{ type: string; message: string; severity: string; }' is not assignable to parameter of type 'never'.
+src/controllers/RiskAssessmentController.ts(77,11): error TS2353: Object literal may only specify known properties, and 'riskLevel' does not exist in type 'Without<DocumentAnalysisCreateInput, DocumentAnalysisUncheckedCreateInput> & DocumentAnalysisUncheckedCreateInput'.
+src/controllers/RiskAssessmentController.ts(323,11): error TS2353: Object literal may only specify known properties, and 'riskLevel' does not exist in type 'Without<DocumentAnalysisCreateInput, DocumentAnalysisUncheckedCreateInput> & DocumentAnalysisUncheckedCreateInput'.
+src/controllers/RiskAssessmentController.ts(441,26): error TS2339: Property 'metadata' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/controllers/StrategyRecommendationsController.ts(5,41): error TS2307: Cannot find module '../../../scripts/ml/recommendationEngine' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(6,57): error TS2307: Cannot find module '../../../scripts/ml/enhancedStrategyRecommendations' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(7,40): error TS2307: Cannot find module '../../../scripts/nlp/documentSummarizer' or its corresponding type declarations.
+src/controllers/StrategyRecommendationsController.ts(31,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/controllers/StrategyRecommendationsController.ts(42,27): error TS2339: Property 'metadata' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/controllers/StrategyRecommendationsController.ts(70,11): error TS2561: Object literal may only specify known properties, but 'documentId' does not exist in type '(Without<RecommendationCreateInput, RecommendationUncheckedCreateInput> & RecommendationUncheckedCreateInput) | (Without<...> & RecommendationCreateInput)'. Did you mean to write 'documents'?
+src/controllers/StrategyRecommendationsController.ts(128,24): error TS2339: Property 'metadata' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/controllers/StrategyRecommendationsController.ts(140,11): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'Without<RecommendationCreateInput, RecommendationUncheckedCreateInput> & RecommendationUncheckedCreateInput'.
+src/controllers/StrategyRecommendationsController.ts(186,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/controllers/StrategyRecommendationsController.ts(197,27): error TS2339: Property 'metadata' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/controllers/StrategyRecommendationsController.ts(232,11): error TS2561: Object literal may only specify known properties, but 'documentId' does not exist in type '(Without<RecommendationCreateInput, RecommendationUncheckedCreateInput> & RecommendationUncheckedCreateInput) | (Without<...> & RecommendationCreateInput)'. Did you mean to write 'documents'?
+src/controllers/StrategyRecommendationsController.ts(291,24): error TS2339: Property 'metadata' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/controllers/StrategyRecommendationsController.ts(315,11): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'Without<RecommendationCreateInput, RecommendationUncheckedCreateInput> & RecommendationUncheckedCreateInput'.
+src/controllers/UserController.ts(2,65): error TS2305: Module '"../services/UserService"' has no exported member 'UserSearchFilters'.
+src/middleware/advancedAuth.ts(12,7): error TS2717: Subsequent property declarations must have the same type.  Property 'user' must be of type '{ id: string; email: string; userType: UserType; sessionId: string; } | undefined', but here has type '{ id: string; email: string; userType: UserType; sessionId: string; deviceId?: string | undefined; scopes?: string[] | undefined; } | undefined'.
+src/middleware/advancedAuth.ts(55,7): error TS2353: Object literal may only specify known properties, and 'deviceId' does not exist in type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/middleware/advancedAuth.ts(227,13): error TS2353: Object literal may only specify known properties, and 'deviceId' does not exist in type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/middleware/advancedAuth.ts(306,13): error TS2353: Object literal may only specify known properties, and 'users' does not exist in type 'OrganizationSelect<DefaultArgs>'.
+src/middleware/apiKeyAuth.ts(168,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'Without<ApiRequestCreateInput, ApiRequestUncheckedCreateInput> & ApiRequestUncheckedCreateInput'.
+src/middleware/auth.ts(294,13): error TS2353: Object literal may only specify known properties, and 'users' does not exist in type 'OrganizationSelect<DefaultArgs>'.
+src/middleware/rateLimiter.ts(139,32): error TS2339: Property 'role' does not exist on type '{ id: string; email: string; userType: UserType; sessionId: string; }'.
+src/routes/chat.ts(491,9): error TS2322: Type 'string' is not assignable to type '(Without<UserNullableRelationFilter, UserWhereInput> & UserWhereInput) | (Without<UserWhereInput, UserNullableRelationFilter> & UserNullableRelationFilter) | null | undefined'.
+src/routes/chat.ts(509,9): error TS2322: Type 'string' is not assignable to type '(Without<UserNullableRelationFilter, UserWhereInput> & UserWhereInput) | (Without<UserWhereInput, UserNullableRelationFilter> & UserNullableRelationFilter) | null | undefined'.
+src/routes/chat.ts(511,31): error TS2339: Property 'timestamp' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(515,9): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]'.
+src/routes/chat.ts(522,36): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(523,41): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(524,47): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(525,44): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(526,47): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(527,42): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(540,9): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/routes/chat.ts(543,38): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(545,39): error TS2339: Property 'metadata' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(564,35): error TS2339: Property 'timestamp' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/chat.ts(575,35): error TS2339: Property 'timestamp' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'.
+src/routes/employment.ts(82,11): error TS2353: Object literal may only specify known properties, and 'intent' does not exist in type 'CaseClassification'.
+src/routes/gdpr.ts(46,38): error TS2339: Property 'exportUserData' does not exist on type 'GDPRComplianceService'.
+src/routes/gdpr.ts(101,38): error TS2339: Property 'deleteUserData' does not exist on type 'GDPRComplianceService'.
+src/routes/gdpr.ts(188,23): error TS2339: Property 'updateConsent' does not exist on type 'GDPRComplianceService'.
+src/routes/knowledge.ts(10,43): error TS2551: Property 'searchLegalContent' does not exist on type 'KnowledgeController'. Did you mean 'addLegalContent'?
+src/routes/security-dashboard.ts(283,36): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/routes/security-dashboard.ts(286,37): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/routes/security-dashboard.ts(293,42): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/routes/security-dashboard.ts(300,38): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/routes/security-dashboard.ts(309,42): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/scripts/seedB2BData.ts(92,20): error TS2345: Argument of type '{ name: string; id: string; isActive: boolean; createdAt: Date; updatedAt: Date; expiresAt: Date | null; key: string; organizationId: string; permissions: string[]; rateLimit: number; quotaLimit: number; quotaUsed: number; lastUsedAt: Date | null; }' is not assignable to parameter of type 'never'.
+src/scripts/seedB2BData.ts(127,25): error TS2345: Argument of type '{ apiKeyId: any; method: string; path: string; userAgent: string; ipAddress: string; createdAt: Date; }' is not assignable to parameter of type 'never'.
+src/scripts/seedB2BData.ts(128,30): error TS2339: Property 'id' does not exist on type 'never'.
+src/scripts/seedB2BData.ts(154,31): error TS2345: Argument of type '{ organizationId: any; sessionId: string; query: string; response: string; confidence: number; legalReferences: { reference: string; title: string; }[]; createdAt: Date; }' is not assignable to parameter of type 'never'.
+src/scripts/seedB2BData.ts(155,34): error TS2339: Property 'organizationId' does not exist on type 'never'.
+src/scripts/seedB2BData.ts(183,34): error TS2345: Argument of type '{ organizationId: any; templateType: string; inputData: { tenantName: string; landlordName: string; issue: string; }; generatedContent: string; createdAt: Date; }' is not assignable to parameter of type 'never'.
+src/scripts/seedB2BData.ts(184,34): error TS2339: Property 'organizationId' does not exist on type 'never'.
+src/scripts/seedB2BData.ts(236,11): error TS2820: Type '"completed"' is not assignable to type 'BatchJobStatus | undefined'. Did you mean '"COMPLETED"'?
+src/scripts/seedB2BData.ts(254,11): error TS2820: Type '"processing"' is not assignable to type 'BatchJobStatus | undefined'. Did you mean '"PROCESSING"'?
+src/scripts/seedTemplates.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/scripts/seedTemplates.ts(63,37): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/scripts/seedTemplates.ts(72,22): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/scripts/seedTemplates.ts(85,22): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/AdvancedAuthService.ts(144,15): error TS2353: Object literal may only specify known properties, and 'location' does not exist in type '(Without<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput> & UserProfileUncheckedCreateWithoutUserInput) | (Without<...> & UserProfileCreateWithoutUserInput)'.
+src/services/AdvancedAuthService.ts(151,15): error TS2561: Object literal may only specify known properties, but 'notifications' does not exist in type '(Without<UserPreferencesCreateWithoutUserInput, UserPreferencesUncheckedCreateWithoutUserInput> & UserPreferencesUncheckedCreateWithoutUserInput) | (Without<...> & UserPreferencesCreateWithoutUserInput)'. Did you mean to write 'smsNotifications'?
+src/services/AdvancedAuthService.ts(171,16): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(172,46): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(176,67): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(186,24): error TS2339: Property 'deviceId' does not exist on type 'AdvancedRegisterData'.
+src/services/AdvancedAuthService.ts(196,25): error TS2339: Property 'profile' does not exist on type '{ id: string; email: string; passwordHash: string; userType: UserType; isVerified: boolean; isActive: boolean; twoFactorEnabled: boolean; twoFactorSecret: string | null; twoFactorBackupCodes: string[]; twoFactorVerifiedAt: Date | null; createdAt: Date; updatedAt: Date; lastLoginAt: Date | null; }'.
+src/services/AdvancedAuthService.ts(197,29): error TS2339: Property 'profile' does not exist on type '{ id: string; email: string; passwordHash: string; userType: UserType; isVerified: boolean; isActive: boolean; twoFactorEnabled: boolean; twoFactorSecret: string | null; twoFactorBackupCodes: string[]; twoFactorVerifiedAt: Date | null; createdAt: Date; updatedAt: Date; lastLoginAt: Date | null; }'.
+src/services/AdvancedAuthService.ts(198,28): error TS2339: Property 'profile' does not exist on type '{ id: string; email: string; passwordHash: string; userType: UserType; isVerified: boolean; isActive: boolean; twoFactorEnabled: boolean; twoFactorSecret: string | null; twoFactorBackupCodes: string[]; twoFactorVerifiedAt: Date | null; createdAt: Date; updatedAt: Date; lastLoginAt: Date | null; }'.
+src/services/AdvancedAuthService.ts(199,28): error TS2339: Property 'profile' does not exist on type '{ id: string; email: string; passwordHash: string; userType: UserType; isVerified: boolean; isActive: boolean; twoFactorEnabled: boolean; twoFactorSecret: string | null; twoFactorBackupCodes: string[]; twoFactorVerifiedAt: Date | null; createdAt: Date; updatedAt: Date; lastLoginAt: Date | null; }'.
+src/services/AdvancedAuthService.ts(200,28): error TS2339: Property 'profile' does not exist on type '{ id: string; email: string; passwordHash: string; userType: UserType; isVerified: boolean; isActive: boolean; twoFactorEnabled: boolean; twoFactorSecret: string | null; twoFactorBackupCodes: string[]; twoFactorVerifiedAt: Date | null; createdAt: Date; updatedAt: Date; lastLoginAt: Date | null; }'.
+src/services/AdvancedAuthService.ts(305,13): error TS2322: Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; } | undefined' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; } | undefined'.
+  Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; }' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; }'.
+    Types of property 'language' are incompatible.
+      Type 'string | null' is not assignable to type 'string'.
+        Type 'null' is not assignable to type 'string'.
+src/services/AdvancedAuthService.ts(308,38): error TS2339: Property 'location' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; firstName: string | null; lastName: string | null; company: string | null; phone: string | null; address: string | null; city: string | null; ... 7 more ...; userId: string; }'.
+src/services/AdvancedAuthService.ts(342,11): error TS2322: Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; } | undefined' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; } | undefined'.
+  Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; }' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; }'.
+    Types of property 'language' are incompatible.
+      Type 'string | null' is not assignable to type 'string'.
+        Type 'null' is not assignable to type 'string'.
+src/services/AdvancedAuthService.ts(345,36): error TS2339: Property 'location' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; firstName: string | null; lastName: string | null; company: string | null; phone: string | null; address: string | null; city: string | null; ... 7 more ...; userId: string; }'.
+src/services/AdvancedAuthService.ts(366,62): error TS2339: Property 'verifyToken' does not exist on type 'TwoFactorAuthService'.
+src/services/AdvancedAuthService.ts(399,11): error TS2322: Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; } | undefined' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; } | undefined'.
+  Type '{ firstName: string | undefined; lastName: string | undefined; location: any; language: string | null; }' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; location?: string | undefined; language: string; }'.
+    Types of property 'language' are incompatible.
+      Type 'string | null' is not assignable to type 'string'.
+        Type 'null' is not assignable to type 'string'.
+src/services/AdvancedAuthService.ts(402,36): error TS2339: Property 'location' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; firstName: string | null; lastName: string | null; company: string | null; phone: string | null; address: string | null; city: string | null; ... 7 more ...; userId: string; }'.
+src/services/AdvancedAuthService.ts(532,45): error TS2339: Property 'sessionToken' does not exist on type '{ token: string; id: string; createdAt: Date; userId: string; userAgent: string | null; ipAddress: string | null; expiresAt: Date; }'.
+src/services/AdvancedAuthService.ts(539,13): error TS2353: Object literal may only specify known properties, and 'sessionToken' does not exist in type 'UserSessionWhereInput'.
+src/services/AdvancedAuthService.ts(561,40): error TS2339: Property 'userDevice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/AdvancedAuthService.ts(601,40): error TS2339: Property 'userDevice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/AdvancedAuthService.ts(612,27): error TS2339: Property 'userDevice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/AdvancedAuthService.ts(651,9): error TS2353: Object literal may only specify known properties, and 'sessionToken' does not exist in type '(Without<UserSessionCreateInput, UserSessionUncheckedCreateInput> & UserSessionUncheckedCreateInput) | (Without<...> & UserSessionCreateInput)'.
+src/services/AdvancedAuthService.ts(784,30): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/services/AdvancedAuthService.ts(785,29): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/services/AdvancedAuthService.ts(791,25): error TS2339: Property 'startsWith' does not exist on type 'never'.
+src/services/AdvancedAuthService.ts(830,25): error TS2339: Property 'userVerificationToken' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/AdvancedAuthService.ts(839,31): error TS2554: Expected 3 arguments, but got 2.
+src/services/AIResponseGenerator.ts(4,10): error TS2459: Module '"./NLPService"' declares 'LegalCategory' locally, but it is not exported.
+src/services/AnalyticsService.ts(9,39): error TS2345: Argument of type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>' is not assignable to parameter of type 'AlertConfig'.
+  Property 'enabled' is missing in type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>' but required in type 'AlertConfig'.
+src/services/AnalyticsService.ts(352,9): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/AnalyticsService.ts(360,62): error TS2339: Property 'confidence' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'confidence' does not exist on type 'string'.
+src/services/AnalyticsService.ts(375,39): error TS2339: Property 'riskLevel' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'riskLevel' does not exist on type 'string'.
+src/services/AnalyticsService.ts(424,9): error TS2353: Object literal may only specify known properties, and 'createdAt' does not exist in type 'TemplateGenerationWhereInput'.
+src/services/AnalyticsService.ts(669,26): error TS18048: 'analytics.complianceReport' is possibly 'undefined'.
+src/services/AutomatedReportCronJob.ts(180,19): error TS2345: Argument of type '{ id: string; running: boolean; }' is not assignable to parameter of type 'never'.
+src/services/BookingService.ts(83,20): error TS2339: Property 'startTime' does not exist on type '{ lawyer: { name: string; description: string | null; id: string; email: string | null; createdAt: Date; updatedAt: Date; phone: string | null; website: string | null; location: string; ... 5 more ...; verified: boolean; }; booking: { ...; } | null; } & { ...; }'.
+src/services/BookingService.ts(112,17): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotSelect<DefaultArgs>'.
+src/services/BookingService.ts(175,15): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotSelect<DefaultArgs>'.
+src/services/BookingService.ts(239,15): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotSelect<DefaultArgs>'.
+src/services/BookingService.ts(307,15): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotSelect<DefaultArgs>'.
+src/services/BookingService.ts(498,11): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotWhereInput'.
+src/services/BookingService.ts(505,11): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotSelect<DefaultArgs>'.
+src/services/BookingService.ts(509,11): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotOrderByWithRelationInput | TimeSlotOrderByWithRelationInput[]'.
+src/services/BookingService.ts(513,7): error TS2322: Type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }[]' is not assignable to type '{ id: string; startTime: Date; endTime: Date; }[]'.
+  Type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }' is missing the following properties from type '{ id: string; startTime: Date; endTime: Date; }': startTime, endTime
+src/services/BookingService.ts(552,9): error TS2322: Type '{ lawyerId: string; startTime: Date; endTime: Date; available: true; }[]' is not assignable to type 'TimeSlotCreateManyInput | TimeSlotCreateManyInput[]'.
+  Type '{ lawyerId: string; startTime: Date; endTime: Date; available: true; }[]' is not assignable to type 'TimeSlotCreateManyInput[]'.
+    Type '{ lawyerId: string; startTime: Date; endTime: Date; available: true; }' is missing the following properties from type 'TimeSlotCreateManyInput': start, end
+src/services/ChatService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'Priority'.
+src/services/ChatService.ts(75,11): error TS2322: Type '"OPEN" | "ESCALATED"' is not assignable to type 'CaseStatus | undefined'.
+  Type '"ESCALATED"' is not assignable to type 'CaseStatus | undefined'.
+src/services/ChatService.ts(83,11): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/services/ChatService.ts(100,11): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/services/ChatService.ts(148,26): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]'.
+src/services/ChatService.ts(167,11): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/services/ChatService.ts(173,66): error TS2339: Property 'messages' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ChatService.ts(190,11): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/services/ChatService.ts(205,66): error TS2367: This comparison appears to be unintentional because the types 'CaseStatus' and '"ESCALATED"' have no overlap.
+src/services/ChatService.ts(208,19): error TS2322: Type '"ESCALATED"' is not assignable to type 'CaseStatus | EnumCaseStatusFieldUpdateOperationsInput | undefined'.
+src/services/ChatService.ts(241,24): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]'.
+src/services/ChatService.ts(251,7): error TS2322: Type '{ id: string; title: string; category: string | null; status: CaseStatus; createdAt: Date; messageCount: any; lastMessage: any; }[]' is not assignable to type 'ConversationHistory[]'.
+  Type '{ id: string; title: string; category: string | null; status: $Enums.CaseStatus; createdAt: Date; messageCount: any; lastMessage: any; }' is not assignable to type 'ConversationHistory'.
+    Types of property 'category' are incompatible.
+      Type 'string | null' is not assignable to type 'string'.
+        Type 'null' is not assignable to type 'string'.
+src/services/ChatService.ts(257,25): error TS2339: Property '_count' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ChatService.ts(258,24): error TS2339: Property 'messages' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ChatService.ts(285,20): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]'.
+src/services/ChatService.ts(317,17): error TS2322: Type '"ESCALATED"' is not assignable to type 'CaseStatus | EnumCaseStatusFieldUpdateOperationsInput | undefined'.
+src/services/ChatService.ts(324,11): error TS2559: Type 'string' has no properties in common with type 'UserCreateNestedOneWithoutMessagesInput'.
+src/services/ChatService.ts(379,22): error TS2551: Property 'sender' does not exist on type '{ id: string; createdAt: Date; content: string; caseId: string; isSystem: boolean; senderId: string | null; }'. Did you mean 'senderId'?
+src/services/ConsultationService.ts(58,26): error TS2339: Property 'startTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/ConsultationService.ts(59,26): error TS2339: Property 'endTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/ConsultationService.ts(218,42): error TS2339: Property 'startTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/ConsultationService.ts(328,24): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]'.
+src/services/ConsultationService.ts(355,34): error TS2339: Property 'messages' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ConsultationService.ts(360,29): error TS2339: Property 'documents' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ConsultationService.ts(366,35): error TS2339: Property 'legalRefs' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/ConsultationService.ts(391,33): error TS2339: Property 'documents' does not exist on type '{ description: string | null; priority: CasePriority; id: string; createdAt: Date; updatedAt: Date; userId: string; title: string; category: string | null; status: CaseStatus; tags: string[]; closedAt: Date | null; }'.
+src/services/DocumentAnalysisService.ts(712,11): error TS2353: Object literal may only specify known properties, and 'riskLevel' does not exist in type 'Without<DocumentAnalysisCreateInput, DocumentAnalysisUncheckedCreateInput> & DocumentAnalysisUncheckedCreateInput'.
+src/services/DocumentAnalysisService.ts(721,11): error TS2322: Type '{ analysisId: string; type: string; severity: any; description: string; legalBasis: string | undefined; suggestedAction: string | undefined; }[]' is not assignable to type 'IssueCreateManyInput | IssueCreateManyInput[]'.
+  Type '{ analysisId: string; type: string; severity: any; description: string; legalBasis: string | undefined; suggestedAction: string | undefined; }[]' is not assignable to type 'IssueCreateManyInput[]'.
+    Property 'title' is missing in type '{ analysisId: string; type: string; severity: any; description: string; legalBasis: string | undefined; suggestedAction: string | undefined; }' but required in type 'IssueCreateManyInput'.
+src/services/DocumentAnalysisService.ts(735,11): error TS2322: Type '{ analysisId: string; type: string; description: string; priority: any; actionRequired: boolean; }[]' is not assignable to type 'RecommendationCreateManyInput | RecommendationCreateManyInput[]'.
+  Type '{ analysisId: string; type: string; description: string; priority: any; actionRequired: boolean; }[]' is not assignable to type 'RecommendationCreateManyInput[]'.
+    Property 'title' is missing in type '{ analysisId: string; type: string; description: string; priority: any; actionRequired: boolean; }' but required in type 'RecommendationCreateManyInput'.
+src/services/DocumentAnalysisService.ts(758,11): error TS2353: Object literal may only specify known properties, and 'issues' does not exist in type 'DocumentAnalysisInclude<DefaultArgs>'.
+src/services/DocumentAnalysisService.ts(770,32): error TS2551: Property 'document' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; documentId: string; confidence: number | null; summary: string | null; keyIssues: JsonValue; extractedData: JsonValue; processingTime: number | null; }'. Did you mean 'documentId'?
+src/services/DocumentAnalysisService.ts(772,26): error TS2339: Property 'issues' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; documentId: string; confidence: number | null; summary: string | null; keyIssues: JsonValue; extractedData: JsonValue; processingTime: number | null; }'.
+src/services/DocumentAnalysisService.ts(779,35): error TS2339: Property 'recommendations' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; documentId: string; confidence: number | null; summary: string | null; keyIssues: JsonValue; extractedData: JsonValue; processingTime: number | null; }'.
+src/services/DocumentAnalysisService.ts(785,29): error TS2339: Property 'riskLevel' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; documentId: string; confidence: number | null; summary: string | null; keyIssues: JsonValue; extractedData: JsonValue; processingTime: number | null; }'.
+src/services/DocumentAnalysisService.ts(786,9): error TS2322: Type 'number | null' is not assignable to type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/services/DocumentAnalysisService.ts(787,30): error TS2339: Property 'analyzedAt' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; documentId: string; confidence: number | null; summary: string | null; keyIssues: JsonValue; extractedData: JsonValue; processingTime: number | null; }'.
+src/services/DocumentAnalysisService.ts(803,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/DocumentAnalysisService.ts(815,37): error TS2339: Property 'documentId' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'documentId' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(817,40): error TS2339: Property 'extractedData' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'extractedData' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(818,33): error TS2339: Property 'issues' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'issues' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(825,42): error TS2339: Property 'recommendations' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'recommendations' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(831,36): error TS2339: Property 'riskLevel' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'riskLevel' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(832,37): error TS2339: Property 'confidence' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'confidence' does not exist on type 'string'.
+src/services/DocumentAnalysisService.ts(833,37): error TS2339: Property 'analyzedAt' does not exist on type 'string | number | boolean | JsonObject | JsonArray'.
+  Property 'analyzedAt' does not exist on type 'string'.
+src/services/DocumentAnnotationService.ts(17,43): error TS2339: Property 'COMMENT' does not exist on type '{ HIGHLIGHT: "HIGHLIGHT"; TEXT: "TEXT"; SHAPE: "SHAPE"; STAMP: "STAMP"; }'.
+src/services/DocumentAnnotationService.ts(43,11): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/services/DocumentAnnotationService.ts(55,11): error TS2353: Object literal may only specify known properties, and 'parent' does not exist in type 'DocumentAnnotationInclude<DefaultArgs>'.
+src/services/DocumentAnnotationService.ts(82,11): error TS2353: Object literal may only specify known properties, and 'parentId' does not exist in type 'DocumentAnnotationWhereInput'.
+src/services/DocumentAnnotationService.ts(150,11): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type '(Without<DocumentAnnotationUpdateInput, DocumentAnnotationUncheckedUpdateInput> & DocumentAnnotationUncheckedUpdateInput) | (Without<...> & DocumentAnnotationUpdateInput)'.
+src/services/DocumentAnnotationService.ts(162,11): error TS2353: Object literal may only specify known properties, and 'parent' does not exist in type 'DocumentAnnotationInclude<DefaultArgs>'.
+src/services/DocumentAnnotationService.ts(203,15): error TS2353: Object literal may only specify known properties, and 'parentId' does not exist in type 'DocumentAnnotationWhereInput'.
+src/services/DocumentAnnotationService.ts(229,11): error TS2353: Object literal may only specify known properties, and 'resolved' does not exist in type '(Without<DocumentAnnotationUpdateInput, DocumentAnnotationUncheckedUpdateInput> & DocumentAnnotationUncheckedUpdateInput) | (Without<...> & DocumentAnnotationUpdateInput)'.
+src/services/DocumentGeneratorService.ts(425,22): error TS2345: Argument of type '{ success: boolean; pdf: GeneratedPDF; }' is not assignable to parameter of type 'never'.
+src/services/DocumentGeneratorService.ts(427,22): error TS2345: Argument of type '{ success: boolean; error: string; }' is not assignable to parameter of type 'never'.
+src/services/DocumentSharingService.ts(50,11): error TS2353: Object literal may only specify known properties, and 'sharedWithId' does not exist in type 'DocumentSharingWhereInput'.
+src/services/DocumentSharingService.ts(64,11): error TS2353: Object literal may only specify known properties, and 'sharedWithId' does not exist in type 'Without<DocumentSharingCreateInput, DocumentSharingUncheckedCreateInput> & DocumentSharingUncheckedCreateInput'.
+src/services/DocumentSharingService.ts(71,11): error TS2353: Object literal may only specify known properties, and 'sharedWith' does not exist in type 'DocumentSharingInclude<DefaultArgs>'.
+src/services/DocumentSharingService.ts(97,11): error TS2353: Object literal may only specify known properties, and 'sharedWithId' does not exist in type 'DocumentSharingWhereInput'.
+src/services/DocumentSharingService.ts(106,15): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/DocumentSharingService.ts(112,11): error TS2353: Object literal may only specify known properties, and 'sharedAt' does not exist in type 'DocumentSharingOrderByWithRelationInput | DocumentSharingOrderByWithRelationInput[]'.
+src/services/DocumentSharingService.ts(146,11): error TS2353: Object literal may only specify known properties, and 'sharedWith' does not exist in type 'DocumentSharingInclude<DefaultArgs>'.
+src/services/DocumentSharingService.ts(149,11): error TS2353: Object literal may only specify known properties, and 'sharedAt' does not exist in type 'DocumentSharingOrderByWithRelationInput | DocumentSharingOrderByWithRelationInput[]'.
+src/services/DocumentSharingService.ts(197,11): error TS2353: Object literal may only specify known properties, and 'sharedWith' does not exist in type 'DocumentSharingInclude<DefaultArgs>'.
+src/services/DocumentSharingService.ts(268,11): error TS2353: Object literal may only specify known properties, and 'sharedWithId' does not exist in type 'DocumentSharingWhereInput'.
+src/services/DocumentSharingService.ts(307,11): error TS2353: Object literal may only specify known properties, and 'sharedWithId' does not exist in type 'DocumentSharingWhereInput'.
+src/services/DocumentStorageService.ts(191,11): error TS2561: Object literal may only specify known properties, but 'filename' does not exist in type 'Without<DocumentCreateInput, DocumentUncheckedCreateInput> & DocumentUncheckedCreateInput'. Did you mean to write 'fileName'?
+src/services/DocumentStorageService.ts(211,28): error TS2551: Property 'filename' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'. Did you mean 'fileName'?
+src/services/DocumentStorageService.ts(383,48): error TS2551: Property 'filename' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'. Did you mean 'fileName'?
+src/services/DocumentStorageService.ts(395,74): error TS2339: Property 'encryptionKeyId' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/services/DocumentStorageService.ts(406,29): error TS2339: Property 'encryptionKeyId' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/services/DocumentStorageService.ts(407,34): error TS2339: Property 'encryptionKeyVersion' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/services/DocumentStorageService.ts(420,27): error TS2339: Property 'encryptionKeyId' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'.
+src/services/DocumentStorageService.ts(456,48): error TS2551: Property 'filename' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; userId: string; expiresAt: Date | null; organizationId: string | null; documentType: DocumentType; ... 12 more ...; isPublic: boolean; }'. Did you mean 'fileName'?
+src/services/DocumentStorageService.ts(482,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/DocumentStorageService.ts(768,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/DocumentWorkflowService.ts(72,11): error TS2353: Object literal may only specify known properties, and 'fromStatus' does not exist in type 'Without<DocumentWorkflowCreateInput, DocumentWorkflowUncheckedCreateInput> & DocumentWorkflowUncheckedCreateInput'.
+src/services/GDPRComplianceService.ts(194,11): error TS2353: Object literal may only specify known properties, and 'analysis' does not exist in type 'DocumentInclude<DefaultArgs>'.
+src/services/GDPRComplianceService.ts(328,9): error TS2353: Object literal may only specify known properties, and 'location' does not exist in type '(Without<UserProfileUpdateManyMutationInput, UserProfileUncheckedUpdateManyInput> & UserProfileUncheckedUpdateManyInput) | (Without<...> & UserProfileUpdateManyMutationInput)'.
+src/services/kms/AuditLogger.ts(202,38): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/AuditLogger.ts(277,40): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/AuditLogger.ts(310,48): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/AuditLogger.ts(324,48): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/AuditLogger.ts(368,40): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/AuditLogger.ts(407,25): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/HealthChecker.ts(163,42): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/HealthChecker.ts(266,45): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(74,43): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(225,43): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(344,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(384,44): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(420,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(495,27): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyManagementService.ts(515,43): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(581,25): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyManagementService.ts(619,27): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(642,27): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyManagementService.ts(663,43): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(685,27): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyManagementService.ts(725,27): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyManagementService.ts(759,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyManagementService.ts(782,25): error TS2551: Property 'keyAuditLog' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'auditLog'?
+src/services/kms/KeyRotationManager.ts(33,44): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(60,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(108,37): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(121,25): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(164,46): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(188,29): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(203,45): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(329,42): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(354,25): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(378,42): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(390,25): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(432,43): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(471,48): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(473,49): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(483,51): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyRotationManager.ts(494,50): error TS2339: Property 'rotationSchedule' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(31,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(64,37): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(106,37): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(152,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(180,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(204,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(259,38): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(297,25): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(321,40): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/KeyStorage.ts(361,38): error TS2339: Property 'encryptionKey' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/kms/MonitoringCronJob.ts(1,18): error TS2307: Cannot find module 'node-cron' or its corresponding type declarations.
+src/services/kms/MonitoringCronJob.ts(27,31): error TS2339: Property 'updateKeyStatistics' does not exist on type 'KeyManagementService'.
+src/services/kms/MonitoringCronJob.ts(37,46): error TS2339: Property 'checkHealth' does not exist on type 'KeyManagementService'.
+src/services/kms/MonitoringCronJob.ts(51,40): error TS2339: Property 'getActiveAlerts' does not exist on type 'KeyManagementService'.
+src/services/KnowledgeService.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/services/KnowledgeService.ts(199,26): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(209,21): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type '(Without<LegalKnowledgeCreateInput, LegalKnowledgeUncheckedCreateInput> & LegalKnowledgeUncheckedCreateInput) | (Without<...> & LegalKnowledgeCreateInput)'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(325,22): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(330,9): error TS2739: Type '{ relatedLaws: never[]; id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }' is missing the following properties from type 'LegalText': reference, type, effectiveDate, lastUpdated
+src/services/KnowledgeService.ts(369,22): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(375,22): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(390,22): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(396,22): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/KnowledgeService.ts(475,47): error TS2339: Property 'reference' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/KnowledgeService.ts(478,42): error TS2339: Property 'type' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/KnowledgeService.ts(480,51): error TS2339: Property 'effectiveDate' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/KnowledgeService.ts(481,49): error TS2339: Property 'lastUpdated' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/KnowledgeService.ts(483,48): error TS2339: Property 'embeddings' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/LawyerMatchingService.ts(100,17): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotWhereInput'.
+src/services/LawyerMatchingService.ts(110,17): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotOrderByWithRelationInput | TimeSlotOrderByWithRelationInput[]'.
+src/services/LawyerMatchingService.ts(130,36): error TS2339: Property 'availableSlots' does not exist on type '{ name: string; description: string | null; id: string; email: string | null; createdAt: Date; updatedAt: Date; phone: string | null; website: string | null; location: string; ... 5 more ...; verified: boolean; }'.
+src/services/LawyerMatchingService.ts(136,15): error TS2322: Type 'number | null' is not assignable to type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/services/LawyerMatchingService.ts(138,37): error TS2339: Property 'reviews' does not exist on type '{ name: string; description: string | null; id: string; email: string | null; createdAt: Date; updatedAt: Date; phone: string | null; website: string | null; location: string; ... 5 more ...; verified: boolean; }'.
+src/services/LawyerMatchingService.ts(259,26): error TS18047: 'lawyer.rating' is possibly 'null'.
+src/services/LawyerMatchingService.ts(261,9): error TS18047: 'lawyer.rating' is possibly 'null'.
+src/services/LawyerMatchingService.ts(262,48): error TS18047: 'lawyer.rating' is possibly 'null'.
+src/services/LawyerMatchingService.ts(361,15): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotWhereInput'.
+src/services/LawyerMatchingService.ts(366,15): error TS2353: Object literal may only specify known properties, and 'startTime' does not exist in type 'TimeSlotOrderByWithRelationInput | TimeSlotOrderByWithRelationInput[]'.
+src/services/LawyerMatchingService.ts(384,32): error TS2339: Property 'availableSlots' does not exist on type '{ name: string; description: string | null; id: string; email: string | null; createdAt: Date; updatedAt: Date; phone: string | null; website: string | null; location: string; ... 5 more ...; verified: boolean; }'.
+src/services/LawyerMatchingService.ts(390,11): error TS2322: Type 'number | null' is not assignable to type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/services/LawyerMatchingService.ts(392,33): error TS2339: Property 'reviews' does not exist on type '{ name: string; description: string | null; id: string; email: string | null; createdAt: Date; updatedAt: Date; phone: string | null; website: string | null; location: string; ... 5 more ...; verified: boolean; }'.
+src/services/LawyerMatchingService.ts(439,18): error TS2353: Object literal may only specify known properties, and 'bookingId' does not exist in type 'LawyerReviewWhereUniqueInput'.
+src/services/LawyerMatchingService.ts(451,11): error TS2353: Object literal may only specify known properties, and 'bookingId' does not exist in type 'Without<LawyerReviewCreateInput, LawyerReviewUncheckedCreateInput> & LawyerReviewUncheckedCreateInput'.
+src/services/LawyerMatchingService.ts(539,53): error TS2339: Property 'location' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; firstName: string | null; lastName: string | null; company: string | null; phone: string | null; address: string | null; city: string | null; ... 7 more ...; userId: string; }'.
+src/services/LegalDataImportService.ts(1,40): error TS2305: Module '"@prisma/client"' has no exported member 'LegalType'.
+src/services/LegalDataImportService.ts(176,18): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/LegalDataImportService.ts(187,18): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/LegalDataImportService.ts(192,11): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type '(Without<LegalKnowledgeUpdateInput, LegalKnowledgeUncheckedUpdateInput> & LegalKnowledgeUncheckedUpdateInput) | (Without<...> & LegalKnowledgeUpdateInput)'.
+src/services/LegalDataImportService.ts(192,60): error TS2339: Property 'effectiveDate' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/LegalDataImportService.ts(218,11): error TS2353: Object literal may only specify known properties, and 'lastUpdated' does not exist in type 'LegalKnowledgeWhereInput'.
+src/services/LegalDataImportService.ts(241,9): error TS2322: Type '"reference"[]' is not assignable to type 'LegalKnowledgeScalarFieldEnum | LegalKnowledgeScalarFieldEnum[]'.
+  Type '"reference"[]' is not assignable to type 'LegalKnowledgeScalarFieldEnum[]'.
+    Type '"reference"' is not assignable to type 'LegalKnowledgeScalarFieldEnum'.
+src/services/LegalDataImportService.ts(255,22): error TS2339: Property 'reference' does not exist on type 'PickEnumerable<LegalKnowledgeGroupByOutputType, LegalKnowledgeScalarFieldEnum | LegalKnowledgeScalarFieldEnum[]> & { ...; }'.
+src/services/LegalDataImportService.ts(256,26): error TS2339: Property 'id' does not exist on type 'true | { id?: number | undefined; title?: number | undefined; content?: number | undefined; category?: number | undefined; jurisdiction?: number | undefined; tags?: number | undefined; ... 6 more ...; _all?: number | undefined; }'.
+  Property 'id' does not exist on type 'true'.
+src/services/LegalDataImportService.ts(278,20): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereInput'. Did you mean to write 'references'?
+src/services/LegalDataImportService.ts(279,22): error TS2353: Object literal may only specify known properties, and 'lastUpdated' does not exist in type 'LegalKnowledgeOrderByWithRelationInput | LegalKnowledgeOrderByWithRelationInput[]'.
+src/services/LegalDataImportService.ts(311,9): error TS2322: Type '"type"[]' is not assignable to type 'LegalKnowledgeScalarFieldEnum | LegalKnowledgeScalarFieldEnum[]'.
+  Type '"type"[]' is not assignable to type 'LegalKnowledgeScalarFieldEnum[]'.
+    Type '"type"' is not assignable to type 'LegalKnowledgeScalarFieldEnum'.
+src/services/LegalDataImportService.ts(319,11): error TS2353: Object literal may only specify known properties, and 'lastUpdated' does not exist in type 'LegalKnowledgeWhereInput'.
+src/services/LegalDataImportService.ts(326,20): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type 'LegalKnowledgeOrderByWithRelationInput | LegalKnowledgeOrderByWithRelationInput[]'.
+src/services/LegalDataImportService.ts(327,19): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type 'LegalKnowledgeSelect<DefaultArgs>'.
+src/services/LegalDataImportService.ts(331,20): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type 'LegalKnowledgeOrderByWithRelationInput | LegalKnowledgeOrderByWithRelationInput[]'.
+src/services/LegalDataImportService.ts(332,19): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type 'LegalKnowledgeSelect<DefaultArgs>'.
+src/services/LegalDataImportService.ts(338,20): error TS2339: Property 'type' does not exist on type 'PickEnumerable<LegalKnowledgeGroupByOutputType, LegalKnowledgeScalarFieldEnum | LegalKnowledgeScalarFieldEnum[]> & { ...; }'.
+src/services/LegalDataImportService.ts(338,28): error TS18048: 'item._count' is possibly 'undefined'.
+src/services/LegalDataImportService.ts(338,40): error TS2339: Property '_all' does not exist on type 'true | { id?: number | undefined; title?: number | undefined; content?: number | undefined; category?: number | undefined; jurisdiction?: number | undefined; tags?: number | undefined; ... 6 more ...; _all?: number | undefined; }'.
+  Property '_all' does not exist on type 'true'.
+src/services/LegalDataImportService.ts(342,35): error TS2339: Property 'effectiveDate' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/LegalDataImportService.ts(343,35): error TS2339: Property 'effectiveDate' does not exist on type '{ id: string; isVerified: boolean; createdAt: Date; updatedAt: Date; title: string; category: string; content: string; jurisdiction: string; tags: string[]; source: string | null; sourceUrl: string | null; relevanceScore: number | null; }'.
+src/services/LegalDataImportService.ts(379,20): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/LegalDataImportService.ts(389,24): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/LegalDataImportService.ts(394,17): error TS2353: Object literal may only specify known properties, and 'effectiveDate' does not exist in type '(Without<LegalKnowledgeUpdateInput, LegalKnowledgeUncheckedUpdateInput> & LegalKnowledgeUncheckedUpdateInput) | (Without<...> & LegalKnowledgeUpdateInput)'.
+src/services/LegalDataImportService.ts(414,15): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type '(Without<LegalKnowledgeCreateInput, LegalKnowledgeUncheckedCreateInput> & LegalKnowledgeUncheckedCreateInput) | (Without<...> & LegalKnowledgeCreateInput)'.
+src/services/LegalDataUpdateService.ts(193,18): error TS2561: Object literal may only specify known properties, but 'reference' does not exist in type 'LegalKnowledgeWhereUniqueInput'. Did you mean to write 'references'?
+src/services/LegalDataUpdateService.ts(221,11): error TS2353: Object literal may only specify known properties, and 'lastUpdated' does not exist in type 'LegalKnowledgeWhereInput'.
+src/services/LegalDataUpdateService.ts(226,11): error TS2353: Object literal may only specify known properties, and 'lastUpdated' does not exist in type 'LegalKnowledgeOrderByWithRelationInput | LegalKnowledgeOrderByWithRelationInput[]'.
+src/services/PaymentService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/services/PaymentService.ts(1,39): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/services/PaymentService.ts(91,49): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(106,26): error TS2339: Property 'startTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/PaymentService.ts(107,26): error TS2339: Property 'endTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/PaymentService.ts(113,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(168,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(181,48): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(194,11): error TS2353: Object literal may only specify known properties, and 'paymentStatus' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
+src/services/PaymentService.ts(219,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(244,42): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(263,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(289,49): error TS2339: Property 'invoice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(307,41): error TS2339: Property 'invoice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(345,41): error TS2339: Property 'invoice' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(384,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(412,40): error TS2339: Property 'refund' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(423,25): error TS2339: Property 'refund' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(432,48): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/PaymentService.ts(470,42): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/ReportingService.ts(417,28): error TS2345: Argument of type '{ category: string; priority: "high"; title: string; description: string; estimatedImpact: string; }' is not assignable to parameter of type 'never'.
+src/services/ReportingService.ts(428,28): error TS2345: Argument of type '{ category: string; priority: "medium"; title: string; description: string; estimatedImpact: string; }' is not assignable to parameter of type 'never'.
+src/services/ReportingService.ts(439,28): error TS2345: Argument of type '{ category: string; priority: "high"; title: string; description: string; estimatedImpact: string; }' is not assignable to parameter of type 'never'.
+src/services/ReportingService.ts(455,19): error TS2345: Argument of type '{ type: "warning"; message: string; timestamp: Date; }' is not assignable to parameter of type 'never'.
+src/services/ReportingService.ts(463,19): error TS2345: Argument of type '{ type: "error"; message: string; timestamp: Date; }' is not assignable to parameter of type 'never'.
+src/services/StripePaymentService.ts(2,24): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentStatus'.
+src/services/StripePaymentService.ts(2,39): error TS2305: Module '"@prisma/client"' has no exported member 'PaymentMethod'.
+src/services/StripePaymentService.ts(51,49): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(66,26): error TS2339: Property 'startTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/StripePaymentService.ts(67,26): error TS2339: Property 'endTime' does not exist on type '{ end: Date; id: string; createdAt: Date; updatedAt: Date; lawyerId: string; start: Date; available: boolean; bookingId: string | null; }'.
+src/services/StripePaymentService.ts(91,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(154,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(174,48): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(187,11): error TS2353: Object literal may only specify known properties, and 'paymentStatus' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
+src/services/StripePaymentService.ts(218,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(258,40): error TS2339: Property 'refund' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(269,48): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(365,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(379,25): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(390,11): error TS2353: Object literal may only specify known properties, and 'paymentStatus' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
+src/services/StripePaymentService.ts(408,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(417,25): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(442,41): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/StripePaymentService.ts(453,25): error TS2339: Property 'payment' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/TemplateService.ts(1,24): error TS2305: Module '"@prisma/client"' has no exported member 'LegalCategory'.
+src/services/TemplateService.ts(69,42): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/TemplateService.ts(337,43): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/TemplateService.ts(362,42): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/TemplateService.ts(397,42): error TS2339: Property 'template' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/services/ValidationService.ts(224,15): error TS18048: 'req.query' is possibly 'undefined'.
+src/services/ValidationService.ts(224,65): error TS18048: 'req.query' is possibly 'undefined'.
+src/testing/load-testing/LoadTestRunner.ts(74,11): error TS2345: Argument of type 'Promise<void>' is not assignable to parameter of type 'never'.
+src/utils/aiErrorHandler.ts(80,7): error TS2322: Type '5000' is not assignable to type 'undefined'.
+src/utils/aiErrorHandler.ts(85,7): error TS2322: Type '3000' is not assignable to type 'undefined'.
+src/utils/cacheManager.ts(25,3): error TS2666: Exports and export assignments are not permitted in module augmentations.

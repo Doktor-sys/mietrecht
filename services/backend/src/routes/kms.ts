@@ -49,7 +49,17 @@ export function initializeKMSServices(redis: RedisClientType): void {
     slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
     slackChannel: process.env.SLACK_CHANNEL,
     pagerDutyIntegrationKey: process.env.PAGERDUTY_INTEGRATION_KEY,
-    pagerDutyApiKey: process.env.PAGERDUTY_API_KEY
+    pagerDutyApiKey: process.env.PAGERDUTY_API_KEY,
+    teamsWebhookUrl: process.env.TEAMS_WEBHOOK_URL,
+    twilioAccountSid: process.env.TWILIO_ACCOUNT_SID,
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
+    twilioFromNumber: process.env.TWILIO_FROM_NUMBER,
+    twilioCriticalAlertNumbers: process.env.TWILIO_CRITICAL_ALERT_NUMBERS ? process.env.TWILIO_CRITICAL_ALERT_NUMBERS.split(',') : [],
+    customWebhookUrls: process.env.CUSTOM_WEBHOOK_URLS ? process.env.CUSTOM_WEBHOOK_URLS.split(',') : [],
+    emailRecipients: process.env.ALERT_EMAIL_RECIPIENTS ? process.env.ALERT_EMAIL_RECIPIENTS.split(',') : [],
+    alertDeduplicationWindowMs: process.env.ALERT_DEDUPLICATION_WINDOW_MS ? parseInt(process.env.ALERT_DEDUPLICATION_WINDOW_MS, 10) : 300000, // 5 minutes
+    correlationEnabled: process.env.ALERT_CORRELATION_ENABLED === 'true',
+    correlationWindowMs: process.env.ALERT_CORRELATION_WINDOW_MS ? parseInt(process.env.ALERT_CORRELATION_WINDOW_MS, 10) : 300000, // 5 minutes
   };
   
   alertManager = new AlertManager(alertConfig);

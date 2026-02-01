@@ -1,4 +1,5 @@
 import express, { Request, Response, Application, Express } from 'express'
+import path from 'path'
 import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
@@ -9,16 +10,17 @@ import { logger } from './utils/logger'
 import { errorHandler } from './middleware/errorHandler'
 import { advancedSecurity } from './middleware/advancedSecurity'
 import { setupSwagger } from './config/swagger'
-import { connectDatabase } from './config/database'
+import { connectDatabase, prisma } from './config/database'
 import { connectRedis } from './config/redis'
 import { WebSocketService } from './services/WebSocketService'
 import { createHTTPSOptions, getTLSConfig } from './config/tls'
 import register, { httpRequestDurationMicroseconds, httpRequestsTotal } from './monitoring/metrics'
-import { PrismaClient } from '@prisma/client'
 import { AuditService } from './services/AuditService'
 import { SecurityMonitoringService } from './services/SecurityMonitoringService'
 import { ComplianceReportingService } from './services/ComplianceReportingService'
 import { AlertManager } from './services/kms/AlertManager'
+import { MLService } from './services/MLService'
+import { IntegrationService } from './services/IntegrationService'
 
 // Import Routes
 import authRoutes from './routes/auth'
@@ -37,6 +39,7 @@ import kmsRoutes, { initializeKMSServices } from './routes/kms'
 import auditRoutes from './routes/audit'
 import feedbackRoutes from './routes/feedback'
 import securityDashboardRoutes from './routes/security-dashboard'
+import employmentRoutes from './routes/employment'
 
 const app: Application = express()
 
@@ -50,14 +53,15 @@ const httpServer = httpsOptions
   : createServer(app)
 
 // HTTP-Server für Redirect (wenn HTTPS aktiviert)
-let httpRedirectServer: ReturnType<typeof createServer> | null = null
+let httpRedirectServer: any = null
 
 // Service-Instanzen
-let prisma: PrismaClient
 let auditService: AuditService
 let securityMonitoring: SecurityMonitoringService
 let complianceReporting: ComplianceReportingService
 let alertManager: AlertManager
+let mlService: MLService
+let integrationService: IntegrationService
 
 // WebSocket Service initialisieren
 let wsService: WebSocketService
@@ -77,13 +81,31 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https:", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"]
     },
   },
+  // Disable powered by header to prevent leaking information
+  hidePoweredBy: true,
+  // Prevent MIME type sniffing
+  noSniff: true,
+  // Prevent cross-site scripting attacks
+  xssFilter: true,
+  // Prevent clickjacking
+  frameguard: { action: 'deny' },
+  // Enforce HTTPS
   hsts: {
     maxAge: 31536000, // 1 Jahr
     includeSubDomains: true,
     preload: true
-  }
+  },
+  // Prevent cross-site scripting
+  referrerPolicy: { policy: 'no-referrer' },
+  // Prevent DNS prefetching
+  dnsPrefetchControl: { allow: false }
 }))
 
 // CORS Configuration
@@ -106,6 +128,7 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 })
+
 app.use('/api/', limiter)
 
 // Advanced Security Middleware
@@ -121,8 +144,36 @@ const authLimiter = rateLimit({
     error: 'Zu viele Login-Versuche. Bitte warten Sie 15 Minuten.',
   },
 })
+
+// Rate limiting for sensitive endpoints
+const sensitiveEndpointLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 Minuten
+  max: 10, // Maximal 10 Anfragen pro 15 Minuten
+  message: {
+    error: 'Zu viele Anfragen an diesen Endpunkt. Bitte warten Sie 15 Minuten.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+// Rate limiting for API endpoints that handle file uploads
+const fileUploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 Stunde
+  max: 20, // Maximal 20 Uploads pro Stunde
+  message: {
+    error: 'Zu viele Datei-Uploads. Bitte warten Sie eine Stunde.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 app.use('/api/auth/login', authLimiter)
 app.use('/api/auth/register', authLimiter)
+app.use('/api/users/password-reset', sensitiveEndpointLimiter)
+app.use('/api/users/change-email', sensitiveEndpointLimiter)
+app.use('/api/documents/upload', fileUploadLimiter)
+app.use('/api/kms/encrypt', sensitiveEndpointLimiter)
+app.use('/api/kms/decrypt', sensitiveEndpointLimiter)
 
 // Webhook Route (muss vor Body Parser kommen für raw body)
 app.use('/api/webhooks', webhookRoutes)
@@ -138,13 +189,13 @@ app.use(advancedSecurity.contentSecurity);
 app.use((req: Request, res: Response, next: Function) => {
   const startTime = Date.now();
   const route = req.path;
-  
+
   res.on('finish', () => {
     const responseTime = Date.now() - startTime;
     httpRequestDurationMicroseconds
       .labels(req.method, route, res.statusCode.toString())
       .observe(responseTime);
-      
+
     httpRequestsTotal
       .labels(req.method, route, res.statusCode.toString())
       .inc();
@@ -184,12 +235,27 @@ app.use('/api/kms', kmsRoutes)
 app.use('/api/audit', auditRoutes)
 app.use('/api/feedback', feedbackRoutes)
 app.use('/api/security-dashboard', securityDashboardRoutes)
+app.use('/api/employment', employmentRoutes)
 
 // Setup Swagger Documentation
 setupSwagger(app as Express)
 
 // Error Handler (muss als letztes Middleware registriert werden)
 app.use(errorHandler)
+
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.join(__dirname, '../../../web-app/build');
+  app.use(express.static(buildPath));
+
+  app.get('*', (req: Request, res: Response, next: Function) => {
+    // Falls die Anfrage an die API geht, weitergeben (sollte eigentlich durch Router davor abgefangen werden)
+    if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/metrics')) {
+      return next();
+    }
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
 
 // 404 Handler
 app.use('*', (_req: Request, res: Response) => {
@@ -202,112 +268,77 @@ app.use('*', (_req: Request, res: Response) => {
   })
 })
 
-async function startServer() {
-  try {
-    // Verbinde zur Datenbank
-    await connectDatabase()
-    prisma = new PrismaClient()
-    logger.info('Datenbankverbindung hergestellt')
-
-    // Verbinde zu Redis
-    const redis = await connectRedis()
-    logger.info('Redis-Verbindung hergestellt')
-
-    // Initialisiere Services
-    auditService = new AuditService(prisma);
-    alertManager = new AlertManager({
-      enabled: true,
-      slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
-      slackChannel: process.env.SLACK_CHANNEL,
-      pagerDutyIntegrationKey: process.env.PAGERDUTY_INTEGRATION_KEY,
-      pagerDutyApiKey: process.env.PAGERDUTY_API_KEY
-    });
-    securityMonitoring = new SecurityMonitoringService(prisma, auditService, alertManager);
-    complianceReporting = new ComplianceReportingService(prisma, auditService, securityMonitoring, alertManager);
-    
-    // Initialisiere KMS Services
-    initializeKMSServices(redis)
-    logger.info('KMS Services initialisiert')
-
-    // Initialisiere WebSocket Service
-    wsService = new WebSocketService(httpServer)
-    logger.info('WebSocket Service initialisiert')
-
-    // Mache WebSocket Service global verfügbar
-    app.set('wsService', wsService)
-
-    // Starte Security Monitoring
-    await securityMonitoring.startMonitoring(5) // Alle 5 Minuten
-    logger.info('Security Monitoring gestartet')
-
-    // Starte Server
-    const port = config.port
-    const protocol = tlsConfig.enabled ? 'https' : 'http'
-
-    httpServer.listen(port, () => {
-      logger.info(`🚀 SmartLaw Backend läuft auf Port ${port}`)
-      logger.info(`🔒 Protokoll: ${protocol.toUpperCase()}`)
-      if (tlsConfig.enabled) {
-        logger.info(`🔐 TLS Version: ${tlsConfig.minVersion}`)
-      }
-      logger.info(`📚 API Dokumentation: ${protocol}://localhost:${port}/api-docs`)
-      logger.info(`🏥 Health Check: ${protocol}://localhost:${port}/health`)
-      logger.info(`🔌 WebSocket Server läuft`)
-    })
-
-    // Starte HTTP-Redirect-Server wenn HTTPS aktiviert ist
-    if (tlsConfig.enabled && process.env.HTTP_REDIRECT_PORT) {
-      const httpRedirectPort = parseInt(process.env.HTTP_REDIRECT_PORT, 10)
-      const redirectApp = express()
-
-      redirectApp.use((req: Request, res: Response) => {
-        const httpsUrl = `https://${req.hostname}:${port}${req.url}`
-        res.redirect(301, httpsUrl)
-      })
-
-      httpRedirectServer = createServer(redirectApp)
-      httpRedirectServer.listen(httpRedirectPort, () => {
-        logger.info(`🔀 HTTP Redirect Server läuft auf Port ${httpRedirectPort}`)
-      })
-    }
-  } catch (error) {
-    logger.error('Fehler beim Starten des Servers:', error)
-    process.exit(1)
-  }
-}
-
 // Graceful Shutdown
 process.on('SIGTERM', () => {
-  logger.info('SIGTERM empfangen, Server wird heruntergefahren...')
+  logger.info('SIGTERM received, shutting down gracefully')
+
   httpServer.close(() => {
-    logger.info('HTTPS Server geschlossen')
-    if (httpRedirectServer) {
-      httpRedirectServer.close(() => {
-        logger.info('HTTP Redirect Server geschlossen')
-        process.exit(0)
-      })
-    } else {
-      process.exit(0)
-    }
+    logger.info('HTTP server closed')
+    // Database connection will be closed by the database module's own handlers
+    process.exit(0)
   })
 })
 
 process.on('SIGINT', () => {
-  logger.info('SIGINT empfangen, Server wird heruntergefahren...')
+  logger.info('SIGINT received, shutting down gracefully')
+
   httpServer.close(() => {
-    logger.info('HTTPS Server geschlossen')
-    if (httpRedirectServer) {
-      httpRedirectServer.close(() => {
-        logger.info('HTTP Redirect Server geschlossen')
-        process.exit(0)
-      })
-    } else {
-      process.exit(0)
-    }
+    logger.info('HTTP server closed')
+    // Database connection will be closed by the database module's own handlers
+    process.exit(0)
   })
 })
 
-startServer()
+// Database Connection and Server Start
+// Database Connection and Server Start
+if (process.env.NODE_ENV !== 'test') {
+  connectDatabase()
+    .then(async () => {
+      // Use the prisma client from the database module instead of creating a new one
+      logger.info('Database connected successfully')
+
+      // Redis Connection
+      const redis = await connectRedis()
+      logger.info('Redis connected successfully')
+
+      // Initialize KMS Services
+      initializeKMSServices(redis)
+
+      // Initialize WebSocket Service
+      wsService = new WebSocketService(httpServer)
+      app.set('wsService', wsService)
+
+      // Initialize Services
+      auditService = new AuditService(prisma)
+      alertManager = new AlertManager()
+      securityMonitoring = new SecurityMonitoringService(prisma, auditService, alertManager)
+      complianceReporting = new ComplianceReportingService(prisma, auditService, securityMonitoring, alertManager)
+
+      // Initialize ML Service
+      mlService = new MLService(prisma)
+      await mlService.initialize()
+      logger.info('ML Service initialized successfully')
+
+      // Initialize Integration Service
+      integrationService = new IntegrationService(prisma)
+      await integrationService.initializeIntegrations()
+      logger.info('Integration Service initialized successfully')
+
+      // Start Server
+      const PORT = config.port
+      httpServer.listen(PORT, config.host, () => {
+        logger.info(`Server running on ${config.host}:${PORT}`)
+        logger.info('Performance-Optimierungen aktiviert')
+        if (tlsConfig.enabled) {
+          logger.info(`HTTPS enabled`)
+        }
+      })
+    })
+    .catch((error) => {
+      logger.error('Failed to start server', { error })
+      process.exit(1)
+    })
+}
 
 export { app }
 export default app

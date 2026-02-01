@@ -1,6 +1,6 @@
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import { Express } from 'express'
+import { Application } from 'express'
 import { config } from './config'
 
 const options = {
@@ -954,7 +954,7 @@ const options = {
 
 const specs = swaggerJsdoc(options)
 
-export const setupSwagger = (app: Express) => {
+export const setupSwagger = (app: Application) => {
   // Swagger UI Setup
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     explorer: true,
